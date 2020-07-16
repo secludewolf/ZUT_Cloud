@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ztu.cloud.cloud.common.dao.mysql.AdminMapper">
+    <!--    根据用户id获得用户信息-->
+    <select id="getAdminById"
+            parameterType="int"
+            resultType="com.ztu.cloud.cloud.common.bean.mysql.Admin">
+        select * from admin where ID=#{id}
+    </select>
+    <!--    根据用户账号获取用户信息-->
+    <select id="getAdminByAccount"
+            parameterType="string"
+            resultType="com.ztu.cloud.cloud.common.bean.mysql.Admin">
+        select * from admin where Account=#{account}
+    </select>
+    <!--    根据用户邮箱获取用户信息-->
+    <select id="getAdminByEmail"
+            parameterType="string"
+            resultType="com.ztu.cloud.cloud.common.bean.mysql.Admin">
+        select * from admin where Email=#{email}
+    </select>
+    <!--    根据用户手机号获取用户信息-->
+    <select id="getAdminByPhone"
+            parameterType="string"
+            resultType="com.ztu.cloud.cloud.common.bean.mysql.Admin">
+        select * from admin where Phone=#{phone}
+    </select>
+    <!--    根据分页用户列表-->
+    <select id="getAdmin"
+            parameterType="int"
+            resultType="com.ztu.cloud.cloud.common.bean.mysql.Admin">
+        select * from admin limit #{start},#{end}
+    </select>
+    <!--    通过用户信息实体类修改用户信息-->
+    <update id="updateAdmin"
+            parameterType="com.ztu.cloud.cloud.common.bean.mysql.Admin">
+        update admin
+        set
+        <if test="account != null">
+            account = #{account}
+        </if>
+        <if test="password != null">
+            ,password = #{password}
+        </if>
+        <if test="status != 0">
+            ,status = #{status}
+        </if>
+        <if test="name != null">
+            ,name = #{name}
+        </if>
+        <if test="email != null">
+            ,email = #{email}
+        </if>
+        <if test="phone != null">
+            ,phone = #{phone}
+        </if>
+        <if test="level != 0">
+            ,level = #{level}
+        </if>
+        <if test="changeTime != 0">
+            ,changeTime = #{changeTime}
+        </if>
+        <choose>
+            <when test="id != 0">
+                where id = #{id}
+            </when>
+            <otherwise>
+                where id = -1
+            </otherwise>
+        </choose>
+    </update>
+    <!--    根据用户信息实体类插入一个用户-->
+    <insert id="insertAdmin"
+            parameterType="com.ztu.cloud.cloud.common.bean.mysql.Admin"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert into admin (account,password,email,phone,name,status,level,createTime,changeTime)
+        values (#{account},#{password},#{email},#{phone},#{name},#{status},#{level},#{createTime},#{changeTime})
+    </insert>
+    <!--    根据用户信息实体类插入多个用户-->
+    <insert id="insertAdmins"
+            parameterType="com.ztu.cloud.cloud.common.bean.mysql.Admin"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert into admin (account,password,email,phone,name,status,level,createTime,changeTime)
+        values
+        <foreach item="admin" collection="collection" separator=",">
+            (#{admin.account},#{admin.password},#{admin.email},#{admin.phone},#{admin.name},#{admin.status},#{admin.level},#{admin.createTime},#{admin.changeTime})
+        </foreach>
+    </insert>
+    <delete id="deleteAdminById"
+            parameterType="int">
+        delete from admin where id=#{id}
+    </delete>
+    <delete id="deleteAdminsById"
+            parameterType="java.util.List">
+        delete from admin where id in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+    <!--    修改用户密码-->
+    <update id="updateAdminPassword">
+        update admin
+        set password = #{password}
+        where id = #{id}
+    </update>
+</mapper>

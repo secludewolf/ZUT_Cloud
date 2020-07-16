@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ztu.cloud.cloud.common.dao.mysql.UserFileMapper">
+    <insert id="insertUserFile"
+            parameterType="com.ztu.cloud.cloud.common.bean.mysql.UserFile"
+            useGeneratedKeys="true"
+            keyProperty="id">
+            insert into userFile (userId,fileId,path)
+            values (#{userId},#{fileId},#{path})
+        </insert>
+    <select id="getUserFile"
+            resultType="com.ztu.cloud.cloud.common.bean.mysql.UserFile">
+            select * from userFile where id = #{id}
+        </select>
+    <delete id="deleteUserFile">
+            delete from userFile where id = #{id}
+        </delete>
+    <update id="updateUserFilePath">
+        update userFile
+        set
+        path = "{path}"
+        <choose>
+            <when test="id != null">
+                where id = #{id}
+            </when>
+            <otherwise>
+                where id = -1
+            </otherwise>
+        </choose>
+    </update>
+</mapper>
