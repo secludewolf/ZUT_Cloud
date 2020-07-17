@@ -12,6 +12,7 @@ import com.ztu.cloud.cloud.common.dao.mysql.UserFileMapper;
 import com.ztu.cloud.cloud.common.dto.user.repository.*;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.common.vo.user.RepositoryInfo;
+import com.ztu.cloud.cloud.util.ForbiddenUtil;
 import com.ztu.cloud.cloud.util.RequestUtil;
 import com.ztu.cloud.cloud.util.ResultUtil;
 import com.ztu.cloud.cloud.util.TokenUtil;
@@ -98,9 +99,8 @@ public class RepositoryServiceImpl implements RepositoryService {
 		if (!repository.getId().equals(createFile.getRepositoryId())) {
 			return ResultConstant.NO_ACCESS;
 		}
-		if (createFile.getName().contains("/") || createFile.getName().contains("\\") || createFile.getName().contains(":")
-				|| createFile.getName().contains("*") || createFile.getName().contains("\"") || createFile.getName().contains("?")
-				|| createFile.getName().contains("<") || createFile.getName().contains(">") || createFile.getName().contains("|")) {
+		//TODO 将敏感词提取为配置文件
+		if (!ForbiddenUtil.isFileNameValid(createFile.getName())) {
 			return ResultConstant.NAME_INVALID;
 		}
 		String fileId = createFile.getFileId();
@@ -163,9 +163,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 		if (!repository.getId().equals(createFolder.getRepositoryId())) {
 			return ResultConstant.NO_ACCESS;
 		}
-		if (createFolder.getName().contains("/") || createFolder.getName().contains("\\") || createFolder.getName().contains(":")
-				|| createFolder.getName().contains("*") || createFolder.getName().contains("\"") || createFolder.getName().contains("?")
-				|| createFolder.getName().contains("<") || createFolder.getName().contains(">") || createFolder.getName().contains("|")) {
+		if (!ForbiddenUtil.isFileNameValid(createFolder.getName())) {
 			return ResultConstant.NAME_INVALID;
 		}
 		Folder folder = getFolder(repository, createFolder.getPath());
@@ -500,9 +498,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 		if (!repository.getId().equals(renameFile.getRepositoryId())) {
 			return ResultConstant.NO_ACCESS;
 		}
-		if (renameFile.getNewName().contains("/") || renameFile.getNewName().contains("\\") || renameFile.getNewName().contains(":")
-				|| renameFile.getNewName().contains("*") || renameFile.getNewName().contains("\"") || renameFile.getNewName().contains("?")
-				|| renameFile.getNewName().contains("<") || renameFile.getNewName().contains(">") || renameFile.getNewName().contains("|")) {
+		if (!ForbiddenUtil.isFileNameValid(renameFile.getNewName())) {
 			return ResultConstant.NAME_INVALID;
 		}
 		Folder folder = getFolder(repository, renameFile.getPath());
@@ -558,9 +554,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 		if (!repository.getId().equals(renameFolder.getRepositoryId())) {
 			return ResultConstant.NO_ACCESS;
 		}
-		if (renameFolder.getNewName().contains("/") || renameFolder.getNewName().contains("\\") || renameFolder.getNewName().contains(":")
-				|| renameFolder.getNewName().contains("*") || renameFolder.getNewName().contains("\"") || renameFolder.getNewName().contains("?")
-				|| renameFolder.getNewName().contains("<") || renameFolder.getNewName().contains(">") || renameFolder.getNewName().contains("|")) {
+		if (!ForbiddenUtil.isFileNameValid(renameFolder.getNewName())) {
 			return ResultConstant.NAME_INVALID;
 		}
 		Folder parent = getFolder(repository, renameFolder.getPath());
