@@ -45,76 +45,42 @@ public class TempFileDao {
 	}
 
 	public boolean insert(TempFile tempFile) {
-		int i = 0;
-		Boolean lock;
-		//尝试获取锁,失败重试十次
-		do {
-			lock = this.redisTemplate.opsForValue().setIfAbsent(tempFile.getFileId() + "lock", "lock", 3, TimeUnit.SECONDS);
-			try {
-				Thread.sleep(20);
-			} catch (InterruptedException e) {
-				return false;
+		BoundHashOperations<String, Object, Object> operations = this.redisTemplate.boundHashOps(tempFile.getFileId());
+		operations.put("fileId", tempFile.getFileId());
+		operations.put("name", tempFile.getName());
+		operations.put("type", tempFile.getType());
+		operations.put("length", tempFile.getLength() + "");
+		operations.expire(1, TimeUnit.DAYS);
+		StringBuilder saves = new StringBuilder();
+		if (tempFile.getSaves().size() > 0) {
+			for (Integer index : tempFile.getSaves()) {
+				saves.append(",").append(index);
 			}
-		} while (lock != null || i < 10);
-		if (lock) {
-			BoundHashOperations<String, Object, Object> operations = this.redisTemplate.boundHashOps(tempFile.getFileId());
-			operations.put("fileId", tempFile.getFileId());
-			operations.put("name", tempFile.getName());
-			operations.put("type", tempFile.getType());
-			operations.put("length", tempFile.getLength() + "");
-			operations.expire(1, TimeUnit.DAYS);
-			StringBuilder saves = new StringBuilder();
-			if (tempFile.getSaves().size() > 0) {
-				for (Integer index : tempFile.getSaves()) {
-					saves.append(",").append(index);
-				}
-				saves = new StringBuilder(saves.substring(1, saves.length()));
-			}
-			operations.put("saves", saves.toString());
-			//释放锁
-			this.redisTemplate.delete(tempFile.getFileId() + "lock");
-			return true;
+			saves = new StringBuilder(saves.substring(1, saves.length()));
 		}
-		return false;
+		operations.put("saves", saves.toString());
+		return true;
 	}
 
 	public boolean update(TempFile tempFile) {
-		int i = 0;
-		Boolean lock;
-		//尝试获取锁,失败重试十次
-		do {
-			lock = this.redisTemplate.opsForValue().setIfAbsent(tempFile.getFileId() + "lock", "lock", 3, TimeUnit.SECONDS);
-			try {
-				Thread.sleep(20);
-			} catch (InterruptedException e) {
-				return false;
+		BoundHashOperations<String, Object, Object> operations = this.redisTemplate.boundHashOps(tempFile.getFileId());
+		operations.put("fileId", tempFile.getFileId());
+		operations.put("name", tempFile.getName());
+		operations.put("type", tempFile.getType());
+		operations.put("length", tempFile.getLength() + "");
+		operations.expire(1, TimeUnit.DAYS);
+		StringBuilder saves = new StringBuilder();
+		if (tempFile.getSaves().size() > 0) {
+			for (Integer index : tempFile.getSaves()) {
+				saves.append(",").append(index);
 			}
-		} while (lock != null || i < 10);
-		if (lock) {
-			BoundHashOperations<String, Object, Object> operations = this.redisTemplate.boundHashOps(tempFile.getFileId());
-			operations.put("fileId", tempFile.getFileId());
-			operations.put("name", tempFile.getName());
-			operations.put("type", tempFile.getType());
-			operations.put("length", tempFile.getLength() + "");
-			operations.expire(1, TimeUnit.DAYS);
-			StringBuilder saves = new StringBuilder();
-			if (tempFile.getSaves().size() > 0) {
-				for (Integer index : tempFile.getSaves()) {
-					saves.append(",").append(index);
-				}
-				saves = new StringBuilder(saves.substring(1, saves.length()));
-			}
-			System.out.println(saves);
-			operations.put("saves", saves.toString());
-			System.out.println(operations.get("saves"));
-			this.redisTemplate.delete(tempFile.getFileId() + "lock");
-			return true;
+			saves = new StringBuilder(saves.substring(1, saves.length()));
 		}
-		return false;
+		operations.put("saves", saves.toString());
+		return true;
 	}
 
-	public int delete(String fileId) {
-		this.redisTemplate.delete(fileId);
-		return 1;
+	public boolean delete(String fileId) {
+		return this.redisTemplate.delete(fileId);
 	}
 }

@@ -219,14 +219,13 @@
                         message("网络异常,请重试!");
                       };
                       createFile(data, handler, catcher);
-                    } else {
-                      //TODO 暂时无法并发上传,redis没有写同步锁
-                      currentChunk += 1;
-                      if (currentChunk < chunks) {
-                        loadNext();
-                      }
                     }
                   })
+                  //TODO 暂时无法并发上传,redis没有写同步锁
+                  currentChunk += 1;
+                  if (currentChunk < chunks) {
+                    loadNext();
+                  }
                 }
 
                 function loadNext() {

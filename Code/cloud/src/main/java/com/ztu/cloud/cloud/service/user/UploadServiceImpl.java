@@ -6,6 +6,7 @@ import com.ztu.cloud.cloud.common.bean.redis.TempFile;
 import com.ztu.cloud.cloud.common.constant.ResultConstant;
 import com.ztu.cloud.cloud.common.dao.mysql.FileMapper;
 import com.ztu.cloud.cloud.common.dao.mysql.UserMapper;
+import com.ztu.cloud.cloud.common.dao.redis.LockDao;
 import com.ztu.cloud.cloud.common.dao.redis.TempFileDao;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.common.vo.user.Upload;
@@ -31,12 +32,14 @@ public class UploadServiceImpl implements UploadService {
 	UserMapper userDao;
 	StoreUtil storeUtil;
 	TempFileDao tempFileDao;
+	LockDao lockDao;
 
-	public UploadServiceImpl(FileMapper fileDao, UserMapper userDao, StoreUtil storeUtil, TempFileDao tempFileDao) {
+	public UploadServiceImpl(FileMapper fileDao, UserMapper userDao, StoreUtil storeUtil, TempFileDao tempFileDao, LockDao lockDao) {
 		this.fileDao = fileDao;
 		this.userDao = userDao;
 		this.storeUtil = storeUtil;
 		this.tempFileDao = tempFileDao;
+		this.lockDao = lockDao;
 	}
 
 	/**
@@ -53,16 +56,16 @@ public class UploadServiceImpl implements UploadService {
 	 */
 	@Override
 	public ResultResponseEntity upload(String token, String fileName, MultipartFile block, String blockMd5, String fileMd5, Integer index, Integer length) {
+		if (!TokenUtil.isUser(token)) {
+			return ResultConstant.TOKEN_INVALID;
+		}
+		int id = TokenUtil.getId(token);
 		if (block.getSize() > 5 * 1024 * 1024) {
 			return ResultConstant.REQUEST_PARAMETER_ERROR;
 		}
 		if (blockMd5 == null || "".equals(blockMd5) || fileMd5 == null || "".equals(fileMd5) || fileName == null || "".equals(fileName) || index == null || length == null) {
 			return ResultConstant.REQUEST_PARAMETER_ERROR;
 		}
-		if (!TokenUtil.isUser(token)) {
-			return ResultConstant.TOKEN_INVALID;
-		}
-		int id = TokenUtil.getId(token);
 		User user = this.userDao.getUserById(id);
 		if (user == null) {
 			return ResultConstant.USER_NOT_FOUND;
@@ -92,15 +95,31 @@ public class UploadServiceImpl implements UploadService {
 				}
 				return ResultConstant.SUCCESS;
 			} else if (index > -1) {
-				System.out.println(Md5Util.getMd5(block.getBytes()));
+				// System.out.println("blockMd5:" + Md5Util.getMd5(block.getBytes()));
 				if (!Md5Util.getMd5(block.getBytes()).equals(blockMd5)) {
 					return ResultConstant.FILE_DAMAGE;
+				}
+				//TODO 操作成功检测
+				//加锁
+				Boolean lock;
+				int retryNumber = 0;
+				do {
+					lock = this.lockDao.insert(fileMd5);
+					try {
+						Thread.sleep(10);
+					} catch (InterruptedException e) {
+						return ResultConstant.SERVER_ERROR;
+					}
+					retryNumber++;
+				} while (lock != true && retryNumber < 20);
+				if (lock != true) {
+					return ResultConstant.SERVER_ERROR;
 				}
 				TempFile tempFile = this.tempFileDao.get(fileMd5);
 				if (tempFile == null) {
 					String extension = getExtension(fileName, block);
 					tempFile = new TempFile(fileMd5, fileName, extension, length);
-					if (this.tempFileDao.insert(tempFile) != 1) {
+					if (!this.tempFileDao.insert(tempFile)) {
 						return ResultConstant.SERVER_ERROR;
 					}
 				}
@@ -113,6 +132,8 @@ public class UploadServiceImpl implements UploadService {
 					tempFile.getSaves().add(index);
 					this.tempFileDao.update(tempFile);
 				}
+				//解锁
+				this.lockDao.delete(fileMd5);
 				if (tempFile.getSaves().size() == length) {
 					String[] names = new String[length];
 					for (int i = 0; i < length; i++) {
