@@ -12,36 +12,36 @@ import org.springframework.stereotype.Component;
 @Mapper
 @Component
 public interface UserFileMapper {
-    /**
-     * 新增文件用户
-     *
-     * @param userFile 用户文件关系
-     * @return 更新结果
-     */
-    int insertUserFile(UserFile userFile);
+	/**
+	 * 新增文件用户
+	 *
+	 * @param userFile 用户文件关系
+	 * @return 更新结果
+	 */
+	int insertUserFile(UserFile userFile);
 
-    /**
-     * 文件用户
-     *
-     * @param id 关系ID
-     * @return 文件用户
-     */
-    UserFile getUserFile(long id);
+	/**
+	 * 文件用户
+	 *
+	 * @param id 关系ID
+	 * @return 文件用户
+	 */
+	UserFile getUserFile(long id);
 
-    /**
-     * 删除文件用户
-     *
-     * @param id 文件用户
-     * @return 更新结果
-     */
-    int deleteUserFile(long id);
+	/**
+	 * 删除文件用户
+	 *
+	 * @param id 文件用户
+	 * @return 更新结果
+	 */
+	int deleteUserFile(long id);
 
-    /**
-     * 修改关系对应路径
-     *
-     * @param id   关系ID
-     * @param path 路径
-     * @return 更新结果
-     */
-    int updateUserFilePath(long id, String path);
+	/**
+	 * 修改关系对应路径
+	 *
+	 * @param id   关系ID
+	 * @param path 路径
+	 * @return 更新结果
+	 */
+	int updateUserFilePath(long id, String path);
 }

@@ -12,45 +12,45 @@ import org.springframework.web.bind.annotation.*;
  **/
 @RestController
 public class ShareManageRepository {
-    ShareManageService shareService;
+	ShareManageService shareService;
 
-    public ShareManageRepository(ShareManageService shareService) {
-        this.shareService = shareService;
-    }
+	public ShareManageRepository(ShareManageService shareService) {
+		this.shareService = shareService;
+	}
 
-    /**
-     * 获取分享列表
-     *
-     * @param token      管理员Token
-     * @param pageNumber 页数
-     * @return 分享列表
-     */
-    @GetMapping("/admin/share/list/{pageNumber}")
-    public ResultResponseEntity getShareList(@RequestHeader(TokenUtil.TOKEN_HEADER) String token, @PathVariable int pageNumber) {
-        return this.shareService.getShareList(token, pageNumber);
-    }
+	/**
+	 * 获取分享列表
+	 *
+	 * @param token      管理员Token
+	 * @param pageNumber 页数
+	 * @return 分享列表
+	 */
+	@GetMapping("/admin/share/list/{pageNumber}")
+	public ResultResponseEntity getShareList(@RequestHeader(TokenUtil.TOKEN_HEADER) String token, @PathVariable int pageNumber) {
+		return this.shareService.getShareList(token, pageNumber);
+	}
 
-    /**
-     * 获取分享信息
-     *
-     * @param token   管理员Token
-     * @param shareId 分享ID
-     * @return 分享信息
-     */
-    @GetMapping("/admin/share/{shareId}")
-    public ResultResponseEntity getShare(@RequestHeader(TokenUtil.TOKEN_HEADER) String token, @PathVariable String shareId) {
-        return this.shareService.getShare(token, shareId);
-    }
+	/**
+	 * 获取分享信息
+	 *
+	 * @param token   管理员Token
+	 * @param shareId 分享ID
+	 * @return 分享信息
+	 */
+	@GetMapping("/admin/share/{shareId}")
+	public ResultResponseEntity getShare(@RequestHeader(TokenUtil.TOKEN_HEADER) String token, @PathVariable String shareId) {
+		return this.shareService.getShare(token, shareId);
+	}
 
-    /**
-     * 删除分享
-     *
-     * @param token   管理员Token
-     * @param shareId 分享ID
-     * @return 删除结果
-     */
-    @DeleteMapping("/admin/share/{shareId}")
-    public ResultResponseEntity deleteShare(@RequestHeader(TokenUtil.TOKEN_HEADER) String token, @PathVariable String shareId) {
-        return this.shareService.deleteShare(token, shareId);
-    }
+	/**
+	 * 删除分享
+	 *
+	 * @param token   管理员Token
+	 * @param shareId 分享ID
+	 * @return 删除结果
+	 */
+	@DeleteMapping("/admin/share/{shareId}")
+	public ResultResponseEntity deleteShare(@RequestHeader(TokenUtil.TOKEN_HEADER) String token, @PathVariable String shareId) {
+		return this.shareService.deleteShare(token, shareId);
+	}
 }

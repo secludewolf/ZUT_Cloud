@@ -9,18 +9,18 @@ import lombok.Data;
  **/
 @Data
 public class RegisterEmail {
-    private String name;
-    private String account;
-    private String email;
-    private String password;
+	private String name;
+	private String account;
+	private String email;
+	private String password;
 
-    public RegisterEmail() {
-    }
+	public RegisterEmail() {
+	}
 
-    public RegisterEmail(String name, String account, String email, String password) {
-        this.name = name;
-        this.account = account;
-        this.email = email;
-        this.password = password;
-    }
+	public RegisterEmail(String name, String account, String email, String password) {
+		this.name = name;
+		this.account = account;
+		this.email = email;
+		this.password = password;
+	}
 }

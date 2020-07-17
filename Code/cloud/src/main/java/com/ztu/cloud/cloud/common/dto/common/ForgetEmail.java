@@ -9,12 +9,12 @@ import lombok.Data;
  **/
 @Data
 public class ForgetEmail {
-    private String email;
+	private String email;
 
-    public ForgetEmail() {
-    }
+	public ForgetEmail() {
+	}
 
-    public ForgetEmail(String email) {
-        this.email = email;
-    }
+	public ForgetEmail(String email) {
+		this.email = email;
+	}
 }

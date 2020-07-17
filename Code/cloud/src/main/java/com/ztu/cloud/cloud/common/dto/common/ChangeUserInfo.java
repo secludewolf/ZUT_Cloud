@@ -9,18 +9,18 @@ import lombok.Data;
  **/
 @Data
 public class ChangeUserInfo {
-    private int id;
-    private String account;
-    private String email;
-    private String phone;
-    private String name;
+	private int id;
+	private String account;
+	private String email;
+	private String phone;
+	private String name;
 
-    public ChangeUserInfo() {
-    }
+	public ChangeUserInfo() {
+	}
 
-    public ChangeUserInfo(int id, String account, String name) {
-        this.id = id;
-        this.account = account;
-        this.name = name;
-    }
+	public ChangeUserInfo(int id, String account, String name) {
+		this.id = id;
+		this.account = account;
+		this.name = name;
+	}
 }

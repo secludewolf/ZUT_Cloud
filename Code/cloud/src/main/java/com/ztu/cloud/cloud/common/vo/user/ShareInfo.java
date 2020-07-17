@@ -10,9 +10,9 @@ import lombok.Data;
  **/
 @Data
 public class ShareInfo {
-    private Share share;
+	private Share share;
 
-    public ShareInfo(Share share) {
-        this.share = share;
-    }
+	public ShareInfo(Share share) {
+		this.share = share;
+	}
 }

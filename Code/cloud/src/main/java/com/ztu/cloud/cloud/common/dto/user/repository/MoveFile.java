@@ -9,18 +9,18 @@ import lombok.Data;
  **/
 @Data
 public class MoveFile {
-    private String repositoryId;
-    private String name;
-    private String oldPath;
-    private String newPath;
+	private String repositoryId;
+	private String name;
+	private String oldPath;
+	private String newPath;
 
-    public MoveFile() {
-    }
+	public MoveFile() {
+	}
 
-    public MoveFile(String repositoryId, String name, String oldPath, String newPath) {
-        this.repositoryId = repositoryId;
-        this.name = name;
-        this.oldPath = oldPath;
-        this.newPath = newPath;
-    }
+	public MoveFile(String repositoryId, String name, String oldPath, String newPath) {
+		this.repositoryId = repositoryId;
+		this.name = name;
+		this.oldPath = oldPath;
+		this.newPath = newPath;
+	}
 }

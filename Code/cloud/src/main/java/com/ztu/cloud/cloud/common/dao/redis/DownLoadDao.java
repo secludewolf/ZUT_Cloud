@@ -14,53 +14,53 @@ import java.util.concurrent.TimeUnit;
  **/
 @Component
 public class DownLoadDao {
-    RedisTemplate<String, String> redisTemplate;
+	RedisTemplate<String, String> redisTemplate;
 
-    public DownLoadDao(RedisTemplate<String, String> redisTemplate) {
-        this.redisTemplate = redisTemplate;
-    }
+	public DownLoadDao(RedisTemplate<String, String> redisTemplate) {
+		this.redisTemplate = redisTemplate;
+	}
 
-    public int insert(Download download) {
-        BoundHashOperations<String, Object, Object> operations = this.redisTemplate.boundHashOps(download.getId());
-        operations.expire(1, TimeUnit.DAYS);
-        operations.put("id", download.getId());
-        operations.put("fileId", download.getFileId());
-        operations.put("name", download.getName());
-        if (download.getShareId() != null) {
-            operations.put("shareId", download.getShareId());
-        }
-        return 1;
-    }
+	public int insert(Download download) {
+		BoundHashOperations<String, Object, Object> operations = this.redisTemplate.boundHashOps(download.getId());
+		operations.expire(1, TimeUnit.DAYS);
+		operations.put("id", download.getId());
+		operations.put("fileId", download.getFileId());
+		operations.put("name", download.getName());
+		if (download.getShareId() != null) {
+			operations.put("shareId", download.getShareId());
+		}
+		return 1;
+	}
 
-    public int delete(String id) {
-        this.redisTemplate.delete(id);
-        return 1;
-    }
+	public int delete(String id) {
+		this.redisTemplate.delete(id);
+		return 1;
+	}
 
-    public int update(Download download) {
-        BoundHashOperations<String, Object, Object> operations = this.redisTemplate.boundHashOps(download.getId());
-        operations.expire(1, TimeUnit.DAYS);
-        operations.put("id", download.getId());
-        operations.put("fileId", download.getFileId());
-        operations.put("name", download.getName());
-        if (download.getShareId() != null) {
-            operations.put("shareId", download.getShareId());
-        }
-        return 1;
-    }
+	public int update(Download download) {
+		BoundHashOperations<String, Object, Object> operations = this.redisTemplate.boundHashOps(download.getId());
+		operations.expire(1, TimeUnit.DAYS);
+		operations.put("id", download.getId());
+		operations.put("fileId", download.getFileId());
+		operations.put("name", download.getName());
+		if (download.getShareId() != null) {
+			operations.put("shareId", download.getShareId());
+		}
+		return 1;
+	}
 
-    public Download get(String id) {
-        BoundHashOperations<String, Object, Object> operations = this.redisTemplate.boundHashOps(id);
-        Download download = new Download();
-        if (operations.get("fileId") == null) {
-            return null;
-        }
-        download.setId((String) operations.get("id"));
-        download.setFileId((String) operations.get("fileId"));
-        download.setName((String) operations.get("name"));
-        if (operations.get("shareId") != null) {
-            download.setShareId((String) operations.get("shareId"));
-        }
-        return download;
-    }
+	public Download get(String id) {
+		BoundHashOperations<String, Object, Object> operations = this.redisTemplate.boundHashOps(id);
+		Download download = new Download();
+		if (operations.get("fileId") == null) {
+			return null;
+		}
+		download.setId((String) operations.get("id"));
+		download.setFileId((String) operations.get("fileId"));
+		download.setName((String) operations.get("name"));
+		if (operations.get("shareId") != null) {
+			download.setShareId((String) operations.get("shareId"));
+		}
+		return download;
+	}
 }

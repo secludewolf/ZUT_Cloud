@@ -11,14 +11,14 @@ import java.io.InputStream;
  **/
 @Data
 public class Download {
-    private String fileName;
-    private InputStream inputStream;
+	private String fileName;
+	private InputStream inputStream;
 
-    public Download() {
-    }
+	public Download() {
+	}
 
-    public Download(String fileName, InputStream inputStream) {
-        this.fileName = fileName;
-        this.inputStream = inputStream;
-    }
+	public Download(String fileName, InputStream inputStream) {
+		this.fileName = fileName;
+		this.inputStream = inputStream;
+	}
 }

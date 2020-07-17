@@ -9,18 +9,18 @@ import lombok.Data;
  **/
 @Data
 public class CreateUser {
-    private String account;
-    private String password;
-    private String email;
-    private String phone;
-    private String name;
+	private String account;
+	private String password;
+	private String email;
+	private String phone;
+	private String name;
 
-    public CreateUser() {
-    }
+	public CreateUser() {
+	}
 
-    public CreateUser(String account, String password, String name) {
-        this.account = account;
-        this.password = password;
-        this.name = name;
-    }
+	public CreateUser(String account, String password, String name) {
+		this.account = account;
+		this.password = password;
+		this.name = name;
+	}
 }

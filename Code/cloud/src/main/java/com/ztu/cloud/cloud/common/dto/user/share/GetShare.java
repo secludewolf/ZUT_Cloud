@@ -9,10 +9,10 @@ import lombok.Data;
  **/
 @Data
 public class GetShare {
-    private String shareId;
-    private String password;
+	private String shareId;
+	private String password;
 
-    public GetShare(String shareId) {
-        this.shareId = shareId;
-    }
+	public GetShare(String shareId) {
+		this.shareId = shareId;
+	}
 }

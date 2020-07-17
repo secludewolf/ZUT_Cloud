@@ -9,12 +9,12 @@ import lombok.Data;
  **/
 @Data
 public class SaveShare {
-    private String shareId;
-    private String path;
-    private String password;
+	private String shareId;
+	private String path;
+	private String password;
 
-    public SaveShare(String shareId, String path) {
-        this.shareId = shareId;
-        this.path = path;
-    }
+	public SaveShare(String shareId, String path) {
+		this.shareId = shareId;
+		this.path = path;
+	}
 }

@@ -12,12 +12,12 @@ import java.util.List;
  **/
 @Data
 public class FileList {
-    List<File> fileList;
+	List<File> fileList;
 
-    public FileList() {
-    }
+	public FileList() {
+	}
 
-    public FileList(List<File> fileList) {
-        this.fileList = fileList;
-    }
+	public FileList(List<File> fileList) {
+		this.fileList = fileList;
+	}
 }

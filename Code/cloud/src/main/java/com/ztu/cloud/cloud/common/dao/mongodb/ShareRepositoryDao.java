@@ -18,56 +18,56 @@ import java.util.Map;
  **/
 @Component
 public class ShareRepositoryDao {
-    MongoTemplate mongoTemplate;
+	MongoTemplate mongoTemplate;
 
-    public ShareRepositoryDao(MongoTemplate mongoTemplate) {
-        this.mongoTemplate = mongoTemplate;
-    }
+	public ShareRepositoryDao(MongoTemplate mongoTemplate) {
+		this.mongoTemplate = mongoTemplate;
+	}
 
-    public ShareRepository getById(String id) {
-        return this.mongoTemplate.findById(new ObjectId(id), ShareRepository.class);
-    }
+	public ShareRepository getById(String id) {
+		return this.mongoTemplate.findById(new ObjectId(id), ShareRepository.class);
+	}
 
-    public ShareRepository getByShareId(String shareId) {
-        Query query = new Query(Criteria.where("shareId").is(shareId));
-        return this.mongoTemplate.findOne(query, ShareRepository.class);
-    }
+	public ShareRepository getByShareId(String shareId) {
+		Query query = new Query(Criteria.where("shareId").is(shareId));
+		return this.mongoTemplate.findOne(query, ShareRepository.class);
+	}
 
-    public List<ShareRepository> getByUserId(int userId) {
-        Query query = new Query(Criteria.where("userId").is(userId));
-        return this.mongoTemplate.find(query, ShareRepository.class);
-    }
+	public List<ShareRepository> getByUserId(int userId) {
+		Query query = new Query(Criteria.where("userId").is(userId));
+		return this.mongoTemplate.find(query, ShareRepository.class);
+	}
 
-    public int updateSaveUserIdMapById(String id, Map<Integer, List<Long>> saveUserIdList) {
-        Query query = new Query(Criteria.where("id").is(new ObjectId(id)));
-        Update update = new Update();
-        update.set("saveUserIdList", saveUserIdList);
-        return (int) this.mongoTemplate.updateFirst(query, update, ShareRepository.class).getMatchedCount();
-    }
+	public int updateSaveUserIdMapById(String id, Map<Integer, List<Long>> saveUserIdList) {
+		Query query = new Query(Criteria.where("id").is(new ObjectId(id)));
+		Update update = new Update();
+		update.set("saveUserIdList", saveUserIdList);
+		return (int) this.mongoTemplate.updateFirst(query, update, ShareRepository.class).getMatchedCount();
+	}
 
-    public int updateDownloadUserIdMapById(String id, Map<Integer, List<Long>> downloadUserIdList) {
-        Query query = new Query(Criteria.where("id").is(new ObjectId(id)));
-        Update update = new Update();
-        update.set("downloadUserIdList", downloadUserIdList);
-        return (int) this.mongoTemplate.updateFirst(query, update, ShareRepository.class).getMatchedCount();
-    }
+	public int updateDownloadUserIdMapById(String id, Map<Integer, List<Long>> downloadUserIdList) {
+		Query query = new Query(Criteria.where("id").is(new ObjectId(id)));
+		Update update = new Update();
+		update.set("downloadUserIdList", downloadUserIdList);
+		return (int) this.mongoTemplate.updateFirst(query, update, ShareRepository.class).getMatchedCount();
+	}
 
-    public int insert(ShareRepository shareRepository) {
-        try {
-            this.mongoTemplate.insert(shareRepository);
-        } catch (Exception e) {
-            return 0;
-        }
-        return 1;
-    }
+	public int insert(ShareRepository shareRepository) {
+		try {
+			this.mongoTemplate.insert(shareRepository);
+		} catch (Exception e) {
+			return 0;
+		}
+		return 1;
+	}
 
-    public int deleteById(String id) {
-        Query query = new Query(Criteria.where("id").is(new ObjectId(id)));
-        return (int) this.mongoTemplate.remove(query, ShareRepository.class).getDeletedCount();
-    }
+	public int deleteById(String id) {
+		Query query = new Query(Criteria.where("id").is(new ObjectId(id)));
+		return (int) this.mongoTemplate.remove(query, ShareRepository.class).getDeletedCount();
+	}
 
-    public int deleteByShareId(String shareId) {
-        Query query = new Query(Criteria.where("shareId").is(shareId));
-        return (int) this.mongoTemplate.remove(query, ShareRepository.class).getDeletedCount();
-    }
+	public int deleteByShareId(String shareId) {
+		Query query = new Query(Criteria.where("shareId").is(shareId));
+		return (int) this.mongoTemplate.remove(query, ShareRepository.class).getDeletedCount();
+	}
 }

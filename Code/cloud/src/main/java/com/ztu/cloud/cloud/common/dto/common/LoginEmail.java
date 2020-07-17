@@ -9,14 +9,14 @@ import lombok.Data;
  **/
 @Data
 public class LoginEmail {
-    private String email;
-    private String password;
+	private String email;
+	private String password;
 
-    public LoginEmail() {
-    }
+	public LoginEmail() {
+	}
 
-    public LoginEmail(String email, String password) {
-        this.email = email;
-        this.password = password;
-    }
+	public LoginEmail(String email, String password) {
+		this.email = email;
+		this.password = password;
+	}
 }

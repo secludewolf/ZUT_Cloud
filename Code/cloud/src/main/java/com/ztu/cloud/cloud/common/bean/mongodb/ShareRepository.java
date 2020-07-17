@@ -16,43 +16,43 @@ import java.util.Map;
  **/
 @Data
 public class ShareRepository {
-    private ObjectId id;
-    private String shareId;
-    private int userId;
-    private List<Long> userFileIdList;
-    private List<String> fileIdList;
-    private Map<Integer, List<Long>> saveUserIdList;
-    private Map<Integer, List<Long>> downloadUserIdList;
-    private Folder folder;
+	private ObjectId id;
+	private String shareId;
+	private int userId;
+	private List<Long> userFileIdList;
+	private List<String> fileIdList;
+	private Map<Integer, List<Long>> saveUserIdList;
+	private Map<Integer, List<Long>> downloadUserIdList;
+	private Folder folder;
 
-    public ShareRepository() {
-    }
+	public ShareRepository() {
+	}
 
-    public ShareRepository(String shareId, int userId, List<Long> userFileIdList, List<String> fileIdList, Map<Integer, List<Long>> saveUserIdList, Map<Integer, List<Long>> downloadUserIdList, Folder folder) {
-        this.shareId = shareId;
-        this.userId = userId;
-        this.userFileIdList = userFileIdList;
-        this.fileIdList = fileIdList;
-        this.saveUserIdList = saveUserIdList;
-        this.downloadUserIdList = downloadUserIdList;
-        this.folder = folder;
-    }
+	public ShareRepository(String shareId, int userId, List<Long> userFileIdList, List<String> fileIdList, Map<Integer, List<Long>> saveUserIdList, Map<Integer, List<Long>> downloadUserIdList, Folder folder) {
+		this.shareId = shareId;
+		this.userId = userId;
+		this.userFileIdList = userFileIdList;
+		this.fileIdList = fileIdList;
+		this.saveUserIdList = saveUserIdList;
+		this.downloadUserIdList = downloadUserIdList;
+		this.folder = folder;
+	}
 
-    public ShareRepository(String shareId, int userId, Folder folder) {
-        this.shareId = shareId;
-        this.userId = userId;
-        this.folder = folder;
-        this.userFileIdList = new LinkedList<>();
-        this.fileIdList = new LinkedList<>();
-        this.saveUserIdList = new HashMap<>();
-        this.downloadUserIdList = new HashMap<>();
-    }
+	public ShareRepository(String shareId, int userId, Folder folder) {
+		this.shareId = shareId;
+		this.userId = userId;
+		this.folder = folder;
+		this.userFileIdList = new LinkedList<>();
+		this.fileIdList = new LinkedList<>();
+		this.saveUserIdList = new HashMap<>();
+		this.downloadUserIdList = new HashMap<>();
+	}
 
-    public String getId() {
-        return id.toString();
-    }
+	public String getId() {
+		return id.toString();
+	}
 
-    public void setId(String id) {
-        this.id = new ObjectId(id);
-    }
+	public void setId(String id) {
+		this.id = new ObjectId(id);
+	}
 }

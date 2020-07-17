@@ -11,11 +11,11 @@ import java.util.Map;
  **/
 @Data
 public class RecycleBin {
-    private Map<String, Folder> folders;
-    private Map<String, File> files;
+	private Map<String, Folder> folders;
+	private Map<String, File> files;
 
-    public RecycleBin() {
-        this.folders = null;
-        this.files = null;
-    }
+	public RecycleBin() {
+		this.folders = null;
+		this.files = null;
+	}
 }

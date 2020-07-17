@@ -9,13 +9,13 @@ import lombok.Data;
  **/
 @Data
 public class CreateInform {
-    private String header;
-    private String content;
-    private Long validTime;
+	private String header;
+	private String content;
+	private Long validTime;
 
-    public CreateInform(String header, String content, Long validTime) {
-        this.header = header;
-        this.content = content;
-        this.validTime = validTime;
-    }
+	public CreateInform(String header, String content, Long validTime) {
+		this.header = header;
+		this.content = content;
+		this.validTime = validTime;
+	}
 }

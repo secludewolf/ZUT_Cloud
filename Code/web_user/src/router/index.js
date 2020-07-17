@@ -68,15 +68,13 @@ const router = new Router({
     }
   ]
 });
-//TODO 改为使用Cookies验证登录状态
-
 // 登录状态检测
-// router.beforeEach(function (to, from, next) {
-//   if (localStorage.getItem("token") === null) {
-//     if (to.path !== '/login' && to.path !== '/register') {
-//       return next('login');
-//     }
-//   }
-//   next();
-// });
+router.beforeEach(function (to, from, next) {
+  if (localStorage.getItem("token") === null) {
+    if (to.path !== '/login' && to.path !== '/register') {
+      return next('login');
+    }
+  }
+  next();
+});
 export default router

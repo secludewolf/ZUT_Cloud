@@ -9,15 +9,15 @@ import lombok.Data;
  **/
 @Data
 public class UserShare {
-    private int id;
-    private int userId;
-    private String shareId;
+	private int id;
+	private int userId;
+	private String shareId;
 
-    public UserShare() {
-    }
+	public UserShare() {
+	}
 
-    public UserShare(int userId, String shareId) {
-        this.userId = userId;
-        this.shareId = shareId;
-    }
+	public UserShare(int userId, String shareId) {
+		this.userId = userId;
+		this.shareId = shareId;
+	}
 }

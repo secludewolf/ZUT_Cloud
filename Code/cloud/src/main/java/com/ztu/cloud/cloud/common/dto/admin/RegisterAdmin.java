@@ -9,22 +9,22 @@ import lombok.Data;
  **/
 @Data
 public class RegisterAdmin {
-    private String name;
-    private String account;
-    private String email;
-    private String phone;
-    private String password;
-    private String key;
+	private String name;
+	private String account;
+	private String email;
+	private String phone;
+	private String password;
+	private String key;
 
-    public RegisterAdmin() {
-    }
+	public RegisterAdmin() {
+	}
 
-    public RegisterAdmin(String name, String account, String email, String phone, String password, String key) {
-        this.name = name;
-        this.account = account;
-        this.email = email;
-        this.phone = phone;
-        this.password = password;
-        this.key = key;
-    }
+	public RegisterAdmin(String name, String account, String email, String phone, String password, String key) {
+		this.name = name;
+		this.account = account;
+		this.email = email;
+		this.phone = phone;
+		this.password = password;
+		this.key = key;
+	}
 }

@@ -10,9 +10,9 @@ import lombok.Data;
  **/
 @Data
 public class Inform {
-    CommonUserInform inform;
+	CommonUserInform inform;
 
-    public Inform(CommonUserInform inform) {
-        this.inform = inform;
-    }
+	public Inform(CommonUserInform inform) {
+		this.inform = inform;
+	}
 }

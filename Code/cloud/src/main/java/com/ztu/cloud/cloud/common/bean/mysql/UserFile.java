@@ -9,17 +9,17 @@ import lombok.Data;
  **/
 @Data
 public class UserFile {
-    private Long id;
-    private int userId;
-    private String fileId;
-    private String path;
+	private Long id;
+	private int userId;
+	private String fileId;
+	private String path;
 
-    public UserFile() {
-    }
+	public UserFile() {
+	}
 
-    public UserFile(int userId, String fileId, String path) {
-        this.userId = userId;
-        this.fileId = fileId;
-        this.path = path;
-    }
+	public UserFile(int userId, String fileId, String path) {
+		this.userId = userId;
+		this.fileId = fileId;
+		this.path = path;
+	}
 }

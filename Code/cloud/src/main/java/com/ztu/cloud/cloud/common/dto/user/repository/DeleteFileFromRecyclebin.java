@@ -9,17 +9,17 @@ import lombok.Data;
  **/
 @Data
 public class DeleteFileFromRecyclebin {
-    private String repositoryId;
-    private boolean isFile;
-    private String recycleId;
+	private String repositoryId;
+	private boolean isFile;
+	private String recycleId;
 
 
-    public DeleteFileFromRecyclebin() {
-    }
+	public DeleteFileFromRecyclebin() {
+	}
 
-    public DeleteFileFromRecyclebin(String repositoryId, boolean isFile, String recycleId) {
-        this.repositoryId = repositoryId;
-        this.isFile = isFile;
-        this.recycleId = recycleId;
-    }
+	public DeleteFileFromRecyclebin(String repositoryId, boolean isFile, String recycleId) {
+		this.repositoryId = repositoryId;
+		this.isFile = isFile;
+		this.recycleId = recycleId;
+	}
 }

@@ -13,58 +13,58 @@ import java.util.HashMap;
  **/
 @Data
 public class Folder implements Cloneable {
-    private String name;
-    private String path;
-    private int depth;
-    private long createTime;
-    private long changeTime;
-    private int status;
-    private HashMap<String, Folder> folders;
-    private HashMap<String, File> files;
+	private String name;
+	private String path;
+	private int depth;
+	private long createTime;
+	private long changeTime;
+	private int status;
+	private HashMap<String, Folder> folders;
+	private HashMap<String, File> files;
 
-    public Folder() {
-    }
+	public Folder() {
+	}
 
-    public Folder(String name, String path, int depth) {
-        this.name = name;
-        this.path = path;
-        this.depth = depth;
-        this.createTime = System.currentTimeMillis();
-        this.changeTime = this.createTime;
-        this.status = 1;
-        this.folders = null;
-        this.files = null;
-    }
+	public Folder(String name, String path, int depth) {
+		this.name = name;
+		this.path = path;
+		this.depth = depth;
+		this.createTime = System.currentTimeMillis();
+		this.changeTime = this.createTime;
+		this.status = 1;
+		this.folders = null;
+		this.files = null;
+	}
 
-    public Folder(Folder folder) {
-        this.name = folder.getName();
-        this.path = folder.path;
-        this.depth = folder.depth;
-        this.createTime = folder.createTime;
-        this.changeTime = folder.changeTime;
-        this.status = folder.status;
-        this.folders = new HashMap<>();
-        if (folder.getFolders() != null) {
-            Collection<Folder> values = folder.getFolders().values();
-            for (Folder temp : values) {
-                this.folders.put(temp.getName(), temp.clone());
-            }
-        }
-        this.files = new HashMap<>();
-        if (folder.getFiles() != null) {
-            Collection<File> values = folder.getFiles().values();
-            for (File temp : values) {
-                this.files.put(temp.getName(), temp.clone());
-            }
-        }
-    }
+	public Folder(Folder folder) {
+		this.name = folder.getName();
+		this.path = folder.path;
+		this.depth = folder.depth;
+		this.createTime = folder.createTime;
+		this.changeTime = folder.changeTime;
+		this.status = folder.status;
+		this.folders = new HashMap<>();
+		if (folder.getFolders() != null) {
+			Collection<Folder> values = folder.getFolders().values();
+			for (Folder temp : values) {
+				this.folders.put(temp.getName(), temp.clone());
+			}
+		}
+		this.files = new HashMap<>();
+		if (folder.getFiles() != null) {
+			Collection<File> values = folder.getFiles().values();
+			for (File temp : values) {
+				this.files.put(temp.getName(), temp.clone());
+			}
+		}
+	}
 
-    public Folder(JSONObject json) {
-        //TODO 根据JSON创建
-    }
+	public Folder(JSONObject json) {
+		//TODO 根据JSON创建
+	}
 
-    @Override
-    public Folder clone() {
-        return new Folder(this);
-    }
+	@Override
+	public Folder clone() {
+		return new Folder(this);
+	}
 }

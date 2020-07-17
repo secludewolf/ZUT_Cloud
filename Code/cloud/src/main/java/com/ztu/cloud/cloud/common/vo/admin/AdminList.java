@@ -12,15 +12,15 @@ import java.util.List;
  **/
 @Data
 public class AdminList {
-    List<Admin> adminList;
+	List<Admin> adminList;
 
-    public AdminList() {
-    }
+	public AdminList() {
+	}
 
-    public AdminList(List<com.ztu.cloud.cloud.common.bean.mysql.Admin> adminList) {
-        this.adminList = new LinkedList<Admin>();
-        for (com.ztu.cloud.cloud.common.bean.mysql.Admin admin : adminList) {
-            this.adminList.add(new Admin(admin));
-        }
-    }
+	public AdminList(List<com.ztu.cloud.cloud.common.bean.mysql.Admin> adminList) {
+		this.adminList = new LinkedList<Admin>();
+		for (com.ztu.cloud.cloud.common.bean.mysql.Admin admin : adminList) {
+			this.adminList.add(new Admin(admin));
+		}
+	}
 }

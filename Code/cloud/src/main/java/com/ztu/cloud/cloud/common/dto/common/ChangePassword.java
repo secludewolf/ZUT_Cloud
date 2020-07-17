@@ -9,16 +9,16 @@ import lombok.Data;
  **/
 @Data
 public class ChangePassword {
-    private int id;
-    private String oldPassword;
-    private String newPassword;
+	private int id;
+	private String oldPassword;
+	private String newPassword;
 
-    public ChangePassword() {
-    }
+	public ChangePassword() {
+	}
 
-    public ChangePassword(int id, String oldPassword, String newPassword) {
-        this.id = id;
-        this.oldPassword = oldPassword;
-        this.newPassword = newPassword;
-    }
+	public ChangePassword(int id, String oldPassword, String newPassword) {
+		this.id = id;
+		this.oldPassword = oldPassword;
+		this.newPassword = newPassword;
+	}
 }

@@ -104,8 +104,8 @@ public class UploadServiceImpl implements UploadService {
 						return ResultConstant.SERVER_ERROR;
 					}
 				}
-				System.out.println("length:"+length);
-				System.out.println("index:"+index);
+				System.out.println("length:" + length);
+				System.out.println("index:" + index);
 				System.out.println(tempFile.getSaves());
 				if (!tempFile.getSaves().contains(index)) {
 					System.out.println("插入:" + index);

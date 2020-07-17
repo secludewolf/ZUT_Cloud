@@ -9,14 +9,14 @@ import lombok.Data;
  **/
 @Data
 public class UserLogin {
-    private User user;
-    private UserRepository repository;
+	private User user;
+	private UserRepository repository;
 
-    public UserLogin() {
-    }
+	public UserLogin() {
+	}
 
-    public UserLogin(com.ztu.cloud.cloud.common.bean.mysql.User user, com.ztu.cloud.cloud.common.bean.mongodb.UserRepository repository) {
-        this.user = new User(user);
-        this.repository = new UserRepository(repository);
-    }
+	public UserLogin(com.ztu.cloud.cloud.common.bean.mysql.User user, com.ztu.cloud.cloud.common.bean.mongodb.UserRepository repository) {
+		this.user = new User(user);
+		this.repository = new UserRepository(repository);
+	}
 }

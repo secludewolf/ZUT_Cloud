@@ -10,48 +10,48 @@ import java.util.Map;
 
 @SpringBootTest
 class AdminInformDaoTest {
-    @Autowired
-    AdminInformDao userInformDao;
+	@Autowired
+	AdminInformDao userInformDao;
 
-    @Test
-    void getById() {
-        Map<String, Integer> status = new HashMap<>();
-        status.put("test", 1);
-        AdminInform userInform = new AdminInform(1, status);
-        this.userInformDao.insert(userInform);
-        System.out.println(this.userInformDao.getById(userInform.getId()));
-        this.userInformDao.deleteById(userInform.getId());
-    }
+	@Test
+	void getById() {
+		Map<String, Integer> status = new HashMap<>();
+		status.put("test", 1);
+		AdminInform userInform = new AdminInform(1, status);
+		this.userInformDao.insert(userInform);
+		System.out.println(this.userInformDao.getById(userInform.getId()));
+		this.userInformDao.deleteById(userInform.getId());
+	}
 
-    @Test
-    void insert() {
-        Map<String, Integer> status = new HashMap<>();
-        status.put("test", 1);
-        AdminInform userInform = new AdminInform(1, status);
-        this.userInformDao.insert(userInform);
-        System.out.println(this.userInformDao.getById(userInform.getId()));
-        this.userInformDao.deleteById(userInform.getId());
-    }
+	@Test
+	void insert() {
+		Map<String, Integer> status = new HashMap<>();
+		status.put("test", 1);
+		AdminInform userInform = new AdminInform(1, status);
+		this.userInformDao.insert(userInform);
+		System.out.println(this.userInformDao.getById(userInform.getId()));
+		this.userInformDao.deleteById(userInform.getId());
+	}
 
-    @Test
-    void updateStatusById() {
-        Map<String, Integer> status = new HashMap<>();
-        status.put("test", 1);
-        AdminInform userInform = new AdminInform(1, status);
-        this.userInformDao.insert(userInform);
-        System.out.println(this.userInformDao.getById(userInform.getId()));
-        status.put("test2",2);
-        this.userInformDao.updateStatusById(userInform.getId(),status);
-        System.out.println(this.userInformDao.getById(userInform.getId()));
-        this.userInformDao.deleteById(userInform.getId());
-    }
+	@Test
+	void updateStatusById() {
+		Map<String, Integer> status = new HashMap<>();
+		status.put("test", 1);
+		AdminInform userInform = new AdminInform(1, status);
+		this.userInformDao.insert(userInform);
+		System.out.println(this.userInformDao.getById(userInform.getId()));
+		status.put("test2", 2);
+		this.userInformDao.updateStatusById(userInform.getId(), status);
+		System.out.println(this.userInformDao.getById(userInform.getId()));
+		this.userInformDao.deleteById(userInform.getId());
+	}
 
-    @Test
-    void deleteById() {
-        Map<String, Integer> status = new HashMap<>();
-        status.put("test", 1);
-        AdminInform userInform = new AdminInform(1, status);
-        this.userInformDao.insert(userInform);
-        System.out.println(this.userInformDao.deleteById(userInform.getId()));
-    }
+	@Test
+	void deleteById() {
+		Map<String, Integer> status = new HashMap<>();
+		status.put("test", 1);
+		AdminInform userInform = new AdminInform(1, status);
+		this.userInformDao.insert(userInform);
+		System.out.println(this.userInformDao.deleteById(userInform.getId()));
+	}
 }

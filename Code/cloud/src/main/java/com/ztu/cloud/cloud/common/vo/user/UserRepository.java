@@ -12,24 +12,24 @@ import lombok.Data;
 @Data
 public class UserRepository {
 
-    private String id;
-    private int userId;
-    private int status;
-    private long repoSize;
-    private long useSize;
-    private Folder folder;
-    private RecycleBin recycleBin;
+	private String id;
+	private int userId;
+	private int status;
+	private long repoSize;
+	private long useSize;
+	private Folder folder;
+	private RecycleBin recycleBin;
 
-    public UserRepository() {
-    }
+	public UserRepository() {
+	}
 
-    public UserRepository(com.ztu.cloud.cloud.common.bean.mongodb.UserRepository userRepository) {
-        this.id = userRepository.getId();
-        this.userId = userRepository.getUserId();
-        this.status = userRepository.getStatus();
-        this.repoSize = userRepository.getRepoSize();
-        this.useSize = userRepository.getUseSize();
-        this.folder = userRepository.getFolder();
-        this.recycleBin = userRepository.getRecycleBin();
-    }
+	public UserRepository(com.ztu.cloud.cloud.common.bean.mongodb.UserRepository userRepository) {
+		this.id = userRepository.getId();
+		this.userId = userRepository.getUserId();
+		this.status = userRepository.getStatus();
+		this.repoSize = userRepository.getRepoSize();
+		this.useSize = userRepository.getUseSize();
+		this.folder = userRepository.getFolder();
+		this.recycleBin = userRepository.getRecycleBin();
+	}
 }

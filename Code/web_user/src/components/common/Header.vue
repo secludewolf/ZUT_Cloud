@@ -64,12 +64,7 @@
       return {
         drawer: false,
         informs: [
-          {
-            id: "inform1",
-            header: "测试标题",
-            content: "测试内容",
-            status: 0
-          }
+          {}
         ],
       }
     },

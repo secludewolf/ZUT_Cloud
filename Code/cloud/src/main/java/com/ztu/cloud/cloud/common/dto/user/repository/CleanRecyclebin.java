@@ -9,12 +9,12 @@ import lombok.Data;
  **/
 @Data
 public class CleanRecyclebin {
-    private String repositoryId;
+	private String repositoryId;
 
-    public CleanRecyclebin() {
-    }
+	public CleanRecyclebin() {
+	}
 
-    public CleanRecyclebin(String repositoryId) {
-        this.repositoryId = repositoryId;
-    }
+	public CleanRecyclebin(String repositoryId) {
+		this.repositoryId = repositoryId;
+	}
 }

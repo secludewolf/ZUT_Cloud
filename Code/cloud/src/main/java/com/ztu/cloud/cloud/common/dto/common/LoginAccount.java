@@ -9,14 +9,14 @@ import lombok.Data;
  **/
 @Data
 public class LoginAccount {
-    private String account;
-    private String password;
+	private String account;
+	private String password;
 
-    public LoginAccount() {
-    }
+	public LoginAccount() {
+	}
 
-    public LoginAccount(String account, String password) {
-        this.account = account;
-        this.password = password;
-    }
+	public LoginAccount(String account, String password) {
+		this.account = account;
+		this.password = password;
+	}
 }

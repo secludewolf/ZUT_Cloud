@@ -13,41 +13,41 @@ import org.bson.types.ObjectId;
 @Data
 public class UserRepository {
 
-    private ObjectId id;
-    private int userId;
-    private int status;
-    private long repoSize;
-    private long useSize;
-    private Folder folder;
-    private RecycleBin recycleBin;
+	private ObjectId id;
+	private int userId;
+	private int status;
+	private long repoSize;
+	private long useSize;
+	private Folder folder;
+	private RecycleBin recycleBin;
 
-    public UserRepository() {
-    }
+	public UserRepository() {
+	}
 
-    public UserRepository(int userId, int status, long repoSize, long useSize, Folder folder, RecycleBin recycleBin) {
-        this.userId = userId;
-        this.status = status;
-        this.repoSize = repoSize;
-        this.useSize = useSize;
-        this.folder = folder;
-        this.recycleBin = recycleBin;
-    }
+	public UserRepository(int userId, int status, long repoSize, long useSize, Folder folder, RecycleBin recycleBin) {
+		this.userId = userId;
+		this.status = status;
+		this.repoSize = repoSize;
+		this.useSize = useSize;
+		this.folder = folder;
+		this.recycleBin = recycleBin;
+	}
 
-    public UserRepository(int userId) {
-        this.userId = userId;
-        this.status = 1;
-        this.repoSize = 1099511627776L;
-        this.useSize = 0;
-        this.folder = new Folder("root", "", 0);
-        this.recycleBin = new RecycleBin();
-    }
+	public UserRepository(int userId) {
+		this.userId = userId;
+		this.status = 1;
+		this.repoSize = 1099511627776L;
+		this.useSize = 0;
+		this.folder = new Folder("root", "", 0);
+		this.recycleBin = new RecycleBin();
+	}
 
 
-    public String getId() {
-        return id.toString();
-    }
+	public String getId() {
+		return id.toString();
+	}
 
-    public void setId(String id) {
-        this.id = new ObjectId(id);
-    }
+	public void setId(String id) {
+		this.id = new ObjectId(id);
+	}
 }

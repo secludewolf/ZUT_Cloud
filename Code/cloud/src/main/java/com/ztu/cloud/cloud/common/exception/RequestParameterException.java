@@ -9,6 +9,7 @@ public class RequestParameterException extends Exception {
 	public RequestParameterException(String message) {
 		super(message);
 	}
+
 	public RequestParameterException() {
 		super("请求参数错误");
 	}

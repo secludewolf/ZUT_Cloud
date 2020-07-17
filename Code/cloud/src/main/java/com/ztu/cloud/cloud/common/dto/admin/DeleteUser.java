@@ -9,8 +9,8 @@ import lombok.Data;
  **/
 @Data
 public class DeleteUser {
-    private int id;
-    private String account;
-    private String email;
-    private String phone;
+	private int id;
+	private String account;
+	private String email;
+	private String phone;
 }

@@ -9,16 +9,16 @@ import lombok.Data;
  **/
 @Data
 public class CreateFolder {
-    private String repositoryId;
-    private String name;
-    private String path;
+	private String repositoryId;
+	private String name;
+	private String path;
 
-    public CreateFolder() {
-    }
+	public CreateFolder() {
+	}
 
-    public CreateFolder(String repositoryId, String name, String path) {
-        this.repositoryId = repositoryId;
-        this.name = name;
-        this.path = path;
-    }
+	public CreateFolder(String repositoryId, String name, String path) {
+		this.repositoryId = repositoryId;
+		this.name = name;
+		this.path = path;
+	}
 }

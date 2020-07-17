@@ -2,15 +2,9 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <parent>
-        <groupId>org.springframework.boot</groupId>
-        <artifactId>spring-boot-starter-parent</artifactId>
-        <version>2.2.2.RELEASE</version>
-        <relativePath/> <!-- lookup parent from repository -->
-    </parent>
     <groupId>com.ztu.cloud</groupId>
     <artifactId>cloud</artifactId>
-    <version>demo</version>
+    <version>demo_1.0</version>
     <name>cloud</name>
     <description>云盘项目</description>
 
@@ -21,12 +15,14 @@
         <hadoop.version>2.7.7</hadoop.version>
     </properties>
 
+    <parent>
+        <groupId>org.springframework.boot</groupId>
+        <artifactId>spring-boot-starter-parent</artifactId>
+        <version>2.2.2.RELEASE</version>
+        <relativePath/> <!-- lookup parent from repository -->
+    </parent>
+
     <dependencies>
-        <dependency>
-            <groupId>javax.validation</groupId>
-            <artifactId>validation-api</artifactId>
-            <version>2.0.1.Final</version>
-        </dependency>
         <!--        Content-type 自动识别文件类型-->
         <dependency>
             <groupId>org.apache.tika</groupId>
@@ -86,11 +82,6 @@
                     <artifactId>junit-vintage-engine</artifactId>
                 </exclusion>
             </exclusions>
-        </dependency>
-        <dependency>
-            <groupId>org.springframework.restdocs</groupId>
-            <artifactId>spring-restdocs-mockmvc</artifactId>
-            <scope>test</scope>
         </dependency>
         <!--        引入Druid数据源替换自带的Tomcat数据源-->
         <dependency>
@@ -176,11 +167,6 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-mail</artifactId>
         </dependency>
-        <!--        <dependency>-->
-        <!--            <groupId>javax</groupId>-->
-        <!--            <artifactId>javaee-web-api</artifactId>-->
-        <!--            <version>6.0</version>-->
-        <!--        </dependency>-->
         <!--        邮箱组件需要的部分JAR包-->
         <dependency>
             <groupId>javax.servlet</groupId>

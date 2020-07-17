@@ -9,16 +9,16 @@ import lombok.Data;
  **/
 @Data
 public class CreateShare {
-    private String repositoryId;
-    private String name;
-    private String path;
-    private String password;
-    private long validTime;
+	private String repositoryId;
+	private String name;
+	private String path;
+	private String password;
+	private long validTime;
 
-    public CreateShare(String repositoryId, String name, String path, long validTime) {
-        this.repositoryId = repositoryId;
-        this.name = name;
-        this.path = path;
-        this.validTime = validTime;
-    }
+	public CreateShare(String repositoryId, String name, String path, long validTime) {
+		this.repositoryId = repositoryId;
+		this.name = name;
+		this.path = path;
+		this.validTime = validTime;
+	}
 }

@@ -12,9 +12,9 @@ import java.util.List;
  **/
 @Data
 public class ShareList {
-    private List<Share> shareList;
+	private List<Share> shareList;
 
-    public ShareList(List<Share> shareList) {
-        this.shareList = shareList;
-    }
+	public ShareList(List<Share> shareList) {
+		this.shareList = shareList;
+	}
 }

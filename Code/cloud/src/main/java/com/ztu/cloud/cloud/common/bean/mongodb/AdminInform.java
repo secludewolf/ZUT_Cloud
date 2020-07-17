@@ -11,14 +11,14 @@ import java.util.Map;
  **/
 @Data
 public class AdminInform {
-    private int id;
-    private Map<String,Integer> status;
+	private int id;
+	private Map<String, Integer> status;
 
-    public AdminInform() {
-    }
+	public AdminInform() {
+	}
 
-    public AdminInform(int id, Map<String, Integer> status) {
-        this.id = id;
-        this.status = status;
-    }
+	public AdminInform(int id, Map<String, Integer> status) {
+		this.id = id;
+		this.status = status;
+	}
 }

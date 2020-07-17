@@ -9,17 +9,17 @@ import lombok.Data;
  **/
 @Data
 public class RestoreFile {
-    private String repositoryId;
-    private boolean isFile;
-    private String recycleId;
+	private String repositoryId;
+	private boolean isFile;
+	private String recycleId;
 
 
-    public RestoreFile() {
-    }
+	public RestoreFile() {
+	}
 
-    public RestoreFile(String repositoryId, boolean isFile, String recycleId) {
-        this.repositoryId = repositoryId;
-        this.isFile = isFile;
-        this.recycleId = recycleId;
-    }
+	public RestoreFile(String repositoryId, boolean isFile, String recycleId) {
+		this.repositoryId = repositoryId;
+		this.isFile = isFile;
+		this.recycleId = recycleId;
+	}
 }

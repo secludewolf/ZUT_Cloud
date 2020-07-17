@@ -9,19 +9,19 @@ import lombok.Data;
  **/
 @Data
 public class RenameFile {
-    private String repositoryId;
-    private String oldName;
-    private String newName;
-    private String path;
+	private String repositoryId;
+	private String oldName;
+	private String newName;
+	private String path;
 
-    public RenameFile() {
-    }
+	public RenameFile() {
+	}
 
-    public RenameFile(String repositoryId, String oldName, String newName, String path) {
-        this.repositoryId = repositoryId;
-        this.oldName = oldName;
-        this.newName = newName;
-        this.path = path;
-    }
+	public RenameFile(String repositoryId, String oldName, String newName, String path) {
+		this.repositoryId = repositoryId;
+		this.oldName = oldName;
+		this.newName = newName;
+		this.path = path;
+	}
 }
 
