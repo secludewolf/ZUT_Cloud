@@ -99,7 +99,6 @@ public class RepositoryServiceImpl implements RepositoryService {
 		if (!repository.getId().equals(createFile.getRepositoryId())) {
 			return ResultConstant.NO_ACCESS;
 		}
-		//TODO 将敏感词提取为配置文件
 		if (!ForbiddenUtil.isFileNameValid(createFile.getName())) {
 			return ResultConstant.NAME_INVALID;
 		}
