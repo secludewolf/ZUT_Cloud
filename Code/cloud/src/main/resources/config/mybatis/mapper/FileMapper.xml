@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ztu.cloud.cloud.common.dao.mysql.FileMapper">
+    <insert id="insertFile"
+            parameterType="com.ztu.cloud.cloud.common.bean.mysql.File">
+        insert into file (id,name,path,size,createTime,changeTime,type,status,quoteNumber)
+        values (#{id},#{name},#{path},#{size},#{createTime},#{changeTime},#{type},#{status},#{quoteNumber})
+    </insert>
+    <delete id="deleteFileById"
+            parameterType="String">
+        delete from file where ID=#{id}
+    </delete>
+    <update id="updateFile"
+            parameterType="com.ztu.cloud.cloud.common.bean.mysql.File">
+        update file
+        set
+        <if test="name != null">
+            name = #{name}
+        </if>
+        <if test="path != null">
+            ,path = #{path}
+        </if>
+        <if test="size != -1">
+            ,size = #{size}
+        </if>
+        <if test="createTime != -1">
+            ,createTime = #{createTime}
+        </if>
+        <if test="changeTime != -1">
+            ,changeTime = #{changeTime}
+        </if>
+        <if test="type != null">
+            ,type = #{type}
+        </if>
+        <if test="status != -999">
+            ,status = #{status}
+        </if>
+        <if test="quoteNumber != -1">
+            ,quoteNumber = #{quoteNumber}
+        </if>
+        <choose>
+            <when test="id != null">
+                where id = #{id}
+            </when>
+            <otherwise>
+                where id = -1
+            </otherwise>
+        </choose>
+    </update>
+    <select id="getFileById"
+            parameterType="String"
+            resultType="com.ztu.cloud.cloud.common.bean.mysql.File">
+        select * from file where ID=#{id}
+    </select>
+    <!--    根据分页文件列表-->
+    <select id="getFile"
+            parameterType="int"
+            resultType="com.ztu.cloud.cloud.common.bean.mysql.File">
+        select * from file limit #{start},#{end}
+    </select>
+    <update id="fileQuoteNumberAdd">
+        update file
+        set
+        quoteNumber = quoteNumber + #{num}
+        <choose>
+            <when test="id != null">
+                where id = #{id}
+            </when>
+            <otherwise>
+                where id = -1
+            </otherwise>
+        </choose>
+    </update>
+    <update id="fileQuoteNumberSub">
+        update file
+        set
+        quoteNumber = quoteNumber - #{num}
+        <choose>
+            <when test="id != null">
+                where id = #{id}
+            </when>
+            <otherwise>
+                where id = -1
+            </otherwise>
+        </choose>
+    </update>
+</mapper>
