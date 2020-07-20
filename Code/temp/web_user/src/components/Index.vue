@@ -1,17 +1,18 @@
 <template>
   <a-layout id="Index" style="height: 100%;background:white;">
-    <a-layout-header style="position:relative;margin:0 0 6px 0;padding:0;background:white;box-shadow:0 0 6px 0 #B39696;">
+    <a-layout-header
+      style="position:relative;margin:0 0 6px 0;padding:0;background:white;box-shadow:0 0 6px 0 #B39696;">
       <Header></Header>
     </a-layout-header>
     <a-layout-content style="position:relative;margin:0;padding:0;">
-      <BaseExplorer></BaseExplorer>
+      <Explorer></Explorer>
     </a-layout-content>
   </a-layout>
 </template>
 
 <script>
   import Header from "./common/Header";
-  import BaseExplorer from "./common/BaseExplorer";
+  import Explorer from "./index/Explorer";
 
   export default {
     name: "Index",
@@ -21,7 +22,7 @@
     },
     components: {
       Header,
-      BaseExplorer,
+      Explorer
     }
   };
 </script>

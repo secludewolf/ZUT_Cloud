@@ -98,3 +98,32 @@ export function getImg(type) {
     }
   }
 }
+
+/**
+ * 获取全部文件
+ * @param folder 主文件夹
+ * @param files 文件列表
+ */
+export function getAllFile(folder, files) {
+  for (let key in folder.files) {
+    if (!folder.files.hasOwnProperty(key)) continue;
+    files[Math.random() + ""] = folder.files[key];
+  }
+  for (let key in folder.folders) {
+    if (!folder.folders.hasOwnProperty(key)) continue;
+    getAllFile(folder.folders[key], files)
+  }
+}
+
+/**
+ * 获取全部文件夹
+ * @param folder 主文件夹
+ * @param folders 文件夹列表
+ */
+export function getAllFolder(folder, folders) {
+  for (let key in folder.folders) {
+    if (!folder.folders.hasOwnProperty(key)) continue;
+    folders[Math.random() + ""] = folder.folders[key];
+    getAllFolder(folder.folders[key], folders)
+  }
+}
