@@ -51,11 +51,11 @@
           <div class="path" style="height: 20px">
             <ul style="display: inline;padding: 0;color: #09AAFF;font-size: 12px;">
               <li style="display: inline" v-if="path.length !== 1">
-                <a v-on:click="" style="cursor:pointer"><a>返回上一级</a></a>
+                <a v-on:click="lastParent" style="cursor:pointer"><a>返回上一级</a></a>
                 <a-icon style="margin: 0 3px;color: #1890ff;" type="line" :rotate="90"></a-icon>
               </li>
               <li style="display: inline" v-for="(value,index) in path" :key="'path-'+index">
-                <a v-on:click="" style="cursor:pointer "><a>{{value}}</a></a>
+                <a v-on:click="selectParent(index)" style="cursor:pointer "><a>{{value}}</a></a>
                 <a-icon type="right" style="margin: 0 3px;color: #1890ff;" v-if="index < path.length - 1"></a-icon>
               </li>
               <li style="display: inline;float:right;color: #666;padding-right: 10px">
@@ -68,11 +68,12 @@
           <a-layout-content v-if="view === 'appstore'" style="height: 100%;margin: 0;padding: 0">
             <a-card size="small" style="width: 120px;float:left;margin: 5px;" hoverable
                     v-for="(value,index) in folders"
-                    :key="index">
+                    :key="index"
+                    v-on:dblclick="openFile('folder',value.name)">
               <img
                 slot="cover"
                 alt="folder"
-                src="../../assets/explorer/folder.svg"
+                :src="getImg('folder')"
                 style="width: 70px;height:70px;margin: 5px auto;"
               />
               <a-card-meta :description="value.name"
@@ -80,11 +81,12 @@
             </a-card>
             <a-card size="small" style="width: 120px;float:left;margin: 5px;" hoverable
                     v-for="(value,index) in files"
-                    :key="index">
+                    :key="index"
+                    v-on:dblclick="openFile(value.type,value.name)">
               <img
                 slot="cover"
                 alt="file"
-                src="../../assets/explorer/file_blank.svg"
+                :src="getImg(value.depth == null ? value.type : 'folder')"
                 style="width: 70px;height:70px;margin: 5px auto;"
               />
               <a-card-meta :description="value.name"
@@ -97,7 +99,8 @@
               :columns="columns"
               :data-source="tableSource"
               :pagination="false"
-              :rowKey="record => record.name">
+              :rowKey="record => record.name"
+              :customRow="rowEvent">
               <div slot="name" slot-scope="text, record">
                 <img
                   slot="cover"
@@ -107,8 +110,9 @@
                 />
                 <span>{{ text }}</span>
               </div>
-              <span slot="size" slot-scope="text, record">{{getFormatSize(1)}}</span>
-              <span slot="type" slot-scope="text, record">{{getTypeName(record)}}</span>
+              <span slot="size" slot-scope="text, record">{{getFormatSize(record.size)}}</span>
+              <span slot="type"
+                    slot-scope="text, record">{{getTypeName(record.depth == null ? record.type : 'folder')}}</span>
               <span slot="changeTime" slot-scope="text">{{getFormatDate(text)}}</span>
               <span slot="action" slot-scope="text, record">
                 <a><a-icon type="download" style="padding-right:5px;"/>下载</a>
@@ -172,6 +176,7 @@
     },
     mounted() {
       this.loadData();
+      this.sortFile();
     },
     props: {
       isRepository: {
@@ -318,7 +323,7 @@
       return {
         sort: "sort-ascending",
         view: "appstore",
-        path: ["全部文件", "第一层", "第二层"],
+        path: ["全部文件"],
         root: {},
         files: {},
         folders: {},
@@ -327,12 +332,10 @@
     },
     computed: {
       total: function () {
-        //TODO 计算文件个数
-        // return Object.keys(this.files).length + Object.keys(this.folders).length;
-        return 0;
+        return Object.keys(this.files).length + Object.keys(this.folders).length;
       },
       tableSource: function () {
-        return Object.values(this.files).concat(Object.values(this.folders));
+        return Object.values(this.folders).concat(Object.values(this.files));
       }
     },
     methods: {
@@ -365,11 +368,70 @@
       searchFile(value) {
         console.log("搜索文件:" + value);
       },
+      rowEvent(record, index) {
+        return {
+          on: {
+            dblclick: () => {
+              this.openFile(record.type == null ? "folder" : record.type, record.name);
+            }
+          }
+        }
+      },
+      openFile(type, name) {
+        if (type === "folder") {
+          this.files = this.folders[name].files == null ? {} : this.folders[name].files;
+          this.folders = this.folders[name].folders == null ? {} : this.folders[name].folders;
+          this.path.push(name);
+          this.sortFile();
+        } else {
+          this.$message.warn("暂不支持文件预览!");
+        }
+      },
+      lastParent: function () {
+        this.selectParent(this.path.length - 2);
+      },
+      selectParent(index) {
+        if (!this.isRepository && !this.isShare) return;
+        let folders = this.root.folders;
+        let files = this.root.files;
+        let path = ["全部文件"];
+        for (let i = 1; i <= index; i++) {
+          files = folders[this.path[i]].files;
+          folders = folders[this.path[i]].folders;
+          path.push(this.path[i]);
+        }
+        this.folders = folders == null ? {} : folders;
+        this.files = files == null ? {} : files;
+        this.path = path;
+        this.sortFile();
+      },
       changeSort() {
         if (this.sort === "sort-ascending") {
           this.sort = "sort-descending";
+          this.sortFile("descending");
+
         } else {
           this.sort = "sort-ascending"
+          this.sortFile("ascending");
+        }
+      },
+      sortFile() {
+        let folders = Object.values(this.folders);
+        let files = Object.values(this.files);
+        if (this.sort === "sort-ascending") {
+          folders.sort((a, b) => a.name > b.name ? 1 : -1);
+          files.sort((a, b) => a.name > b.name ? 1 : -1);
+        } else {
+          folders.sort((a, b) => a.name < b.name ? 1 : -1);
+          files.sort((a, b) => a.name < b.name ? 1 : -1);
+        }
+        this.folders = {};
+        this.files = {};
+        for (const index in folders) {
+          this.folders[folders[index].name] = folders[index];
+        }
+        for (const index in files) {
+          this.files[files[index].name] = files[index];
         }
       },
       changeView() {
