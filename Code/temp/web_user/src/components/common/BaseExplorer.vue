@@ -3,17 +3,30 @@
     <a-layout-header
       style="position:relative;background: white;margin:0;padding:0 10px;height: 48px;line-height: 48px;">
       <div style="float: left">
-        <a-button type="primary">
+        <a-button type="primary" v-if="isRepository">
           <a-icon type="cloud-upload"/>
           <span>上传</span>
-          <input type="file" v-on:change="" multiple="true"
+          <input type="file" v-on:change="uploadFile" multiple="true"
                  style="position: absolute;top: 0;bottom: 0;left: 0;right: 0;height: 40px;width: 88px;opacity: 0;"/>
         </a-button>
-        <a-button type="primary">
+        <a-button type="primary" v-if="isRepository" v-on:click="createFolderVisible = true">
           <a-icon type="folder-add"/>
           新建文件夹
         </a-button>
-        <a-button type="primary">
+        <a-modal v-model="createFolderVisible"
+                 title="创建文件夹"
+                 okText="确认"
+                 cancelText="取消"
+                 :confirm-loading="createFolderLoading"
+                 @cancel="()=>{this.createFolderVisible = false;this.createFolderName = '';}"
+                 @ok="createFolder">
+          <a-form :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
+            <a-form-item label="文件夹名称">
+              <a-input placeholder="请输入文件名" v-model="createFolderName"/>
+            </a-form-item>
+          </a-form>
+        </a-modal>
+        <a-button type="primary" v-if="isShare">
           <a-icon type="save"/>
           保存分享
         </a-button>
@@ -22,6 +35,7 @@
           ok-text="确定"
           cancel-text="取消"
           @confirm="cleanRecycleBin"
+          v-if="isRecycleBin"
         >
           <a-icon slot="icon" type="question-circle-o" style="color: red"/>
           <a-button type="danger">
@@ -223,6 +237,10 @@
         view: "appstore",
         path: ["全部文件"],
         columns: columns,
+        sorted: false,
+        createFolderVisible: false,
+        createFolderLoading: false,
+        createFolderName: "",
       }
     },
     computed: {
@@ -234,14 +252,31 @@
       }
     },
     watch: {
+      //触发排序操作排序
       isRepository(newValue, oldValue) {
-        this.sortFile();
+        this.sorted = false;
       },
       isShare(newValue, oldValue) {
-        this.sortFile();
+        this.sorted = false;
       },
       isSearch(newValue, oldValue) {
-        this.sortFile();
+        this.sorted = false;
+        if (newValue) {
+          this.path = ["全部文件"];
+        }
+      },
+      isRecycleBin(newValue, oldValue) {
+        this.sorted = false;
+      },
+      files(newValue, oldValue) {
+        if (!this.sorted) {
+          this.sortFile();
+        }
+      },
+      folders(newValue, oldValue) {
+        if (!this.sorted) {
+          this.sortFile();
+        }
       },
     },
     methods: {
@@ -263,9 +298,11 @@
       searchFile(value) {
         if (value == null || value === "") {
           this.$emit("changeIsRepository", true);
-          this.loadData();
+          this.$emit("changeFiles", this.root.files);
+          this.$emit("changeFolders", this.root.folders);
           return;
         }
+        this.sorted = false;
         this.$emit("changeIsSearch", true);
         this.path = ["全部文件"];
         let allFiles = {};
@@ -302,6 +339,7 @@
             this.$message.warn("暂不支持在搜索结果中打开文件夹");
             return;
           }
+          this.sorted = false;
           this.$emit("changeFiles", this.folders[name].files == null ? {} : this.folders[name].files);
           this.$emit("changeFolders", this.folders[name].folders == null ? {} : this.folders[name].folders);
           this.path.push(name);
@@ -313,6 +351,7 @@
         this.selectParent(this.path.length - 2);
       },
       selectParent(index) {
+        this.sorted = false;
         if (!this.isRepository && !this.isShare) {
           this.$emit("changeIsRepository", true);
           this.$emit("changeFiles", this.root.files);
@@ -342,6 +381,7 @@
         }
       },
       sortFile() {
+        this.sorted = true;
         let folders = Object.values(this.folders);
         let files = Object.values(this.files);
         if (this.sort === "sort-ascending") {
@@ -368,7 +408,30 @@
         } else {
           this.view = "appstore"
         }
-      }
+      },
+      getCurrentPath() {
+        let folder = this.root;
+        for (let i = 1; i <= this.path.length - 1; i++) {
+          folder = folder.folders[this.path[i]];
+        }
+        return folder.path + "/" + folder.name;
+      },
+      uploadFile(event) {
+        const path = this.getCurrentPath();
+        console.log("在" + path + "上传文件:" + event.target.value);
+      },
+      createFolder() {
+        if (this.createFolderName == null || this.createFolderName === "") {
+          this.$message.warn("文件夹名称为空");
+          return;
+        }
+        this.createFolderLoading = true;
+        const path = this.getCurrentPath();
+        console.log("在" + path + "创建文件夹" + this.createFolderName);
+        this.createFolderName = "";
+        this.createFolderVisible = false;
+        this.createFolderLoading = false;
+      },
     }
   }
 </script>

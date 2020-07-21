@@ -54,7 +54,7 @@
 
 <script>
   import BaseExplorer from "../common/BaseExplorer";
-  import {getAllFile, getAllFolder} from "../../util/Utils";
+  import {getAllFile} from "../../util/Utils";
   import {FileType} from "../../util/Const";
 
   export default {
@@ -64,7 +64,6 @@
       this.files = this.repository.folder.files === null ? {} : this.repository.folder.files;
       this.folders = this.repository.folder.folders === null ? {} : this.repository.folder.folders;
       this.root = this.repository.folder;
-      this.sortFile();
     },
     components: {
       BaseExplorer
@@ -226,34 +225,28 @@
         this.key = [e.key];
         let types;
         if (e.key === "all") {
-          console.log("全部文件");
           this.changeIsRepository(true);
           this.files = this.repository.folder.files === null ? {} : this.repository.folder.files;
           this.folders = this.repository.folder.folders === null ? {} : this.repository.folder.folders;
           return;
         } else if (e.key === "document") {
+          //TODO 搜说结果之间切换没有办法初始化排序
           this.changeIsSearch(true);
-          console.log("文档");
           types = FileType.document;
         } else if (e.key === "photo") {
           this.changeIsSearch(true);
-          console.log("图片");
           types = FileType.photo;
         } else if (e.key === "video") {
           this.changeIsSearch(true);
-          console.log("视频");
           types = FileType.video;
         } else if (e.key === "bt") {
           this.changeIsSearch(true);
-          console.log("种子");
           types = FileType.torrent;
         } else if (e.key === "audio") {
           this.changeIsSearch(true);
-          console.log("音频");
           types = FileType.audio;
         } else if (e.key === "recycleBin") {
           this.changeIsRecycleBin(true);
-          console.log("回收站");
           this.files = this.repository.recycleBin.files === null ? {} : this.repository.recycleBin.files;
           this.folders = this.repository.recycleBin.folders === null ? {} : this.repository.recycleBin.folders;
           return;
@@ -268,22 +261,6 @@
         }
         this.files = files;
         this.folders = {};
-      },
-      sortFile() {
-        let folders = Object.values(this.folders);
-        let files = Object.values(this.files);
-        folders.sort((a, b) => a.name > b.name ? 1 : -1);
-        files.sort((a, b) => a.name > b.name ? 1 : -1);
-        let foldersMap = {};
-        let filesMap = {};
-        for (const index in folders) {
-          foldersMap[folders[index].name] = folders[index];
-        }
-        for (const index in files) {
-          filesMap[files[index].name] = files[index];
-        }
-        this.files = filesMap;
-        this.folders = foldersMap;
       }
     }
   }
