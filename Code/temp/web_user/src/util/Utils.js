@@ -127,3 +127,7 @@ export function getAllFolder(folder, folders) {
     getAllFolder(folder.folders[key], folders)
   }
 }
+
+export function findKey(data, value, compare = (a, b) => a === b) {
+  return Object.keys(data).find(k => compare(data[k], value))
+}

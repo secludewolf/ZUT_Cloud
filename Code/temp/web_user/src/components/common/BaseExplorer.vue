@@ -78,71 +78,165 @@
             </ul>
           </div>
         </a-layout-header>
-        <a-layout-content style="position:absolute;top: 20px;bottom:0;left:0;right:0;padding:5px;">
-          <a-layout-content v-if="view === 'appstore'" style="height: 100%;margin: 0;padding: 0">
-            <a-card size="small" style="width: 120px;float:left;margin: 5px;" hoverable
-                    v-for="(value,index) in folders"
-                    :key="index"
-                    v-on:dblclick="openFile('folder',value.name)">
-              <img
-                slot="cover"
-                alt="folder"
-                :src="getImg('folder')"
-                style="width: 70px;height:70px;margin: 5px auto;"
-              />
-              <a-card-meta :description="value.name"
-                           style="text-align: center;font-size: 12px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;"/>
-            </a-card>
-            <a-card size="small" style="width: 120px;float:left;margin: 5px;" hoverable
-                    v-for="(value,index) in files"
-                    :key="index"
-                    v-on:dblclick="openFile(value.type,value.name)">
-              <img
-                slot="cover"
-                alt="file"
-                :src="getImg(value.depth == null ? value.type : 'folder')"
-                style="width: 70px;height:70px;margin: 5px auto;"
-              />
-              <a-card-meta :description="value.name"
-                           style="text-align: center;font-size: 12px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;"/>
-            </a-card>
-          </a-layout-content>
-          <a-layout-content id="explorer-table" v-if="view !== 'appstore'" style="height: 100%;margin: 0;padding: 0">
-            <a-table
-              class="table"
-              :columns="columns"
-              :data-source="tableSource"
-              :pagination="false"
-              :rowKey="record => record.name"
-              :customRow="rowEvent">
-              <div slot="name" slot-scope="text, record">
+        <a-dropdown :visible="menuVisible"
+                    :trigger="['contextmenu']"
+                    v-on:contextmenu.prevent.native="showMenu"
+                    v-on:click.native="closeMenu">
+          <a-menu slot="overlay" style="text-align: center">
+            <a-menu-item key="1"
+                         v-if="isRepository && (isFile || isFolder)"
+                         @click="copy">
+              复制
+            </a-menu-item>
+            <a-menu-item key="2"
+                         v-if="isRepository && (isFile || isFolder)"
+                         @click="move">
+              移动
+            </a-menu-item>
+            <a-menu-item key="3"
+                         v-if="isRepository"
+                         :disabled="!(lastOption === 'copy' || lastOption === 'move')"
+                         @click="paste">
+              粘贴
+            </a-menu-item>
+            <a-menu-item key="4"
+                         v-if="isRepository && (isFile || isFolder)"
+                         @click="()=>{this.menuVisible = false;this.renameVisible = true}">
+              重命名
+            </a-menu-item>
+            <a-modal v-model="renameVisible"
+                     title="重命名"
+                     okText="确认"
+                     cancelText="取消"
+                     :confirm-loading="renameLoading"
+                     @cancel="()=>{this.renameVisible = false;this.renameName = '';}"
+                     @ok="rename">
+              <a-form :label-col="{ span: 3 }" :wrapper-col="{ span: 21 }">
+                <a-form-item label="新名称">
+                  <a-input placeholder="请输入新名称" v-model="renameName"/>
+                </a-form-item>
+              </a-form>
+            </a-modal>
+            <a-menu-item key="5"
+                         v-if="isRepository && (isFile || isFolder)"
+                         @click="()=>{this.menuVisible = false;this.shareVisible = true}">
+              分享
+            </a-menu-item>
+            <a-modal v-model="shareVisible"
+                     title="创建分享"
+                     okText="确认"
+                     cancelText="取消"
+                     :confirm-loading="shareLoading"
+                     @cancel="()=>{this.shareVisible = false;this.shareName = '';this.sharePassword = '';this.shareTime = null;}"
+                     @ok="share">
+              <a-form :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
+                <a-form-item label="分享名称">
+                  <a-input placeholder="请输入分享名称" v-model="shareName"/>
+                </a-form-item>
+                <a-form-item label="分享密码">
+                  <a-input placeholder="请输入分享密码" v-model="sharePassword"/>
+                </a-form-item>
+                <a-form-item label="截止日期">
+                  <a-date-picker v-model="shareTime" :locale="locale"/>
+                </a-form-item>
+              </a-form>
+            </a-modal>
+            <a-menu-item key="6"
+                         v-if="(isRepository || isShare || isSearch) && (isFile || isFolder)"
+                         @click="download">
+              下载
+            </a-menu-item>
+            <a-menu-item key="7"
+                         v-if="isRecycleBin && (isFile || isFolder)"
+                         @click="restore">
+              恢复
+            </a-menu-item>
+            <a-menu-item key="8"
+                         v-if="isRepository && (isFile || isFolder)"
+                         @click="delete_">
+              删除
+            </a-menu-item>
+          </a-menu>
+          <a-layout-content style="position:absolute;top: 20px;bottom:0;left:0;right:0;padding:5px;">
+            <a-layout-content v-if="view === 'appstore'" style="height: 100%;margin: 0;padding: 0">
+              <a-card id="folder"
+                      size="small" style="width: 120px;float:left;margin: 5px;" hoverable
+                      v-for="(value,index) in folders"
+                      :key="index"
+                      :index="index"
+                      v-on:dblclick="openFile('folder',value.name)">
+                <img
+                  slot="cover"
+                  alt="folder"
+                  :src="getImg('folder')"
+                  style="width: 70px;height:70px;margin: 5px auto;"
+                />
+                <a-card-meta :description="value.name"
+                             style="text-align: center;font-size: 12px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;"/>
+              </a-card>
+              <a-card id="file"
+                      size="small" style="width: 120px;float:left;margin: 5px;" hoverable
+                      v-for="(value,index) in files"
+                      :key="index"
+                      :index="index"
+                      v-on:dblclick="openFile(value.type,value.name)">
                 <img
                   slot="cover"
                   alt="file"
-                  :src="getImg(record.depth == null ? record.type : 'folder')"
-                  style="width: 30px;height:30px;margin-right:10px;"
+                  :src="getImg(value.depth == null ? value.type : 'folder')"
+                  style="width: 70px;height:70px;margin: 5px auto;"
                 />
-                <span>{{ text }}</span>
-              </div>
-              <span slot="size" slot-scope="text, record">{{getFormatSize(record.size)}}</span>
-              <span slot="type"
-                    slot-scope="text, record">{{getTypeName(record.depth == null ? record.type : 'folder')}}</span>
-              <span slot="changeTime" slot-scope="text">{{getFormatDate(text)}}</span>
-              <span slot="action" slot-scope="text, record">
-                <a><a-icon type="download" style="padding-right:5px;"/>下载</a>
+                <a-card-meta :description="value.name"
+                             style="text-align: center;font-size: 12px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;"/>
+              </a-card>
+            </a-layout-content>
+            <a-layout-content id="explorer-table" v-if="view !== 'appstore'" style="height: 100%;margin: 0;padding: 0">
+              <a-table
+                class="table"
+                :columns="columns"
+                :data-source="tableSource"
+                :pagination="false"
+                :rowKey="record => record.name"
+                :customRow="rowEvent">
+                <div slot="name" slot-scope="text, record">
+                  <img
+                    slot="cover"
+                    alt="file"
+                    :src="getImg(record.depth == null ? record.type : 'folder')"
+                    style="width: 30px;height:30px;margin-right:10px;"
+                  />
+                  <span>{{ text }}</span>
+                </div>
+                <span slot="size" slot-scope="text, record">{{getFormatSize(record.size)}}</span>
+                <span slot="type"
+                      slot-scope="text, record">{{getTypeName(record.depth == null ? record.type : 'folder')}}</span>
+                <span slot="changeTime" slot-scope="text">{{getFormatDate(text)}}</span>
+                <span slot="action" slot-scope="text, record, index">
+                <a @click="download(index)">
+                  <a-icon type="download" style="padding-right:5px;"/>下载
+                </a>
                 <a-divider type="vertical"/>
-                <a><a-icon type="delete" style="padding-right:5px;"/>删除</a>
+                <a @click="restore(index)"
+                   v-if="isRecycleBin">
+                  <a-icon type="rest" style="padding-right:5px;"/>恢复
+                </a>
+                <a-divider type="vertical" v-if="isRecycleBin"/>
+                <a @click="delete_(index)">
+                  <a-icon type="delete" style="padding-right:5px;"/>删除
+                </a>
               </span>
-            </a-table>
+              </a-table>
+            </a-layout-content>
           </a-layout-content>
-        </a-layout-content>
+        </a-dropdown>
       </a-layout>
     </a-layout-content>
   </a-layout>
 </template>
 
 <script>
-  import {getAllFile, getAllFolder, getFormatDate, getFormatSize, getImg, getTypeName} from "../../util/Utils";
+  import {findKey, getAllFile, getAllFolder, getFormatDate, getFormatSize, getImg, getTypeName} from "../../util/Utils";
+  import locale from 'ant-design-vue/es/date-picker/locale/zh_CN';
 
   const columns = [
     {
@@ -233,6 +327,7 @@
     },
     data() {
       return {
+        locale: locale,
         sort: "sort-ascending",
         view: "appstore",
         path: ["全部文件"],
@@ -241,6 +336,23 @@
         createFolderVisible: false,
         createFolderLoading: false,
         createFolderName: "",
+        menuVisible: false,
+        isFile: false,
+        isFolder: false,
+        isSelect: false,
+        target: {},
+        targetIndex: "",
+        optionTarget: {},
+        optionTargetIndex: {},
+        lastOption: "",
+        renameVisible: false,
+        renameLoading: false,
+        renameName: "",
+        shareVisible: false,
+        shareLoading: false,
+        shareName: "",
+        sharePassword: "",
+        shareTime: null,
       }
     },
     computed: {
@@ -253,6 +365,7 @@
     },
     watch: {
       //触发排序操作排序
+      //TODO 创建并使用使用统一的初始化方法
       isRepository(newValue, oldValue) {
         this.sorted = false;
       },
@@ -329,8 +442,17 @@
           on: {
             dblclick: () => {
               this.openFile(record.type == null ? "folder" : record.type, record.name);
+            },
+            mouseenter: (event) => {
+              if (record.depth != null) {
+                event.path[0].setAttribute("id", "folder");
+                event.path[0].setAttribute("index", findKey(this.folders, this.tableSource[index]));
+              } else {
+                event.path[0].setAttribute("id", "file");
+                event.path[0].setAttribute("index", findKey(this.files, this.tableSource[index]));
+              }
             }
-          }
+          },
         }
       },
       openFile(type, name) {
@@ -394,10 +516,10 @@
         let foldersMap = {};
         let filesMap = {};
         for (const index in folders) {
-          foldersMap[folders[index].name] = folders[index];
+          foldersMap[findKey(this.folders, folders[index])] = folders[index];
         }
         for (const index in files) {
-          filesMap[files[index].name] = files[index];
+          filesMap[findKey(this.files, files[index])] = files[index];
         }
         this.$emit("changeFiles", filesMap);
         this.$emit("changeFolders", foldersMap);
@@ -432,6 +554,95 @@
         this.createFolderVisible = false;
         this.createFolderLoading = false;
       },
+      showMenu(event) {
+        this.closeMenu();
+        let flag = null;
+        for (const index in event.path) {
+          if (event.path[index].id === "file") {
+            flag = "file";
+            this.isFile = true;
+            this.targetIndex = event.path[index].getAttribute("index");
+            this.target = this.files[this.targetIndex];
+            break;
+          } else if (event.path[index].id === "folder") {
+            flag = "folder";
+            this.isFolder = true;
+            this.targetIndex = event.path[index].getAttribute("index");
+            this.target = this.folders[this.targetIndex];
+            break;
+          }
+        }
+        this.menuVisible = true;
+      },
+      closeMenu() {
+        this.menuVisible = false;
+        this.isFile = false;
+        this.isFolder = false;
+      },
+      copy() {
+        this.lastOption = "copy";
+        this.menuVisible = false;
+        this.optionTarget = this.target;
+        this.optionTargetIndex = this.targetIndex;
+        this.$message.info("选中" + this.target.name + "进行复制操作");
+      },
+      move() {
+        this.lastOption = "move";
+        this.menuVisible = false;
+        this.optionTarget = this.target;
+        this.optionTargetIndex = this.targetIndex;
+        this.$message.info("选中" + this.target.name + "进行移动操作");
+      },
+      paste() {
+        const path = this.getCurrentPath();
+        this.menuVisible = false;
+        this.$message.info("将位置" + this.optionTarget.path + "的" + this.optionTarget.name + (this.lastOption === "copy" ? "复制" : "移动") + "到" + path)
+      },
+      rename() {
+        this.renameLoading = true;
+        this.$message.info("将" + this.target.name + "重命名为" + this.renameName);
+        this.renameName = "";
+        this.renameLoading = false;
+        this.renameVisible = false;
+      },
+      share() {
+        this.shareLoading = true;
+        this.$message.info("分享位于" + this.target.path + "的" + this.target.name
+          + "分享名称" + this.shareName
+          + "分享密码" + this.sharePassword
+          + "截止日期" + this.shareTime);
+        this.shareName = "";
+        this.sharePassword = "";
+        this.shareTime = null;
+        this.shareLoading = false;
+        this.shareVisible = false;
+      },
+      download(index) {
+        if (typeof index != "object") this.tableOptionInit(index);
+        this.$message.info("下载位于" + this.target.path + "的" + this.target.name);
+        this.menuVisible = false;
+      },
+      restore(index) {
+        if (typeof index != "object") this.tableOptionInit(index);
+        this.$message.info("恢复" + this.target.name + "到" + this.target.path);
+        this.menuVisible = false;
+      },
+      delete_(index) {
+        console.log(index)
+        if (typeof index != "object") this.tableOptionInit(index);
+        this.$message.info("删除" + this.target.name);
+        this.menuVisible = false;
+      },
+      tableOptionInit(index) {
+        this.targetIndex = findKey(this.folders, this.tableSource[index]);
+        if (this.tableSource[index].depth != null) {
+          this.isFolder = true;
+          this.target = this.folders[this.targetIndex];
+        } else {
+          this.isFile = true;
+          this.target = this.files[this.targetIndex];
+        }
+      }
     }
   }
 </script>
