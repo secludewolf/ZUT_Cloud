@@ -26,10 +26,26 @@
             </a-form-item>
           </a-form>
         </a-modal>
-        <a-button type="primary" v-if="isShare">
+        <a-button type="primary" v-if="isShare" @click="saveShareShow">
           <a-icon type="save"/>
           保存分享
         </a-button>
+        <a-modal
+          title="保存分享"
+          :visible="saveShareVisible"
+          @ok="saveShare"
+          @cancel="saveShareVisible = false"
+          v-if="!saveShareLoading"
+        >
+          <a-directory-tree :tree-data="treeData"
+                            :defaultExpandedKeys="['/root']"
+                            :defaultSelectedKeys="['/root']"
+                            @select="selectFolder"
+                            @expand="expandFolder"/>
+          <div style="text-align: center" v-if="saveShareLoading">
+            <a-spin size="large"/>
+          </div>
+        </a-modal>
         <a-popconfirm
           title="确定要清空回收站吗?"
           ok-text="确定"
@@ -337,6 +353,10 @@
         createFolderLoading: false,
         createFolderName: "",
         menuVisible: false,
+        saveShareVisible: false,
+        saveShareLoading: false,
+        treeData: {},
+        selectFolderKey: "/root",
         isFile: false,
         isFolder: false,
         isSelect: false,
@@ -642,6 +662,40 @@
           this.isFile = true;
           this.target = this.files[this.targetIndex];
         }
+      },
+      saveShareShow() {
+        this.saveShareLoading = true;
+        //TODO 需要加载数据
+        const repository = this.repository;
+        const root = repository.folder;
+        this.createTreeData(null, root);
+        this.saveShareLoading = false;
+        this.saveShareVisible = true;
+      },
+      createTreeData(parent, folder) {
+        let current = {
+          title: folder.name,
+          key: folder.path + "/" + folder.name,
+          children: []
+        };
+        if (parent === null) {
+          this.treeData = [current,];
+        } else {
+          parent.children.push(current);
+        }
+        if (folder.folders === null) return;
+        for (let key in folder.folders) {
+          this.createTreeData(current, folder.folders[key]);
+        }
+      },
+      saveShare() {
+        this.$message.info("将ID为" + this.$route.query.id + "的分享保存到" + this.selectFolderKey);
+      },
+      selectFolder(key) {
+        this.selectFolderKey = key[0];
+        console.log(this.selectFolderKey);
+      },
+      expandFolder(event) {
       }
     }
   }
