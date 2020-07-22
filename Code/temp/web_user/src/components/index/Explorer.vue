@@ -1,6 +1,6 @@
 <template>
-  <a-layout style="height: 100%;background:white;">
-    <a-layout-sider id="index-explorer-aside" class="ant-layout-sider-light" style="height: 100%;">
+  <a-layout style="position:relative;height: 100%;background:white;">
+    <a-layout-sider id="index-explorer-aside" class="ant-layout-sider-light" style="position:relative;height: 100%;">
       <a-menu mode="vertical"
               :selectedKeys="key"
               @click="handleClick">
@@ -32,7 +32,52 @@
           <a-icon type="delete"/>
           回收站
         </a-menu-item>
+        <a-menu-item key="upload">
+          <a-icon type="upload" @click="visible = true"/>
+          上传列表
+        </a-menu-item>
       </a-menu>
+      <a-drawer
+        title="上传列表"
+        placement="right"
+        :closable="false"
+        :visible="visible"
+        @close="visible = false"
+        width="450px"
+      >
+        <div>
+          <div>
+            <span>文件1</span>
+            <span style="float:right;">5GB/10GB</span>
+          </div>
+          <a-progress :percent="50" status="active"/>
+        </div>
+        <div>
+          <div>
+            <span>文件2</span>
+            <span style="float:right;">7GB/10GB</span>
+          </div>
+          <a-progress :percent="70" status="active"/>
+        </div>
+        <div>
+          <div>
+            <span>文件3</span>
+            <span style="float:right;">9GB/10GB</span>
+          </div>
+          <a-progress :percent="90" status="exception"/>
+        </div>
+        <div>
+          <div>
+            <span>文件4</span>
+            <span style="float:right;">10GB/10GB</span>
+          </div>
+          <a-progress :percent="100"/>
+        </div>
+      </a-drawer>
+      <div style="position: absolute;text-align:right;bottom: 30px;left:10px;width: 180px;height: 20px;">
+        <a-progress :percent="50" :show-info="false" size="small"/>
+        <span>500GB/1000GB</span>
+      </div>
     </a-layout-sider>
     <a-layout-content style="height: 100%;">
       <BaseExplorer :isRepository="isRepository"
@@ -70,6 +115,7 @@
     }, data() {
       return {
         key: ["all"],
+        visible: false,
         isRepository: true,
         isSearch: false,
         isRecycleBin: false,
@@ -222,7 +268,6 @@
         this.folders = folders;
       },
       handleClick(e) {
-        this.key = [e.key];
         let types;
         if (e.key === "all") {
           this.changeIsRepository(true);
@@ -250,7 +295,11 @@
           this.files = this.repository.recycleBin.files === null ? {} : this.repository.recycleBin.files;
           this.folders = this.repository.recycleBin.folders === null ? {} : this.repository.recycleBin.folders;
           return;
+        } else if (e.key === "upload") {
+          this.visible = true;
+          return;
         }
+        this.key = [e.key];
         let allFiles = {};
         getAllFile(this.root, allFiles);
         let files = {};
@@ -262,7 +311,7 @@
         this.files = files;
         this.folders = {};
       }
-    }
+    },
   }
 </script>
 

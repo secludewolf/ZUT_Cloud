@@ -12,10 +12,10 @@
 
 <script>
   import Header from "./common/Header";
-  import Explorer from "./index/Explorer";
+  import Explorer from "./share/Explorer";
 
   export default {
-    name: "Index",
+    name: "Share",
     beforeCreate() {
       //TODO 加载数据
       localStorage.setItem("repository", JSON.stringify({}));
@@ -25,8 +25,9 @@
       Header,
       Explorer
     }
-  };
+  }
 </script>
 
 <style scoped>
+
 </style>
