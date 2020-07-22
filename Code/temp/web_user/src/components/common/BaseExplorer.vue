@@ -6,7 +6,7 @@
         <a-button type="primary" v-if="isRepository">
           <a-icon type="cloud-upload"/>
           <span>上传</span>
-          <input type="file" v-on:change="uploadFile" multiple="true"
+          <input type="file" v-on:change="uploadFile" multiple="multiple"
                  style="position: absolute;top: 0;bottom: 0;left: 0;right: 0;height: 40px;width: 88px;opacity: 0;"/>
         </a-button>
         <a-button type="primary" v-if="isRepository" v-on:click="createFolderVisible = true">
@@ -628,17 +628,17 @@
         this.menuVisible = false;
       },
       delete_(index) {
-        console.log(index)
         if (typeof index != "object") this.tableOptionInit(index);
         this.$message.info("删除" + this.target.name);
         this.menuVisible = false;
       },
       tableOptionInit(index) {
-        this.targetIndex = findKey(this.folders, this.tableSource[index]);
         if (this.tableSource[index].depth != null) {
+          this.targetIndex = findKey(this.folders, this.tableSource[index]);
           this.isFolder = true;
           this.target = this.folders[this.targetIndex];
         } else {
+          this.targetIndex = findKey(this.files, this.tableSource[index]);
           this.isFile = true;
           this.target = this.files[this.targetIndex];
         }
