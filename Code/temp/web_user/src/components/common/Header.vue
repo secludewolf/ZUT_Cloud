@@ -1,7 +1,8 @@
 <template>
   <div class="Header">
     <div style="float:left;height: 64px;width: 200px;">
-      <router-link to="/index"><img style="display: flex;height: 100%;margin: auto;" src="../../assets/logo.png" alt="logo"/>
+      <router-link to="/index"><img style="display: flex;height: 100%;margin: auto;" src="../../assets/logo.png"
+                                    alt="logo"/>
       </router-link>
     </div>
     <a-menu v-model="current" mode="horizontal" style="float:left;height:64px;line-height:64px;font-size: 16px;">
@@ -18,14 +19,14 @@
       <a-dropdown style="padding: 3px;">
         <a class="ant-dropdown-link" @click="e => e.preventDefault()">
           <a-icon type="user" style="margin: 0 5px;"/>
-          用户名称
+          {{userName}}
         </a>
         <a-menu slot="overlay">
           <a-menu-item>
-            <router-link to="#">{{userName}}</router-link>
+            <router-link to="/user">用户信息</router-link>
           </a-menu-item>
           <a-menu-item>
-            <router-link to="#">退出</router-link>
+            <router-link to="/login" @click.native="exit">退出</router-link>
           </a-menu-item>
         </a-menu>
       </a-dropdown>
@@ -63,10 +64,10 @@
 <script>
   export default {
     name: "Header",
-    props:{
-      userName:{
-        type:String,
-        default:"用户昵称"
+    props: {
+      userName: {
+        type: String,
+        default: "用户昵称"
       },
     },
     data() {
@@ -86,6 +87,9 @@
       },
       onClose() {
         this.visible = false;
+      },
+      exit() {
+        this.$message.success("退出成功");
       },
     }
   };
