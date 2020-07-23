@@ -3,7 +3,8 @@ import Router from 'vue-router'
 import Login from '../views/Login'
 import Index from '../views/Index'
 import Share from '../views/Share'
-import Register from "../views/Register";
+import Register from "../views/Register"
+import NotFoundTarget from "../views/404"
 
 Vue.use(Router)
 
@@ -40,7 +41,14 @@ export default new Router({
       component: Share,
       meta: {
         title: "分享",
-      }
-    }
+      },
+    }, {
+      path: '*',
+      name: 'error',
+      component: NotFoundTarget,
+      meta: {
+        title: "404",
+      },
+    },
   ]
 })
