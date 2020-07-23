@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import Login from '../views/Login'
 import Index from '../views/Index'
 import Share from '../views/Share'
 
@@ -11,6 +12,13 @@ export default new Router({
     {
       path: '/',
       redirect: '/index'
+    }, {
+      path: '/login',
+      name: 'login',
+      component: Login,
+      meta: {
+        title: "登陆"
+      },
     }, {
       path: '/index',
       name: 'index',

@@ -11,11 +11,11 @@
 </template>
 
 <script>
-  import Header from "./common/Header";
-  import Explorer from "./share/Explorer";
+  import Header from "../components/common/Header";
+  import Explorer from "../components/index/Explorer";
 
   export default {
-    name: "Share",
+    name: "Index",
     beforeCreate() {
       //TODO 加载数据
       localStorage.setItem("repository", JSON.stringify({}));
@@ -25,9 +25,8 @@
       Header,
       Explorer
     }
-  }
+  };
 </script>
 
 <style scoped>
-
 </style>
