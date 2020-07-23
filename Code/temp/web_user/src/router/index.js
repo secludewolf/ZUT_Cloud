@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Login from '../views/Login'
 import Index from '../views/Index'
 import Share from '../views/Share'
+import Register from "../views/Register";
 
 Vue.use(Router)
 
@@ -18,6 +19,13 @@ export default new Router({
       component: Login,
       meta: {
         title: "登陆"
+      },
+    }, {
+      path: '/register',
+      name: 'register',
+      component: Register,
+      meta: {
+        title: "注册"
       },
     }, {
       path: '/index',
