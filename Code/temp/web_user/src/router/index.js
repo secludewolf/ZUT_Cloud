@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import Index from '../components/Index'
-import Share from '../components/Share'
+import Index from '../views/Index'
+import Share from '../views/Share'
 
 Vue.use(Router)
 
@@ -14,11 +14,17 @@ export default new Router({
     }, {
       path: '/index',
       name: 'index',
-      component: Index
+      component: Index,
+      meta: {
+        title: "主页",
+      },
     }, {
       path: '/share',
       name: 'share',
-      component: Share
+      component: Share,
+      meta: {
+        title: "分享",
+      }
     }
   ]
 })
