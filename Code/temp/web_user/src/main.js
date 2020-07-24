@@ -15,17 +15,8 @@ router.beforeEach((to, from, next) => {
   next()
 })
 
-Vue.use(Antd);
-
-new Vue({
-  el: '#app',
-  router,
-  store,
-  components: {App},
-  template: '<App/>'
-})
-
 //测试数据
+
 store.state.user = {
   "id": 1,
   "repoId": "5f06b20d17e32b20664aa4c6",
@@ -152,3 +143,15 @@ store.state.repository = {
   },
   "recycleBin": {"folders": null, "files": null}
 };
+
+
+Vue.use(Antd);
+
+new Vue({
+  el: '#app',
+  router,
+  store,
+  components: {App},
+  template: '<App/>'
+})
+

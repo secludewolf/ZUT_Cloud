@@ -23,7 +23,7 @@
       <a-dropdown style="padding: 3px;">
         <a class="ant-dropdown-link" @click="e => e.preventDefault()">
           <a-icon type="user" style="margin: 0 5px;"/>
-          {{userName}}
+          {{ this.$store.getters.getUserName }}
         </a>
         <a-menu slot="overlay">
           <a-menu-item>
