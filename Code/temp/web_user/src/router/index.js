@@ -4,6 +4,7 @@ import Login from '../views/Login'
 import Index from '../views/Index'
 import ShareList from '../views/ShareList'
 import User from '../views/User'
+import ChangePassword from "../views/ChangePassword"
 import Share from '../views/Share'
 import Register from "../views/Register"
 import Forget from "../views/Forget"
@@ -58,6 +59,13 @@ export default new Router({
       component: User,
       meta: {
         title: "用户信息",
+      },
+    }, {
+      path: '/changePassword',
+      name: 'changePassword',
+      component: ChangePassword,
+      meta: {
+        title: "修改密码",
       },
     }, {
       path: '/share',
