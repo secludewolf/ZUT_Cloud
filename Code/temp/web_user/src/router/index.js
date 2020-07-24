@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import Login from '../views/Login'
 import Index from '../views/Index'
+import ShareList from '../views/ShareList'
 import Share from '../views/Share'
 import Register from "../views/Register"
 import Forget from "../views/Forget"
@@ -40,6 +41,13 @@ export default new Router({
       path: '/index',
       name: 'index',
       component: Index,
+      meta: {
+        title: "主页",
+      },
+    }, {
+      path: '/shareList',
+      name: 'shareList',
+      component: ShareList,
       meta: {
         title: "主页",
       },
