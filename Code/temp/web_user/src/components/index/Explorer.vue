@@ -183,6 +183,7 @@
           this.changeIsRecycleBin(true);
           this.files = this.repository.recycleBin.files === null ? {} : this.repository.recycleBin.files;
           this.folders = this.repository.recycleBin.folders === null ? {} : this.repository.recycleBin.folders;
+          this.key = [e.key];
           return;
         } else if (e.key === "upload") {
           this.visible = true;
