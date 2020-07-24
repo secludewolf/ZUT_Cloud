@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Login from '../views/Login'
 import Index from '../views/Index'
 import ShareList from '../views/ShareList'
+import User from '../views/User'
 import Share from '../views/Share'
 import Register from "../views/Register"
 import Forget from "../views/Forget"
@@ -49,7 +50,14 @@ export default new Router({
       name: 'shareList',
       component: ShareList,
       meta: {
-        title: "主页",
+        title: "分享列表",
+      },
+    }, {
+      path: '/user',
+      name: 'user',
+      component: User,
+      meta: {
+        title: "用户信息",
       },
     }, {
       path: '/share',
