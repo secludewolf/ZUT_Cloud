@@ -93,6 +93,7 @@
         this.visible = false;
       },
       exit() {
+        localStorage.setItem("token", "");
         this.$message.success("退出成功");
       },
     }

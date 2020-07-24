@@ -122,6 +122,7 @@
             } else if (this.loginMethod === "phone") {
               this.$message.info("手机号:" + values.phone + " 密码:" + values.password);
             }
+            localStorage.setItem("token", "token");
             this.$router.push("index");
           }
         });
