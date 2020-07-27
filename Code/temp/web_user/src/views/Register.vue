@@ -88,6 +88,8 @@
 </template>
 
 <script>
+  import {registerByAccount, registerByEmail} from "../api/user";
+
   export default {
     name: "Register",
     data() {
@@ -105,15 +107,29 @@
         this.form.validateFields((err, values) => {
           if (!err) {
             console.log('Received values of form: ', values);
-            this.$message.success("注册成功");
+            const parent = this;
+            const data = {
+              account: values.account,
+              password: values.password,
+              name: values.name,
+            };
+            const handler = function (data) {
+              parent.$message.success("注册成功");
+              parent.$router.push("login");
+            };
+            const catcher = function (code, content) {
+              parent.$message.warn(content);
+              parent.$message.error("登陆失败");
+            };
             if (this.loginMethod === "account") {
-              this.$message.info("账号:" + values.account + " 密码:" + values.password);
+              registerByAccount(data, handler, catcher);
             } else if (this.loginMethod === "email") {
-              this.$message.info("邮箱:" + values.email + " 密码:" + values.password);
+              data.email = values.email;
+              registerByEmail(data, handler, catcher);
             } else if (this.loginMethod === "phone") {
-              this.$message.info("手机号:" + values.phone + " 密码:" + values.password);
+              this.$message.warn("暂不支持手机注册!");
+              //TODO 手机注册
             }
-            this.$router.push("login");
           }
         });
       },

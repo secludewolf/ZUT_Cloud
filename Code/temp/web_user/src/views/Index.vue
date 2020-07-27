@@ -16,11 +16,6 @@
 
   export default {
     name: "Index",
-    beforeCreate() {
-      //TODO 加载数据
-      localStorage.setItem("repository", JSON.stringify({}));
-      localStorage.setItem("user", JSON.stringify({}));
-    },
     components: {
       Header,
       Explorer

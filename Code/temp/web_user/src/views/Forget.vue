@@ -15,7 +15,7 @@
                   :tabBarStyle="{ textAlign: 'center', borderBottom: 'unset' }"
                   :animated="false"
           >
-            <a-tab-pane key="email" tab="邮箱注册">
+            <a-tab-pane key="email" tab="邮箱找回">
               <div v-if="loginMethod==='email'">
                 <a-form-item>
                   <a-input
@@ -27,7 +27,7 @@
                 </a-form-item>
               </div>
             </a-tab-pane>
-            <a-tab-pane key="phone" tab="手机注册">
+            <a-tab-pane key="phone" tab="手机找回">
               <div v-if="loginMethod==='phone'">
                 <a-form-item>
                   <a-input
@@ -54,6 +54,8 @@
 </template>
 
 <script>
+  import {forgetEmail} from "../api/user";
+
   export default {
     name: "Forget",
     data() {
@@ -71,13 +73,20 @@
         this.form.validateFields((err, values) => {
           if (!err) {
             console.log('Received values of form: ', values);
-            this.$message.success("重置账号");
+            const parent = this;
+            const data = {};
+            const handler = function (data) {
+              parent.$message.success("账号已重置,请注意查收邮件",10);
+            };
+            const catcher = function (code, content) {
+              parent.$message.warn(content);
+            };
             if (this.loginMethod === "email") {
-              this.$message.info("邮箱:" + values.email);
+              data.email = values.email;
+              forgetEmail(data, handler, catcher);
             } else if (this.loginMethod === "phone") {
-              this.$message.info("手机号:" + values.phone);
+              this.$message.warn("暂不支持手机找回")
             }
-            this.$router.push("login");
           }
         });
       },

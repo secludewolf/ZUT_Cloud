@@ -95,6 +95,8 @@
 </template>
 
 <script>
+  import {loginByAccount, loginByEmail} from "../api/user";
+
   export default {
     name: "Login",
     beforeCreate() {
@@ -114,16 +116,32 @@
         this.form.validateFields((err, values) => {
           if (!err) {
             console.log('Received values of form: ', values);
-            this.$message.success("登陆成功");
+            const parent = this;
+            const data = {};
+            const handler = function (data) {
+              console.log(data);
+              parent.$store.commit("updateUser", data.user);
+              parent.$store.commit("updateRepository", data.repository);
+              //TODO Mock测试使用,正常使用请删除此行
+              localStorage.setItem("token", "token");
+              parent.$router.push("index");
+              parent.$message.success("登陆成功");
+            };
+            const catcher = function (code, content) {
+              parent.$message.warn(content);
+            };
+            data.password = values.password;
             if (this.loginMethod === "account") {
-              this.$message.info("账号:" + values.account + " 密码:" + values.password);
+              data.account = values.account;
+              loginByAccount(data, handler, catcher);
             } else if (this.loginMethod === "email") {
-              this.$message.info("邮箱:" + values.email + " 密码:" + values.password);
+              data.email = values.email;
+              loginByEmail(data, handler, catcher);
             } else if (this.loginMethod === "phone") {
-              this.$message.info("手机号:" + values.phone + " 密码:" + values.password);
+              data.phone = values.phone;
+              this.$message.warn("暂时不支持手机登录");
+              //TODO 手机登录
             }
-            localStorage.setItem("token", "token");
-            this.$router.push("index");
           }
         });
       },

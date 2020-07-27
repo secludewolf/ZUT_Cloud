@@ -44,6 +44,7 @@
 <script>
   import Header from "../components/common/Header";
   import {getFormatDate} from "../util/Utils";
+  import {changeUserInfo, changeUserPassword} from "../api/user";
 
   export default {
     name: "ChangePassword",
@@ -58,7 +59,18 @@
     },
     methods: {
       changePassword() {
-        this.$message.info("修改密码");
+        const parent = this;
+        const data = {
+          oldPassword: this.oldPassword,
+          newPassword: this.newPassword,
+        };
+        const handler = (data) => {
+          parent.$message.success("修改成功!");
+        };
+        const catcher = (code, content) => {
+          parent.$message.warn(content);
+        };
+        changeUserPassword(data, handler, catcher);
       }
     },
   }

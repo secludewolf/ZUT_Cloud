@@ -9,46 +9,46 @@
         <div style="width: 500px;margin: 0 auto;padding-top: 50px;">
           <a-form :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
             <a-form-item label="用户ID">
-              <span>User_{{ user.id }}</span>
+              <span>User_{{ userClone.id }}</span>
             </a-form-item>
             <a-form-item label="仓库ID">
-              <span>Repository_{{ user.repoId }}</span>
+              <span>Repository_{{ userClone.repoId }}</span>
             </a-form-item>
             <a-form-item label="等级">
-              <span>{{ user.level }}</span>
+              <span>{{ userClone.level }}</span>
             </a-form-item>
             <a-form-item label="昵称">
               <a-input placeholder="请输入昵称"
-                       v-model="user.name"
+                       v-model="userClone.name"
                        v-if="isChange"/>
-              <span v-if="!isChange">{{ user.name }}</span>
+              <span v-if="!isChange">{{ userClone.name }}</span>
             </a-form-item>
             <a-form-item label="账号">
               <a-input placeholder="请输入账号"
-                       v-model="user.account"
+                       v-model="userClone.account"
                        v-if="isChange"/>
-              <span v-if="!isChange">{{ user.account }}</span>
+              <span v-if="!isChange">{{ userClone.account }}</span>
             </a-form-item>
             <a-form-item label="邮箱">
               <a-input placeholder="请输入邮箱"
-                       v-model="user.email"
+                       v-model="userClone.email"
                        v-if="isChange"/>
-              <span v-if="!isChange">{{ user.email === null ? '无' : user.email }}</span>
+              <span v-if="!isChange">{{ userClone.email === null ? '无' : userClone.email }}</span>
             </a-form-item>
             <a-form-item label="手机">
               <a-input placeholder="请输入手机"
-                       v-model="user.phone"
+                       v-model="userClone.phone"
                        v-if="isChange"/>
-              <span v-if="!isChange">{{ user.phone === null ? '无' : user.phone }}</span>
+              <span v-if="!isChange">{{ userClone.phone === null ? '无' : userClone.phone }}</span>
             </a-form-item>
             <a-form-item label="状态">
-              <span>{{ user.status }}</span>
+              <span>{{ userClone.status }}</span>
             </a-form-item>
             <a-form-item label="注册时间">
-              <span>{{ getFormatDate(user.createTime) }}</span>
+              <span>{{ getFormatDate(userClone.createTime) }}</span>
             </a-form-item>
             <a-form-item label="修改时间">
-              <span>{{ getFormatDate(user.changeTime) }}</span>
+              <span>{{ getFormatDate(userClone.changeTime) }}</span>
             </a-form-item>
             <a-form-item style="text-align: center;">
               <router-link to="/changePassword">
@@ -83,26 +83,30 @@
 <script>
   import Header from "../components/common/Header";
   import {getFormatDate} from "../util/Utils";
+  import {changeUserInfo} from "../api/user";
+  import {mapState} from 'vuex';
 
   export default {
     name: "User",
     components: {
       Header,
-    }, data() {
+    },
+    mounted() {
+      //防止修改穿透数据
+      this.userClone = Object.assign({}, this.user)
+    },
+    data() {
       return {
-        user: {
-          "id": 1,
-          "repoId": "5f06b20d17e32b20664aa4c6",
-          "account": "admin",
-          "email": "814878826@qq.com",
-          "phone": "18600000000",
-          "name": "测试用户",
-          "status": "正常",
-          "level": "1级",
-          "createTime": 1594274316583,
-          "changeTime": 1594274316583
-        },
         isChange: false,
+        userClone: {},
+      }
+    },
+    computed: {
+      ...mapState(["user"]),
+    },
+    watch: {
+      user(newValue, oldValue) {
+        this.userClone = this.user;
       }
     },
     methods: {
@@ -110,8 +114,23 @@
         return getFormatDate(date);
       },
       changeUser() {
-        console.log(123);
-        this.$message.info("修改用户");
+        const parent = this;
+        const data = {
+          id: this.userClone.id,
+          name: this.userClone.name,
+          account: this.userClone.account,
+          email: this.userClone.email,
+          phone: this.userClone.phone
+        };
+        const handler = (data) => {
+          this.$store.commit("updateUser", data.user);
+          this.isChange = false;
+          parent.$message.success("修改成功!");
+        };
+        const catcher = (code, content) => {
+          parent.$message.warn(content);
+        };
+        changeUserInfo(data, handler, catcher);
       }
     },
   }

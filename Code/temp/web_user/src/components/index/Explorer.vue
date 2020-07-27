@@ -101,14 +101,14 @@
   import BaseExplorer from "../common/BaseExplorer";
   import {getAllFile} from "../../util/Utils";
   import {FileType} from "../../util/Const";
-  import { mapState } from 'vuex';
+  import {mapState} from 'vuex';
+
   export default {
     name: "Explorer",
     created() {
-    }, mounted() {
-      this.files = this.repository.folder.files === null ? {} : this.repository.folder.files;
-      this.folders = this.repository.folder.folders === null ? {} : this.repository.folder.folders;
-      this.root = this.repository.folder;
+    },
+    mounted() {
+      this.refresh();
     },
     components: {
       BaseExplorer
@@ -127,7 +127,17 @@
     computed: {
       ...mapState(["repository"])
     },
+    watch: {
+      repository(newValue, oldValue) {
+        this.refresh();
+      }
+    },
     methods: {
+      refresh(){
+        this.files = this.repository.folder.files === null ? {} : this.repository.folder.files;
+        this.folders = this.repository.folder.folders === null ? {} : this.repository.folder.folders;
+        this.root = this.repository.folder;
+      },
       changeIsRepository(isRepository) {
         this.isRepository = isRepository;
         this.isSearch = !isRepository;
