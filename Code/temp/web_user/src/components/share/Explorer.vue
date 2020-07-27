@@ -93,120 +93,7 @@
         isShare: true,
         isSearch: false,
         isRecycleBin: false,
-        repository: {
-          "id": "5f06b20d17e32b20664aa4c6",
-          "userId": 1,
-          "status": 1,
-          "repoSize": 1099511627776,
-          "useSize": 0,
-          "folder": {
-            "name": "root",
-            "path": "",
-            "depth": 0,
-            "createTime": 1593423709223,
-            "changeTime": 1593423709223,
-            "status": 1,
-            "folders": {
-              "folder2": {
-                "name": "folder2",
-                "path": "/root",
-                "depth": 1,
-                "createTime": 1593423709223,
-                "changeTime": 1593423709223,
-                "status": 1,
-                "folders": null,
-                "files": {
-                  "file4.txt": {
-                    "id": "file4",
-                    "userFileId": 4,
-                    "shareIdList": null,
-                    "name": "file4.txt",
-                    "path": "/root/folder2",
-                    "type": "txt",
-                    "size": 1,
-                    "status": 1,
-                    "createTime": 1593423709223,
-                    "changeTime": 1593423709223
-                  }
-                }
-              },
-              "folder1": {
-                "name": "folder1",
-                "path": "/root",
-                "depth": 1,
-                "createTime": 1593423709223,
-                "changeTime": 1593423709223,
-                "status": 1,
-                "folders": {
-                  "folder3": {
-                    "name": "folder3",
-                    "path": "/root/folder1",
-                    "depth": 1,
-                    "createTime": 1593423709223,
-                    "changeTime": 1593423709223,
-                    "status": 1,
-                    "folders": null,
-                    "files": {
-                      "file5.txt": {
-                        "id": "file5",
-                        "userFileId": 5,
-                        "shareIdList": null,
-                        "name": "file5.txt",
-                        "path": "/root/folder1/folder3",
-                        "type": "txt",
-                        "size": 1,
-                        "status": 1,
-                        "createTime": 1593423709223,
-                        "changeTime": 1593423709223
-                      }
-                    }
-                  }
-                },
-                "files": {
-                  "file3.txt": {
-                    "id": "file3",
-                    "userFileId": 3,
-                    "shareIdList": null,
-                    "name": "file3.txt",
-                    "path": "/root/folder1",
-                    "type": "txt",
-                    "size": 1123,
-                    "status": 1,
-                    "createTime": 1593423709223,
-                    "changeTime": 1593423709223
-                  }
-                }
-              }
-            },
-            "files": {
-              "file1.txt": {
-                "id": "file1",
-                "userFileId": 1,
-                "shareIdList": null,
-                "name": "file1.txt",
-                "path": "/root",
-                "type": "txt",
-                "size": 1123,
-                "status": 1,
-                "createTime": 1593423709223,
-                "changeTime": 1593423709223
-              },
-              "file2.txt": {
-                "id": "file2",
-                "userFileId": 2,
-                "shareIdList": null,
-                "name": "file2.txt",
-                "path": "/root",
-                "type": "txt",
-                "size": 1,
-                "status": 1,
-                "createTime": 1593423709223,
-                "changeTime": 1593423709223
-              }
-            }
-          },
-          "recycleBin": {"folders": null, "files": null}
-        },
+        repository: {},
         root: {},
         files: {},
         folders: {},
@@ -221,9 +108,9 @@
           password: this.password.length === 0 ? null : this.password
         };
         const handler = function (data) {
-          parent.files = parent.repository.folder.files === null ? {} : parent.repository.folder.files;
-          parent.folders = parent.repository.folder.folders === null ? {} : parent.repository.folder.folders;
-          parent.root = parent.repository.folder;
+          parent.files = data.shareRepository.folder.files === null ? {} : data.shareRepository.folder.files;
+          parent.folders = data.shareRepository.folder.folders === null ? {} : data.shareRepository.folder.folders;
+          parent.root = data.shareRepository.folder;
           parent.passwordVisible = false;
           parent.repositoryVisible = true;
           parent.loading = false;
@@ -233,10 +120,10 @@
           if (code === -6 || code === -7) {
             parent.resultVisible = false;
             parent.passwordVisible = true;
+            parent.passwordErrorVisible = true;
           } else {
-            parent.$message.warn(content);
             parent.resultTitle = content;
-            parent.resultVisible = false;
+            parent.resultVisible = true;
           }
         };
         getShare(data, handler, catcher);

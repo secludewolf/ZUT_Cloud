@@ -16,8 +16,7 @@ router.beforeEach((to, from, next) => {
 })
 
 //Mock测试
-//TODO 自动Token登陆(Token登陆无法通过Mock模拟)
-import "./mock/mock";
+// import "./mock/mock";
 
 Vue.use(Antd);
 

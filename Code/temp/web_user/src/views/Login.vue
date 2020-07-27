@@ -122,8 +122,8 @@
               console.log(data);
               parent.$store.commit("updateUser", data.user);
               parent.$store.commit("updateRepository", data.repository);
-              //TODO Mock测试使用,正常使用请删除此行
-              localStorage.setItem("token", "token");
+              //Mock测试使用,正常使用请注释此行
+              // localStorage.setItem("token", "token");
               parent.$router.push("index");
               parent.$message.success("登陆成功");
             };
