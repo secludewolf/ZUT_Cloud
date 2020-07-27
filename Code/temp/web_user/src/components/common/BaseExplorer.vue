@@ -253,6 +253,15 @@
 <script>
   import {findKey, getAllFile, getAllFolder, getFormatDate, getFormatSize, getImg, getTypeName} from "../../util/Utils";
   import locale from 'ant-design-vue/es/date-picker/locale/zh_CN';
+  import {
+    cleanRecycleBin,
+    copyFile,
+    copyFolder,
+    createFolder, deleteFromRecycleBin, deleteFromRepository,
+    moveFile,
+    moveFolder,
+    renameFile, renameFolder, restoreFromRecycleBin
+  } from "../../api/repository";
 
   const columns = [
     {
@@ -385,28 +394,31 @@
     },
     watch: {
       //触发排序操作排序
-      //TODO 创建并使用使用统一的初始化方法
-      isRepository(newValue, oldValue) {
+      repository() {
+        this.path = ["全部文件"]
+        this.sortFile();
+      },
+      isRepository() {
         this.sorted = false;
       },
-      isShare(newValue, oldValue) {
+      isShare() {
         this.sorted = false;
       },
-      isSearch(newValue, oldValue) {
+      isSearch(newValue) {
         this.sorted = false;
         if (newValue) {
           this.path = ["全部文件"];
         }
       },
-      isRecycleBin(newValue, oldValue) {
+      isRecycleBin() {
         this.sorted = false;
       },
-      files(newValue, oldValue) {
+      files() {
         if (!this.sorted) {
           this.sortFile();
         }
       },
-      folders(newValue, oldValue) {
+      folders() {
         if (!this.sorted) {
           this.sortFile();
         }
@@ -426,7 +438,18 @@
         return getFormatSize(size);
       },
       cleanRecycleBin() {
-        this.$message.success('回收站已清空');
+        const parent = this;
+        const data = {
+          repositoryId: parent.$store.getters.getRepositoryId,
+        };
+        const handler = (data) => {
+          this.$emit("changeRepository", data.repository);
+          this.$message.success('回收站已清空');
+        };
+        const catcher = (code, content) => {
+          message(content, "warning");
+        };
+        cleanRecycleBin(data, handler, catcher);
       },
       searchFile(value) {
         if (value == null || value === "") {
@@ -569,10 +592,24 @@
         }
         this.createFolderLoading = true;
         const path = this.getCurrentPath();
-        console.log("在" + path + "创建文件夹" + this.createFolderName);
-        this.createFolderName = "";
-        this.createFolderVisible = false;
-        this.createFolderLoading = false;
+        const parent = this;
+        const data = {
+          repositoryId: parent.$store.getters.getRepositoryId,
+          name: this.createFolderName,
+          path: path
+        };
+        const handler = (data) => {
+          parent.$emit("changeRepository", data.repository);
+          this.createFolderName = "";
+          this.createFolderVisible = false;
+          this.createFolderLoading = false;
+          this.$message.success("文件夹创建成功");
+        };
+        const catcher = (code, content) => {
+          parent.$message.warn(content);
+          this.createFolderLoading = false;
+        };
+        createFolder(data, handler, catcher);
       },
       showMenu(event) {
         this.closeMenu();
@@ -615,15 +652,61 @@
       },
       paste() {
         const path = this.getCurrentPath();
+        const parent = this;
+        const data = {
+          repositoryId: parent.$store.getters.getRepositoryId,
+          name: this.optionTarget.name,
+          oldPath: this.optionTarget.path,
+          newPath: path
+        };
+        const handler = function (data) {
+          parent.$emit("changeRepository", data.repository);
+          parent.$message.success("操作成功");
+        };
+        const catcher = function (code, content) {
+          this.$message.warn(content);
+        };
+        if (this.lastOption === "copy") {
+          if (this.optionTarget.depth == null) {
+            copyFile(data, handler, catcher);
+          } else {
+            copyFolder(data, handler, catcher);
+          }
+        } else {
+          if (this.optionTarget.depth == null) {
+            moveFile(data, handler, catcher);
+          } else {
+            moveFolder(data, handler, catcher);
+          }
+        }
         this.menuVisible = false;
         this.$message.info("将位置" + this.optionTarget.path + "的" + this.optionTarget.name + (this.lastOption === "copy" ? "复制" : "移动") + "到" + path)
       },
       rename() {
         this.renameLoading = true;
-        this.$message.info("将" + this.target.name + "重命名为" + this.renameName);
-        this.renameName = "";
-        this.renameLoading = false;
-        this.renameVisible = false;
+        const path = this.getCurrentPath();
+        const parent = this;
+        const data = {
+          repositoryId: parent.$store.getters.getRepositoryId,
+          oldName: this.target.name,
+          newName: this.renameName,
+          path: path
+        };
+        const handler = function (data) {
+          parent.$emit("changeRepository", data.repository);
+          parent.renameName = "";
+          parent.renameLoading = false;
+          parent.renameVisible = false;
+          parent.$message.success("操作成功");
+        };
+        const catcher = function (code, content) {
+          this.$message.warn(content);
+        };
+        if (this.target.depth == null) {
+          renameFile(data, handler, catcher);
+        } else {
+          renameFolder(data, handler, catcher);
+        }
       },
       share() {
         this.shareLoading = true;
@@ -645,11 +728,45 @@
       restore(index) {
         if (typeof index != "object") this.tableOptionInit(index);
         this.$message.info("恢复" + this.target.name + "到" + this.target.path);
+        const parent = this;
+        const data = {
+          repositoryId: parent.$store.getters.getRepositoryId,
+          isFile: this.target.depth == null,
+          recycleId: this.targetIndex
+        };
+        const handler = (data) => {
+          parent.$emit("changeRepository", data.repository);
+          parent.$message.success("操作成功");
+        };
+        const catcher = (code, content) => {
+          this.$message.warn(content);
+        };
+        restoreFromRecycleBin(data, handler, catcher);
         this.menuVisible = false;
       },
       delete_(index) {
         if (typeof index != "object") this.tableOptionInit(index);
-        this.$message.info("删除" + this.target.name);
+        const parent = this;
+        const path = this.getCurrentPath();
+        const data = {
+          repositoryId: parent.$store.getters.getRepositoryId,
+          isFile: this.target.depth == null,
+        };
+        const handler = (data) => {
+          parent.$emit("changeRepository", data.repository);
+          parent.$message.success("操作成功");
+        };
+        const catcher = (code, content) => {
+          this.$message.warn(content);
+        };
+        if (this.isRepository) {
+          data.name = this.target.name;
+          data.path = path;
+          deleteFromRepository(data, handler, catcher);
+        } else if (this.isRecycleBin) {
+          data.recycleId = this.targetIndex;
+          deleteFromRecycleBin(data, handler, catcher);
+        }
         this.menuVisible = false;
       },
       tableOptionInit(index) {
@@ -665,7 +782,6 @@
       },
       saveShareShow() {
         this.saveShareLoading = true;
-        //TODO 需要加载数据
         const repository = this.repository;
         const root = repository.folder;
         this.createTreeData(null, root);

@@ -133,7 +133,7 @@
       }
     },
     methods: {
-      refresh(){
+      refresh() {
         this.files = this.repository.folder.files === null ? {} : this.repository.folder.files;
         this.folders = this.repository.folder.folders === null ? {} : this.repository.folder.folders;
         this.root = this.repository.folder;
@@ -155,7 +155,8 @@
         this.isRepository = !isRecycleBin;
       },
       changeRepository(repository) {
-        this.repository = repository;
+        this.$store.commit("updateRepository", repository);
+        this.key = ["all"];
         this.isRepository = true;
         this.isSearch = false;
         this.isRecycleBin = false;
