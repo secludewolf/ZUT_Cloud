@@ -35,7 +35,7 @@
         </a-menu>
       </a-dropdown>
       <span style="padding: 0 5px;">|</span>
-      <a-badge :count="1" dot>
+      <a-badge :count="unReadNumber" dot>
         <a-icon type="notification" style="padding: 3px;cursor:pointer;" @click="showDrawer"/>
         <a-drawer
           title="通知"
@@ -45,17 +45,13 @@
           @close="onClose"
           width="450px"
         >
-          <div>
-            <a-card title="通知1">
-              <a slot="extra">已读</a>
-              <span>内容内容内容内容内容内容内容内容内容内容内容</span>
-            </a-card>
-            <br/>
-          </div>
-          <div>
-            <a-card title="通知2">
-              <a slot="extra">已读</a>
-              <span>内容内容内容内容内容内容内容内容内容内容内容</span>
+          <div v-for="(value,index) in informList"
+               :key="index">
+            <a-card :title="value.header">
+              <a slot="extra"
+                 v-if="value.status === 0"
+                 @click="changeInformStatus(index)">已读</a>
+              <span>{{value.content}}</span>
             </a-card>
             <br/>
           </div>
@@ -66,6 +62,8 @@
 </template>
 
 <script>
+  import {changeInformStatus, getInformList} from "../../api/inform";
+
   export default {
     name: "Header",
     props: {
@@ -77,13 +75,26 @@
     data() {
       return {
         current: ["cloud"],
+        informList: [],
         visible: false,
       };
+    },
+    computed: {
+      unReadNumber() {
+        let number = 0;
+        for (let i = 0; i < this.informList.length; i++) {
+          if (this.informList[i].status === 0) {
+            number++;
+          }
+        }
+        return number;
+      }
     },
     components: {},
     created() {
     },
     mounted() {
+      this.getInformList();
     },
     methods: {
       showDrawer() {
@@ -95,6 +106,27 @@
       exit() {
         localStorage.setItem("token", "");
         this.$message.success("退出成功");
+      },
+      getInformList() {
+        const parent = this;
+        const handler = function (data) {
+          parent.informList = data.informList;
+        };
+        const catcher = function (code, content) {
+          parent.$message.warn(content);
+        };
+        getInformList(handler, catcher);
+      },
+      changeInformStatus(index) {
+        const parent = this;
+        const data = this.informList[index].id;
+        const handler = function (data) {
+          parent.informList[index].status = 1;
+        };
+        const catcher = function (code, content) {
+          parent.$message.warn(content);
+        };
+        changeInformStatus(data, handler, catcher);
       },
     }
   };
