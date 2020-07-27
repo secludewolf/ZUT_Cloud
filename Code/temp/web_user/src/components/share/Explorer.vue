@@ -9,6 +9,7 @@
                     :root="root"
                     :files="files"
                     :folders="folders"
+                    :password="password"
                     @changeIsRepository="changeIsRepository"
                     @changeIsSearch="changeIsSearch"
                     @changeIsRecycleBin="changeIsRecycleBin"
@@ -52,24 +53,26 @@
 
 <script>
   import BaseExplorer from "../common/BaseExplorer";
+  import {getShare} from "../../api/share";
 
   export default {
     name: "Explorer",
     created() {
       //模拟加载数据
-      if (this.$route.query["id"] == null) {
-        this.resultTitle = "分享不存在";
-        this.resultVisible = true;
-      }else if(this.$route.query["id"] === "1"){
-        this.resultTitle = "分享已删除";
-        this.resultVisible = true;
-      }else if(this.$route.query["id"] === "2"){
-        this.resultTitle = "分享已禁用";
-        this.resultVisible = true;
-      } else {
-        this.resultVisible = false;
-        this.passwordVisible = true;
-      }
+      this.loadData();
+      // if (this.$route.query["id"] == null) {
+      //   this.resultTitle = "分享不存在";
+      //   this.resultVisible = true;
+      // } else if (this.$route.query["id"] === "1") {
+      //   this.resultTitle = "分享已删除";
+      //   this.resultVisible = true;
+      // } else if (this.$route.query["id"] === "2") {
+      //   this.resultTitle = "分享已禁用";
+      //   this.resultVisible = true;
+      // } else {
+      //   this.resultVisible = false;
+      //   this.passwordVisible = true;
+      // }
     },
     mounted() {
     },
@@ -212,16 +215,31 @@
     methods: {
       loadData() {
         this.loading = true;
-        if (this.password !== "1234") {
-          this.passwordErrorVisible = true;
-        } else {
-          this.files = this.repository.folder.files === null ? {} : this.repository.folder.files;
-          this.folders = this.repository.folder.folders === null ? {} : this.repository.folder.folders;
-          this.root = this.repository.folder;
-          this.passwordVisible = false;
-          this.repositoryVisible = true;
-        }
-        this.loading = false;
+        const parent = this;
+        const data = {
+          shareId: this.$route.query["id"],
+          password: this.password.length === 0 ? null : this.password
+        };
+        const handler = function (data) {
+          parent.files = parent.repository.folder.files === null ? {} : parent.repository.folder.files;
+          parent.folders = parent.repository.folder.folders === null ? {} : parent.repository.folder.folders;
+          parent.root = parent.repository.folder;
+          parent.passwordVisible = false;
+          parent.repositoryVisible = true;
+          parent.loading = false;
+        };
+        const catcher = function (code, content) {
+          parent.loading = false;
+          if (code === -6 || code === -7) {
+            parent.resultVisible = false;
+            parent.passwordVisible = true;
+          } else {
+            parent.$message.warn(content);
+            parent.resultTitle = content;
+            parent.resultVisible = false;
+          }
+        };
+        getShare(data, handler, catcher);
       },
       changeIsRepository(isRepository) {
         this.isRepository = isRepository;

@@ -19,11 +19,11 @@
         <span slot="validTime" slot-scope="text">{{ getFormatDate(text) }}</span>
         <span slot="status" slot-scope="text">{{ text === 1 ? "有效" : "失效" }}</span>
         <a-popconfirm
-          slot="action" slot-scope="text, record"
+          slot="action" slot-scope="text, record, key"
           title="确定要禁用分享吗?"
           ok-text="确定"
           cancel-text="取消"
-          @confirm="disableShare(record.id)"
+          @confirm="disableShare(key)"
         >
           <span>
             <a v-if="record.status === 1">禁用</a>
@@ -37,6 +37,7 @@
 <script>
   import Header from "../components/common/Header";
   import {getFormatDate} from "../util/Utils";
+  import {deleteShare, getShareList} from "../api/share";
 
   const columns = [
     {
@@ -75,52 +76,75 @@
       align: "center",
     },
     {
-      title: 'Action',
+      title: '操作',
       key: 'action',
       scopedSlots: {customRender: 'action'},
       align: "center",
     },
   ];
 
-  const data = [
-    {
-      id: "share1",
-      userId: 17,
-      repoId: "test",
-      name: "test",
-      password: null,
-      status: 1,
-      createTime: 1594365511023,
-      validTime: 1594365511023
-    }, {
-      id: "share2",
-      userId: 17,
-      repoId: "test",
-      name: "test",
-      password: "123456",
-      status: 0,
-      createTime: 1594365511023,
-      validTime: 1594365511023
-    },
-  ];
+  // const data = [
+  //   {
+  //     id: "share1",
+  //     userId: 17,
+  //     repoId: "test",
+  //     name: "test",
+  //     password: null,
+  //     status: 1,
+  //     createTime: 1594365511023,
+  //     validTime: 1594365511023
+  //   }, {
+  //     id: "share2",
+  //     userId: 17,
+  //     repoId: "test",
+  //     name: "test",
+  //     password: "123456",
+  //     status: 0,
+  //     createTime: 1594365511023,
+  //     validTime: 1594365511023
+  //   },
+  // ];
   export default {
     name: "ShareList",
     components: {
       Header,
     },
+    mounted() {
+      this.getShareList();
+    },
     data() {
       return {
         columns: columns,
-        data: data,
+        data: [],
       }
     },
     methods: {
       getFormatDate(date) {
         return getFormatDate(date);
       },
-      disableShare(id) {
-        this.$message.info("禁用分享:" + id);
-      }
+      getShareList() {
+        const parent = this;
+        const handler = function (data) {
+          parent.data = data.shareList;
+        };
+        const catcher = function (code, content) {
+          parent.$message.warn(content);
+        };
+        getShareList(handler, catcher);
+      },
+      disableShare(index) {
+        this.$message.info("禁用分享:" + this.data[index].id);
+        const parent = this;
+        const data = this.data[index].id;
+        const handler = () => {
+          parent.data[index].status = 0;
+          parent.$message.success("禁用成功");
+        };
+        const catcher = (code, content) => {
+          parent.$message.warn(content);
+        };
+        deleteShare(data, handler, catcher);
+      },
     },
   }
 </script>

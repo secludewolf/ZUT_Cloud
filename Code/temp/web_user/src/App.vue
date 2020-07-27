@@ -8,7 +8,7 @@
 
   export default {
     name: 'App',
-    mounted() {
+    created() {
       if (this.$store.state.user.id === 0 && localStorage.getItem("token") !== "") {
         this.$store.dispatch("loginByToken", localStorage.getItem("token"));
       }

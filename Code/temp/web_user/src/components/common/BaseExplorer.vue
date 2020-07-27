@@ -134,7 +134,7 @@
               </a-form>
             </a-modal>
             <a-menu-item key="5"
-                         v-if="isRepository && (isFile || isFolder)"
+                         v-if="isRepository && isFolder"
                          @click="()=>{this.menuVisible = false;this.shareVisible = true}">
               分享
             </a-menu-item>
@@ -156,6 +156,13 @@
                   <a-date-picker v-model="shareTime" :locale="locale"/>
                 </a-form-item>
               </a-form>
+            </a-modal>
+            <a-modal v-model="shareCreatedVisible"
+                     title="创建成功"
+                     okText="确认"
+                     cancelText="取消"
+                     :footer="null">
+              <router-link :to="shareLink" target="_blank">{{shareLink}}</router-link>
             </a-modal>
             <a-menu-item key="6"
                          v-if="(isRepository || isShare || isSearch) && (isFile || isFolder)"
@@ -262,6 +269,7 @@
     moveFolder,
     renameFile, renameFolder, restoreFromRecycleBin
   } from "../../api/repository";
+  import {createShare, saveShare} from "../../api/share";
 
   const columns = [
     {
@@ -364,6 +372,8 @@
         menuVisible: false,
         saveShareVisible: false,
         saveShareLoading: false,
+        shareCreatedVisible: false,
+        shareLink: "",
         treeData: {},
         selectFolderKey: "/root",
         isFile: false,
@@ -710,15 +720,28 @@
       },
       share() {
         this.shareLoading = true;
-        this.$message.info("分享位于" + this.target.path + "的" + this.target.name
-          + "分享名称" + this.shareName
-          + "分享密码" + this.sharePassword
-          + "截止日期" + this.shareTime);
-        this.shareName = "";
-        this.sharePassword = "";
-        this.shareTime = null;
-        this.shareLoading = false;
-        this.shareVisible = false;
+        const parent = this;
+        const data = {
+          repositoryId: parent.$store.getters.getRepositoryId,
+          name: this.target.name,
+          path: this.target.path,
+          password: this.sharePassword,
+          validTime: this.shareTime.valueOf()
+        };
+        const handler = (data) => {
+          parent.shareName = "";
+          parent.sharePassword = "";
+          parent.shareTime = null;
+          parent.shareLoading = false;
+          parent.shareVisible = false;
+          this.shareLink = "/share?id=" + data.share.id;
+          parent.shareCreatedVisible = true;
+          parent.$message.success("分享成功");
+        };
+        const catcher = (code, content) => {
+          parent.$message.warn(content);
+        };
+        createShare(data, handler, catcher);
       },
       download(index) {
         if (typeof index != "object") this.tableOptionInit(index);
@@ -805,11 +828,23 @@
         }
       },
       saveShare() {
-        this.$message.info("将ID为" + this.$route.query.id + "的分享保存到" + this.selectFolderKey);
+        const parent = this;
+        const data = {
+          shareId: this.$route.query.id,
+          password: this.password,
+          path: this.selectFolderKey
+        };
+        const handler = () => {
+          parent.$message.success("保存成功");
+          parent.saveShareVisible = false;
+        };
+        const catcher = (code, content) => {
+          parent.$message.warn(content);
+        };
+        saveShare(data, handler, catcher);
       },
       selectFolder(key) {
         this.selectFolderKey = key[0];
-        console.log(this.selectFolderKey);
       },
       expandFolder(event) {
       }
