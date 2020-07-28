@@ -159,8 +159,6 @@
             </a-modal>
             <a-modal v-model="shareCreatedVisible"
                      title="创建成功"
-                     okText="确认"
-                     cancelText="取消"
                      :footer="null">
               <router-link :to="shareLink" target="_blank">{{shareLink}}</router-link>
             </a-modal>
@@ -846,8 +844,8 @@
         const parent = this;
         const data = {
           repositoryId: parent.$store.getters.getRepositoryId,
-          name: this.target.name,
-          path: this.target.path,
+          name: this.shareName,
+          path: this.target.path + "/" + this.target.name,
           password: this.sharePassword,
           validTime: this.shareTime.valueOf()
         };
