@@ -285,6 +285,7 @@
   } from "../../api/repository";
   import {createShare, saveShare} from "../../api/share";
   import {uploadBigFile, uploadSmallFile} from "../../api/upload";
+  import {getDownloadId} from "../../api/download";
 
   const columns = [
     {
@@ -620,7 +621,7 @@
             const next = (md5) => {
               console.log(md5);
               const data = {
-                repositoryId: this.repository.id,
+                repositoryId: parent.$store.getters.getRepositoryId,
                 fileId: md5,
                 name: files[i].name,
                 path: path
@@ -684,7 +685,7 @@
             const next = (md5) => {
               console.log(md5);
               const data = {
-                repositoryId: this.repository.id,
+                repositoryId: parent.$store.getters.getRepositoryId,
                 fileId: md5,
                 name: files[i].name,
                 path: path
@@ -696,7 +697,7 @@
               const catcher = (code, content) => {
                 uploadSmallFile(files[i], files[i].name, md5, () => {
                   const data = {
-                    repositoryId: this.repository.id,
+                    repositoryId: parent.$store.getters.getRepositoryId,
                     fileId: md5,
                     name: files[i].name,
                     path: path
@@ -869,6 +870,29 @@
         if (typeof index != "object") this.tableOptionInit(index);
         this.$message.info("下载位于" + this.target.path + "的" + this.target.name);
         this.menuVisible = false;
+        const parent = this;
+        const data = {
+          repositoryId: null,
+          userFileId: this.target.userFileId,
+          fileName: this.target.name,
+          shareId: null,
+          password: null,
+          folder: null,//暂不支持多文件下载
+        };
+        if (this.isRepository) {
+          data.repositoryId = this.$store.getters.getRepositoryId
+        } else if (this.isShare) {
+          data.shareId = this.$route.query.id;
+          data.password = this.password;
+        }
+        const handler = (data) => {
+          console.log(data.id);
+          window.open("/api/download/" + data.id, '_blank');
+        }
+        const catcher = (code, content) => {
+          parent.$message.warn(content);
+        }
+        getDownloadId(data, handler, catcher);
       },
       restore(index) {
         if (typeof index != "object") this.tableOptionInit(index);
