@@ -1,4 +1,5 @@
 import {FileType, FileTypeName} from "./Const";
+import Spark_md5 from 'spark-md5';
 
 /**
  * 获取格式化时间
@@ -131,3 +132,46 @@ export function getAllFolder(folder, folders) {
 export function findKey(data, value, compare = (a, b) => a === b) {
   return Object.keys(data).find(k => compare(data[k], value))
 }
+
+export function getMd5BigFile(file, next) {
+  let chunkSize = 1024 * 1024 * 5,
+    chunks = Math.ceil(file.size / chunkSize),
+    currentChunk = 0,
+    sparkMd5 = new Spark_md5(),
+    fileReader = new FileReader();
+  fileReader.onload = function (event) {
+    sparkMd5.appendBinary(event.target.result);
+    currentChunk += 1;
+    if (currentChunk < chunks) {
+      loadNext();
+    } else {
+      const md5 = sparkMd5.end();
+      next(md5);
+    }
+  };
+
+  function loadNext() {
+    let start = currentChunk * chunkSize,
+      end = start + chunkSize >= file.size ? file.size : start + chunkSize;
+    fileReader.readAsBinaryString(File.prototype.slice.call(file, start, end));
+  }
+
+  loadNext();
+}
+
+export function getMd5SmallFile(file, next) {
+  const sparkMd5 = new Spark_md5();
+  let reader = new FileReader();
+  reader.onload = function (event) {
+    const md5 = sparkMd5.appendBinary(event.target.result).end();
+    next(md5);
+  };
+  reader.readAsBinaryString(file);
+}
+
+
+export function getMd5SliceFile(slice) {
+  const sparkMd5 = new Spark_md5();
+  return sparkMd5.appendBinary(slice.target.result).end();
+}
+

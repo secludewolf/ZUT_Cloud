@@ -175,7 +175,7 @@
               恢复
             </a-menu-item>
             <a-menu-item key="8"
-                         v-if="isRepository && (isFile || isFolder)"
+                         v-if="(isRepository || isRecycleBin) && (isFile || isFolder)"
                          @click="delete_">
               删除
             </a-menu-item>
@@ -258,18 +258,33 @@
 </template>
 
 <script>
-  import {findKey, getAllFile, getAllFolder, getFormatDate, getFormatSize, getImg, getTypeName} from "../../util/Utils";
+  import {
+    findKey,
+    getAllFile,
+    getAllFolder,
+    getFormatDate,
+    getFormatSize,
+    getImg,
+    getMd5BigFile,
+    getMd5SliceFile,
+    getMd5SmallFile,
+    getTypeName
+  } from "../../util/Utils";
   import locale from 'ant-design-vue/es/date-picker/locale/zh_CN';
   import {
     cleanRecycleBin,
     copyFile,
     copyFolder,
-    createFolder, deleteFromRecycleBin, deleteFromRepository,
+    createFile,
+    createFolder,
+    deleteFromRecycleBin,
+    deleteFromRepository,
     moveFile,
     moveFolder,
     renameFile, renameFolder, restoreFromRecycleBin
   } from "../../api/repository";
   import {createShare, saveShare} from "../../api/share";
+  import {uploadBigFile, uploadSmallFile} from "../../api/upload";
 
   const columns = [
     {
@@ -594,6 +609,113 @@
       uploadFile(event) {
         const path = this.getCurrentPath();
         console.log("在" + path + "上传文件:" + event.target.value);
+        const repositoryId = this.repository.id;
+        const parent = this;
+        const changeRepository = this.changeRepository;
+        //获取文件列表
+        const files = event.target.files;
+        for (let i = 0; i < files.length; i++) {
+          //大文件上传
+          if (files[i].size > 1024 * 1024 * 5) {
+            const next = (md5) => {
+              console.log(md5);
+              const data = {
+                repositoryId: this.repository.id,
+                fileId: md5,
+                name: files[i].name,
+                path: path
+              };
+              const handler = (data) => {
+                parent.$emit("changeRepository", data.repository);
+                parent.$message.success("秒传成功");
+              };
+              const catcher = (code, content) => {
+                let chunkSize = 1024 * 1024 * 5,
+                  chunks = Math.ceil(files[i].size / chunkSize),
+                  currentChunk = 0,
+                  fileReader = new FileReader();
+                let start;
+                let end;
+                fileReader.onload = function (event) {
+                  let blockMd5 = getMd5SliceFile(event);
+                  console.log(blockMd5);
+                  //TODO 忽略了返回的已接收分片数据
+                  //上传文件分片
+                  uploadBigFile(files[i].slice(start, end), files[i].name, blockMd5, md5, currentChunk, chunks, (data) => {
+                    //如果上传完成则尝试保存文件
+                    if (data.code === 1 && data.data === null) {
+                      const data = {
+                        repositoryId: repositoryId,
+                        fileId: md5,
+                        name: files[i].name,
+                        path: path
+                      };
+                      const handler = (data) => {
+                        parent.$emit("changeRepository", data.repository);
+                        parent.$message.success("上传成功");
+                      };
+                      const catcher = (code, content) => {
+                        parent.$message.warn(content);
+                      };
+                      createFile(data, handler, catcher);
+                    }
+                  })
+                  //TODO 暂时无法并发上传,redis没有写同步锁
+                  currentChunk += 1;
+                  if (currentChunk < chunks) {
+                    loadNext();
+                  }
+                }
+
+                function loadNext() {
+                  start = currentChunk * chunkSize
+                  end = start + chunkSize >= files[i].size ? files[i].size : start + chunkSize;
+                  fileReader.readAsBinaryString(File.prototype.slice.call(files[i], start, end));
+                }
+
+                loadNext();
+              }
+              createFile(data, handler, catcher);
+            };
+            getMd5BigFile(files[i], next);
+          }
+          //小文件上传
+          else {
+            const next = (md5) => {
+              console.log(md5);
+              const data = {
+                repositoryId: this.repository.id,
+                fileId: md5,
+                name: files[i].name,
+                path: path
+              };
+              const handler = (data) => {
+                parent.$emit("changeRepository", data.repository);
+                parent.$message.success("秒传成功");
+              };
+              const catcher = (code, content) => {
+                uploadSmallFile(files[i], files[i].name, md5, () => {
+                  const data = {
+                    repositoryId: this.repository.id,
+                    fileId: md5,
+                    name: files[i].name,
+                    path: path
+                  };
+                  const handler = (data) => {
+                    parent.$emit("changeRepository", data.repository);
+                    parent.$message.success("上传成功");
+                  };
+                  const catcher = (code, content) => {
+                    parent.$message.warn(content);
+                  };
+                  createFile(data, handler, catcher);
+                });
+              };
+              createFile(data, handler, catcher);
+            };
+            getMd5SmallFile(files[i], next);
+          }
+        }
       },
       createFolder() {
         if (this.createFolderName == null || this.createFolderName === "") {
