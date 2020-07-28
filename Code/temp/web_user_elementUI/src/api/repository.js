@@ -1,5 +1,5 @@
 import {delete_, get, patch, post, put} from "../util/request";
-import {message} from "ant-design-vue";
+import {message} from "../util/message";
 
 const repositoryApi = {
   getRepository: "/repository/",
@@ -18,7 +18,7 @@ const repositoryApi = {
 };
 
 const catcher = (code, content) => {
-  message.warn(content);
+  message(content, "warning");
 };
 
 export function getRepository(data, handler, catcher = catcher) {

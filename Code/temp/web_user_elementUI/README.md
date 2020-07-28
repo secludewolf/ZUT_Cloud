@@ -1,6 +1,6 @@
 # web_user
 
-> web_user
+> A Vue.js project
 
 ## Build Setup
 

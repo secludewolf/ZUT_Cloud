@@ -1,5 +1,5 @@
 import Axios from "axios";
-import {message} from "ant-design-vue";
+import {message} from "../util/message";
 
 const axios = Axios.create({
   baseURL: "/api",
@@ -28,7 +28,7 @@ export function uploadSmallFile(file, fileName, md5, next) {
       next();
     }
   }).catch(error => {
-    message.warn("网络异常,操作失败!");
+    message("网络异常,操作失败!");
     console.log(error);
   })
 }
@@ -50,7 +50,7 @@ export function uploadBigFile(block, fileName, blockMd5, fileMd5, index, length,
     console.log(response);
     next(response.data);
   }).catch(error => {
-    message.warn("网络异常,操作失败!");
+    message("网络异常,操作失败!");
     console.log(error);
   })
 }

@@ -23,7 +23,7 @@ const shareList = [{
   repoId: "test",
   name: "test",
   password: "123456",
-  status: 0,
+  status: 1,
   createTime: 1594365511023,
   validTime: 1594365511023
 }];

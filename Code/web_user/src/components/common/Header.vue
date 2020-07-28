@@ -1,200 +1,135 @@
 <template>
-  <el-container>
-    <el-header>
-      <router-link to="/index"><img src="../../assets/logo.png" alt="Logo"></router-link>
-      <div class="menu">
-        <el-menu :default-active="index" mode="horizontal" @select="handleSelect"
-                 active-text-color="#09AAFF">
-          <el-menu-item index="1"><span>网盘</span></el-menu-item>
-          <el-menu-item index="2"><span>分享</span></el-menu-item>
-        </el-menu>
-      </div>
-      <div class="user">
-        <ul style="margin:0;padding:0;height: 60px;font-size: 16px;color: #909399;">
-          <li style="position:relative;float: right;top: 15px;right:30px;padding: 0">
-            <el-badge :value="unReadNumber" :hidden="unReadNumber === 0" class="item">
-              <el-button size="small" @click="drawer = true">通知</el-button>
-            </el-badge>
-          </li>
-          <li style="float: right;height: 60px;line-height: 60px">
-            <span><router-link to="/user" class="name">用户名：{{name}}</router-link></span>
-          </li>
-        </ul>
-      </div>
-    </el-header>
-    <el-drawer
-      :visible.sync="drawer"
-      :with-header="false">
-      <el-card class="box-card"
-               v-for="(value,index) in informs"
+  <div class="Header">
+    <div style="float:left;height: 64px;width: 200px;">
+      <router-link to="/index"><img style="display: flex;height: 100%;margin: auto;" src="../../assets/logo.png"
+                                    alt="logo"/>
+      </router-link>
+    </div>
+    <a-menu v-model="current" mode="horizontal" style="float:left;height:64px;line-height:64px;font-size: 16px;">
+      <a-menu-item key="cloud" style="padding: 0 50px;">
+        <router-link to="/index">
+          <a-icon type="cloud"/>
+          网盘
+        </router-link>
+      </a-menu-item>
+      <a-menu-item key="share" style="padding: 0 50px;">
+        <router-link to="/shareList">
+          <a-icon type="share-alt"/>
+          分享
+        </router-link>
+      </a-menu-item>
+    </a-menu>
+    <div style="float: right;height: 64px;padding:0 30px;background: white;line-height: 64px;">
+      <a-dropdown style="padding: 3px;">
+        <a class="ant-dropdown-link" @click="e => e.preventDefault()">
+          <a-icon type="user" style="margin: 0 5px;"/>
+          {{ this.$store.getters.getUserName }}
+        </a>
+        <a-menu slot="overlay">
+          <a-menu-item>
+            <router-link to="/user">用户信息</router-link>
+          </a-menu-item>
+          <a-menu-item>
+            <router-link to="/login" @click.native="exit">退出</router-link>
+          </a-menu-item>
+        </a-menu>
+      </a-dropdown>
+      <span style="padding: 0 5px;">|</span>
+      <a-badge :count="unReadNumber" dot>
+        <a-icon type="notification" style="padding: 3px;cursor:pointer;" @click="showDrawer"/>
+        <a-drawer
+          title="通知"
+          placement="right"
+          :closable="false"
+          :visible="visible"
+          @close="onClose"
+          width="450px"
+        >
+          <div v-for="(value,index) in informList"
                :key="index">
-        <div slot="header" class="clearfix">
-          <span>{{value.header}}</span>
-          <el-button class="read" type="text" v-if="value.status === 0" @click="read(index)">已读</el-button>
-        </div>
-        <div class="text item">
-          <span>{{value.content}}</span>
-        </div>
-      </el-card>
-    </el-drawer>
-  </el-container>
+            <a-card :title="value.header">
+              <a slot="extra"
+                 v-if="value.status === 0"
+                 @click="changeInformStatus(index)">已读</a>
+              <span>{{value.content}}</span>
+            </a-card>
+            <br/>
+          </div>
+        </a-drawer>
+      </a-badge>
+    </div>
+  </div>
 </template>
 
 <script>
   import {changeInformStatus, getInformList} from "../../api/inform";
-  import {message} from "../../util/message";
 
   export default {
     name: "Header",
-    created() {
-      //TODO 将通知设置为公共变量
-      this.loadInforms();
-    },
     props: {
-      index: {
+      userName: {
         type: String,
-        default: "0"
+        default: "用户昵称"
       },
-      name: {
-        type: String,
-        default: "测试用户"
-      }
     },
     data() {
       return {
-        drawer: false,
-        informs: [
-          {}
-        ],
-      }
+        current: ["cloud"],
+        informList: [],
+        visible: false,
+      };
     },
     computed: {
       unReadNumber() {
         let number = 0;
-        for (let i = 0; i < this.informs.length; i++) {
-          if (this.informs[i].status === 0) {
+        for (let i = 0; i < this.informList.length; i++) {
+          if (this.informList[i].status === 0) {
             number++;
           }
         }
         return number;
       }
     },
+    components: {},
+    created() {
+    },
+    mounted() {
+      this.getInformList();
+    },
     methods: {
-      handleSelect(key, keyPath) {
-        if (key === "1") {
-          this.$router.push("/index")
-        } else {
-          this.$router.push("/shareList")
-        }
+      showDrawer() {
+        this.visible = true;
       },
-      loadInforms() {
-        const handler = (data) => {
-          this.informs = data.informList;
+      onClose() {
+        this.visible = false;
+      },
+      exit() {
+        localStorage.setItem("token", "");
+        this.$message.success("退出成功");
+      },
+      getInformList() {
+        const parent = this;
+        const handler = function (data) {
+          parent.informList = data.informList;
         };
-        const catcher = (code, content) => {
-          message("获取通知失败", "error");
+        const catcher = function (code, content) {
+          parent.$message.warn(content);
         };
         getInformList(handler, catcher);
       },
-      read(index) {
-        console.log(this.informs[index].id);
-        const data = this.informs[index].id;
-        const handler = () => {
-          this.informs[index].status = 1;
+      changeInformStatus(index) {
+        const parent = this;
+        const data = this.informList[index].id;
+        const handler = function (data) {
+          parent.informList[index].status = 1;
         };
-        const catcher = (code, content) => {
-          message("操作失败", "error");
+        const catcher = function (code, content) {
+          parent.$message.warn(content);
         };
         changeInformStatus(data, handler, catcher);
       },
     }
-  }
+  };
 </script>
-
 <style scoped>
-  .el-container {
-    position: relative;
-    margin: 0;
-    padding: 0;
-  }
-
-  .el-header {
-    margin: 0;
-    padding: 0;
-    font-size: 16px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, .12), 0 0 6px rgba(0, 0, 0, .04)
-  }
-
-  .el-header div {
-    display: inline-block;
-  }
-
-  .el-header img {
-    float: left;
-    margin: 0 55px;
-    width: auto;
-    height: auto;
-    max-width: 100%;
-    max-height: 100%;
-  }
-
-  .el-menu-item {
-    font-size: 16px;
-  }
-
-  .el-header ul {
-    padding-left: 0;
-  }
-
-  .el-header li {
-    display: inline;
-    padding: 0 50px;
-  }
-
-  .el-header .user {
-    float: right;
-  }
-
-  .el-main {
-    position: relative;
-    margin: 0;
-    padding: 0;
-  }
-
-  .name {
-    color: #424e67;
-    text-decoration: none;
-  }
-
-
-  .text {
-    font-size: 14px;
-  }
-
-  .item {
-    margin-bottom: 18px;
-  }
-
-  .clearfix:before,
-  .clearfix:after {
-    display: table;
-    content: "";
-  }
-
-  .clearfix:after {
-    clear: both
-  }
-
-  .box-card {
-    width: 480px;
-    margin-top: 10px;
-    position: relative;
-  }
-
-  .read {
-    position: relative;
-    left: 260px;
-    padding: 3px 0
-  }
-
 </style>

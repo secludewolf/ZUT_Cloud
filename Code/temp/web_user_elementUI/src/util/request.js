@@ -1,5 +1,7 @@
+//TODO 类型创建请求工具文件
+//TODO request.js创建axios的封装,拦截器,baseUrl,错误处理
 import Axios from 'axios';
-import {message} from 'ant-design-vue';
+import {message} from "./message";
 
 export function request(url, data, method, handler, catcher) {
   const axios = Axios.create({
@@ -30,7 +32,7 @@ export function request(url, data, method, handler, catcher) {
       catcher(code, content);
     }
   }).catch(error => {
-    message.warn("网络异常!");
+    message("网络异常,操作失败!");
     console.log(error);
   })
 }

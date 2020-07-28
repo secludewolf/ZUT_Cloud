@@ -1,5 +1,6 @@
 import {delete_, get, patch, post, put} from "../util/request";
-import {message} from "ant-design-vue";
+import {message} from "../util/message";
+import Mock from "mockjs";
 
 const informApi = {
   getInformList: "/inform",
@@ -8,7 +9,7 @@ const informApi = {
 };
 
 const catcher = (code, content) => {
-  message.warn(content);
+  message(content, "warning");
 };
 
 export function getInformList(handler, catcher = catcher) {

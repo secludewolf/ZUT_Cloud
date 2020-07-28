@@ -1,6 +1,5 @@
 import {delete_, get, patch, post, put} from "../util/request";
-import {message} from "ant-design-vue";
-import {getMonthName} from "ant-design-vue/lib/vc-calendar/src/util";
+import {message} from "../util/message";
 
 const shareApi = {
   createShare: "/share",
@@ -11,7 +10,7 @@ const shareApi = {
 };
 
 const catcher = (code, content) => {
-  message.warn(content);
+  message(content, "warning");
 };
 
 export function createShare(data, handler, catcher = catcher) {
@@ -19,7 +18,6 @@ export function createShare(data, handler, catcher = catcher) {
 }
 
 export function getShareList(handler, catcher = catcher) {
-  console.log(handler);
   get(shareApi.getShareList, null, handler, catcher);
 }
 

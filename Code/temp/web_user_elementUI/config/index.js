@@ -1,10 +1,9 @@
-'use strict'
-// Template version: 1.3.1
-// see http://vuejs-templates.github.io/webpack for documentation.
+'use strict';
 
-const path = require('path')
+const path = require('path');
 
 module.exports = {
+
   dev: {
     host: 'localhost',
     port: 8080,
@@ -38,7 +37,6 @@ module.exports = {
   //   errorOverlay: true,
   //   notifyOnErrors: true,
   //   poll: false, // https://webpack.js.org/configuration/dev-server/#devserver-watchoptions-
-  //
   //
   //   /**
   //    * Source Maps

@@ -1,5 +1,5 @@
 import {get, patch, post, put} from "../util/request";
-import {message} from 'ant-design-vue';
+import {message} from "../util/message";
 
 const userApi = {
   loginByToken: "/login/token",
@@ -14,7 +14,7 @@ const userApi = {
 };
 
 const catcher = (code, content) => {
-  message.warn(content);
+  message(content, "warning");
 };
 
 export function loginByToken(handler, catcher = catcher) {
