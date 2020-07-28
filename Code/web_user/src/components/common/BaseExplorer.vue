@@ -659,7 +659,6 @@
                       createFile(data, handler, catcher);
                     }
                   })
-                  //TODO 暂时无法并发上传,redis没有写同步锁
                   currentChunk += 1;
                   if (currentChunk < chunks) {
                     loadNext();
