@@ -1,6 +1,7 @@
 <template>
   <a-layout style="position:relative;height: 100%;background:white;">
-    <a-layout-sider id="index-explorer-aside" class="ant-layout-sider-light" style="position:relative;height: 100%;">
+    <a-layout-sider id="index-explorer-aside" class="ant-layout-sider-light"
+                    style="position:relative;min-height:450px;height: 100%;">
       <a-menu mode="vertical"
               :selectedKeys="key"
               @click="handleClick">
