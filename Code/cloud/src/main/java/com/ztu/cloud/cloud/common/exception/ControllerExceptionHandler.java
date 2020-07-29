@@ -2,6 +2,7 @@ package com.ztu.cloud.cloud.common.exception;
 
 import com.ztu.cloud.cloud.common.constant.ResultConstant;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
+import io.jsonwebtoken.JwtException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
@@ -16,5 +17,11 @@ public class ControllerExceptionHandler {
 	public ResultResponseEntity missingRequestHeaderException(Exception e) {
 		e.printStackTrace();
 		return ResultConstant.REQUEST_PARAMETER_ERROR;
+	}
+
+	@ExceptionHandler(JwtException.class)
+	public ResultResponseEntity tokenIllegal(Exception e) {
+		e.printStackTrace();
+		return ResultConstant.TOKEN_INVALID;
 	}
 }
