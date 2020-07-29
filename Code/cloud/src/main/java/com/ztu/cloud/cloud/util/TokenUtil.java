@@ -55,7 +55,7 @@ public class TokenUtil {
 	public static String createToken(String role, int id, boolean isRememberMe) {
 		long expiration = isRememberMe ? EXPIRATION_REMEMBER : EXPIRATION;
 		return Jwts.builder()
-				.setSubject(role + "@" + id)
+				.setSubject(role + "@" + id + "@" + (isRememberMe ? "1" : "0"))
 				.setIssuer(ISSUER)
 				.setIssuedAt(new Date())
 				.setExpiration(new Date(System.currentTimeMillis() + expiration * 1000))
@@ -71,14 +71,7 @@ public class TokenUtil {
 	 * @return Token
 	 */
 	public static String createUserToken(int id, boolean isRememberMe) {
-		long expiration = isRememberMe ? EXPIRATION_REMEMBER : EXPIRATION;
-		return Jwts.builder()
-				.setSubject("user" + "@" + id)
-				.setIssuer(ISSUER)
-				.setIssuedAt(new Date())
-				.setExpiration(new Date(System.currentTimeMillis() + expiration * 1000))
-				.signWith(SIGNATURE_ALGORITHM, SECRET.getBytes())
-				.compact();
+		return createToken("user", id, isRememberMe);
 	}
 
 	/**
@@ -89,19 +82,12 @@ public class TokenUtil {
 	 * @return Token
 	 */
 	public static String createAdminToken(int id, boolean isRememberMe) {
-		long expiration = isRememberMe ? EXPIRATION_REMEMBER : EXPIRATION;
-		return Jwts.builder()
-				.setSubject("admin" + "@" + id)
-				.setIssuer(ISSUER)
-				.setIssuedAt(new Date())
-				.setExpiration(new Date(System.currentTimeMillis() + expiration * 1000))
-				.signWith(SIGNATURE_ALGORITHM, SECRET.getBytes())
-				.compact();
+		return createToken("admin", id, isRememberMe);
 	}
 
 	/**
 	 * 刷新Token
-	 * 如果Token有效期小于一天则刷新,否则正常返回
+	 * 如果Token有效期小于12小时则刷新,否则正常返回
 	 *
 	 * @param token Token
 	 * @return Token
@@ -116,6 +102,18 @@ public class TokenUtil {
 		}
 	}
 
+
+	/**
+	 * 判断是否是长期有效
+	 *
+	 * @param token Token
+	 * @return 结果
+	 */
+	public static boolean getIsRemeberMe(String token) {
+		String subject = getSubject(token);
+		String isRemeberMe = subject.split("@")[2];
+		return "1".equals(isRemeberMe);
+	}
 
 	/**
 	 * 获取ID
@@ -174,13 +172,18 @@ public class TokenUtil {
 	}
 
 	/**
-	 * 判断Token是否会在一天内过期
+	 * 判断Token有效期是否过半
 	 *
 	 * @param token Token
 	 * @return 判断结果
 	 */
 	public static boolean isExpiring(String token) {
-		return getExpiration(token) - (System.currentTimeMillis() + 24 * 60 * 60 * 1000) < 0;
+		boolean isRemeberMe = getIsRemeberMe(token);
+		if (isRemeberMe) {
+			return getExpiration(token) - (System.currentTimeMillis() + (EXPIRATION_REMEMBER / 2)) < 0;
+		} else {
+			return getExpiration(token) - (System.currentTimeMillis() + (EXPIRATION / 2)) < 0;
+		}
 	}
 
 	private static Claims getBody(String token) {

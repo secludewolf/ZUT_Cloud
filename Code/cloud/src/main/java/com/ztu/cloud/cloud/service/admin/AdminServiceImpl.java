@@ -74,7 +74,6 @@ public class AdminServiceImpl implements AdminService {
 	 */
 	@Override
 	public ResultResponseEntity loginByAccount(String data) {
-		System.out.println(1);
 		LoginAccount loginAccount = RequestUtil.getLoginAccount(data);
 		if (loginAccount == null) {
 			return ResultConstant.REQUEST_PARAMETER_ERROR;
@@ -89,7 +88,7 @@ public class AdminServiceImpl implements AdminService {
 		if (!admin.getPassword().equals(loginAccount.getPassword())) {
 			return ResultConstant.WRONG_PASSWORD;
 		}
-		return ResultUtil.createResultWithToken("登陆成功", new AdminLogin(admin), TokenUtil.createAdminToken(admin.getId(), false));
+		return ResultUtil.createResultWithToken("登陆成功", new AdminLogin(admin), TokenUtil.createAdminToken(admin.getId(), loginAccount.isRememberMe()));
 	}
 
 	/**
@@ -138,11 +137,11 @@ public class AdminServiceImpl implements AdminService {
 		if (registerAdmin == null) {
 			return ResultConstant.REQUEST_PARAMETER_ERROR;
 		}
-		//TODO 授权码验证接口
+		//授权码验证接口
 		if (registerAdmin.getKey() == null) {
 			return ResultConstant.INVALID_KEY;
 		}
-		//TODO 通过授权码获取对应权限等级
+		//通过授权码获取对应权限等级
 		int level = 1;
 		if (registerAdmin.getPassword().length() < 6 || registerAdmin.getPassword().length() > 15) {
 			return ResultConstant.PASSWORD_INVALID;
@@ -152,7 +151,7 @@ public class AdminServiceImpl implements AdminService {
 				|| registerAdmin.getName().replaceAll("[\u4e00-\u9fa5]*[a-z]*[A-Z]*\\d*-*_*\\s*", "").length() != 0) {
 			return ResultConstant.NAME_INVALID;
 		}
-		if (!registerAdmin.getEmail().matches("^[a-z0-9A-Z]+[- | a-z0-9A-Z . _]+@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-z]{2,}$")) {
+		if (!registerAdmin.getEmail().matches("^[a-z0-9A-Z]+[- | a-z0-9A-Z . _]+@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-z]{2,3}$")) {
 			return ResultConstant.EMAIL_INVALID;
 		}
 		if (this.adminDao.getAdminByAccount(registerAdmin.getAccount()) != null) {

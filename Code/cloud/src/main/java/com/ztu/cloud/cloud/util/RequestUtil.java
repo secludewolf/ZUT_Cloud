@@ -34,12 +34,12 @@ public class RequestUtil {
 		}
 		String email = JsonUtil.getString(json, "email");
 		String password = JsonUtil.getString(json, "password");
-		Boolean remaberMe = JsonUtil.getBoolean(json, "remaberMe");
-		remaberMe = remaberMe == null ? false : true;
+		Boolean rememberMe = JsonUtil.getBoolean(json, "rememberMe");
+		rememberMe = rememberMe == null ? false : rememberMe;
 		if (email == null || password == null) {
 			return null;
 		}
-		return new LoginEmail(email, password, remaberMe);
+		return new LoginEmail(email, password, rememberMe);
 	}
 
 	/**
@@ -55,12 +55,12 @@ public class RequestUtil {
 		}
 		String account = JsonUtil.getString(json, "account");
 		String password = JsonUtil.getString(json, "password");
-		Boolean remaberMe = JsonUtil.getBoolean(json, "remaberMe");
-		remaberMe = remaberMe == null ? false : true;
+		Boolean rememberMe = JsonUtil.getBoolean(json, "rememberMe");
+		rememberMe = rememberMe == null ? false : rememberMe;
 		if (account == null || password == null) {
 			return null;
 		}
-		return new LoginAccount(account, password, remaberMe);
+		return new LoginAccount(account, password, rememberMe);
 	}
 
 	/**

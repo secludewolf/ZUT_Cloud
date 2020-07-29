@@ -87,7 +87,7 @@ public class UserServiceImpl implements UserService {
 		if (repository == null) {
 			return ResultConstant.REPOSITORY_NOT_FOUND;
 		}
-		return ResultUtil.createResultWithToken("登陆成功", new UserLogin(user, repository), TokenUtil.createUserToken(user.getId(), false));
+		return ResultUtil.createResultWithToken("登陆成功", new UserLogin(user, repository), TokenUtil.createUserToken(user.getId(), loginEmail.isRememberMe()));
 	}
 
 	/**
@@ -118,7 +118,7 @@ public class UserServiceImpl implements UserService {
 		if (repository == null) {
 			return ResultConstant.REPOSITORY_NOT_FOUND;
 		}
-		return ResultUtil.createResultWithToken("登陆成功", new UserLogin(user, repository), TokenUtil.createUserToken(user.getId(), false));
+		return ResultUtil.createResultWithToken("登陆成功", new UserLogin(user, repository), TokenUtil.createUserToken(user.getId(), loginAccount.isRememberMe()));
 	}
 
 	/**
