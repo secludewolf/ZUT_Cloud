@@ -48,11 +48,8 @@ export default new Vuex.Store({
     },
   },
   actions: {
-    loginByToken(context, token) {
-      console.log(context.state);
-      console.log(token);
+    loginByToken(context) {
       const handler = function (data) {
-        console.log(data);
         context.state.user = data.user;
         context.state.repository = data.repository;
       };

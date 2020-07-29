@@ -27,7 +27,14 @@ export function request(url, data, method, handler, catcher) {
     if (code === 1) {
       handler(data);
     } else {
-      catcher(code, content);
+      //判断是否是Token错误
+      if (code === -2) {
+        localStorage.setItem("token", "");
+        self.location.href = "/login";
+        message.warn("状态异常!");
+      } else {
+        catcher(code, content);
+      }
     }
   }).catch(error => {
     message.warn("网络异常!");
