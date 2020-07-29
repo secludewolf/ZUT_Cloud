@@ -87,6 +87,7 @@ public class DownLoadServiceImpl implements DownloadService {
 			//TODO 带结构多文件下载
 			return ResultConstant.SERVER_ERROR;
 		}
+		//仓库下载
 		if (downloadId.getRepositoryId() != null && downloadId.getUserFileId() != null) {
 			UserFile userFile = this.userFileDao.getUserFile(downloadId.getUserFileId());
 			if (userFile == null) {
@@ -102,6 +103,9 @@ public class DownLoadServiceImpl implements DownloadService {
 				return ResultUtil.createResult("成功", new com.ztu.cloud.cloud.common.vo.user.DownloadId(uuid));
 			}
 		}
+		//分享下载
+		//TODO 密码验证
+		//TODO 漏洞:shareId不存在也能成功获取下载链接
 		if (downloadId.getShareId() != null && downloadId.getUserFileId() != null) {
 			Share share = this.shareDao.getShareById(downloadId.getShareId());
 			if (share == null) {

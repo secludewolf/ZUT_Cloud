@@ -183,10 +183,10 @@ public class ShareServiceImpl implements ShareService {
 		if (shareInfo.getStatus() != 1) {
 			return ResultConstant.SHARE_INVALID;
 		}
-		if (shareInfo.getPassword() != null && getShare.getPassword() == null) {
-			return ResultConstant.PASSWORD_INVALID;
-		}
-		if (shareInfo.getPassword() != null && !shareInfo.getPassword().equals(getShare.getPassword())) {
+		if (shareInfo.getPassword() != null
+				&& shareInfo.getPassword().length() != 0
+				&& getShare.getPassword() == null
+				&& !shareInfo.getPassword().equals(getShare.getPassword())) {
 			return ResultConstant.PASSWORD_INVALID;
 		}
 		ShareRepository shareRepository = this.shareRepositoryDao.getById(shareInfo.getRepoId());
