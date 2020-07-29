@@ -629,6 +629,10 @@
                 parent.$message.success("秒传成功");
               };
               const catcher = (code, content) => {
+                if (code === -19) {
+                  parent.$message.warn(content);
+                  return;
+                }
                 let chunkSize = 1024 * 1024 * 5,
                   chunks = Math.ceil(files[i].size / chunkSize),
                   currentChunk = 0,
