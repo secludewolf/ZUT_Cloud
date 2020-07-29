@@ -16,9 +16,6 @@ public class CreateAdmin {
 	private String password;
 	private String key;
 
-	public CreateAdmin() {
-	}
-
 	public CreateAdmin(String name, String account, String email, String phone, String password, String key) {
 		this.name = name;
 		this.account = account;

@@ -19,9 +19,6 @@ public class ChangeUserInfoManage {
 	private int level;
 	private long repoSize;
 
-	public ChangeUserInfoManage() {
-	}
-
 	public ChangeUserInfoManage(int id, String account, String password, String name, int status, int level, long repoSize) {
 		this.id = id;
 		this.account = account;

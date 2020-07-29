@@ -13,9 +13,6 @@ public class ChangePassword {
 	private String oldPassword;
 	private String newPassword;
 
-	public ChangePassword() {
-	}
-
 	public ChangePassword(int id, String oldPassword, String newPassword) {
 		this.id = id;
 		this.oldPassword = oldPassword;

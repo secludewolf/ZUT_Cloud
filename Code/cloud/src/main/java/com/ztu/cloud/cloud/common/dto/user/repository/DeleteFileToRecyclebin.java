@@ -14,9 +14,6 @@ public class DeleteFileToRecyclebin {
 	private String name;
 	private String path;
 
-	public DeleteFileToRecyclebin() {
-	}
-
 	public DeleteFileToRecyclebin(String repositoryId, boolean isFile, String name, String path) {
 		this.repositoryId = repositoryId;
 		this.isFile = isFile;

@@ -15,9 +15,6 @@ public class ChangeUserInfo {
 	private String phone;
 	private String name;
 
-	public ChangeUserInfo() {
-	}
-
 	public ChangeUserInfo(int id, String account, String name) {
 		this.id = id;
 		this.account = account;

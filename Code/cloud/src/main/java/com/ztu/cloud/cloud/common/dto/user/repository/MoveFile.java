@@ -14,9 +14,6 @@ public class MoveFile {
 	private String oldPath;
 	private String newPath;
 
-	public MoveFile() {
-	}
-
 	public MoveFile(String repositoryId, String name, String oldPath, String newPath) {
 		this.repositoryId = repositoryId;
 		this.name = name;

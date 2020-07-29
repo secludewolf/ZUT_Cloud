@@ -14,8 +14,6 @@ public class RenameFolder {
 	private String newName;
 	private String path;
 
-	public RenameFolder() {
-	}
 
 	public RenameFolder(String repositoryId, String oldName, String newName, String path) {
 		this.repositoryId = repositoryId;

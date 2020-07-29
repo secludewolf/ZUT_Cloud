@@ -13,10 +13,6 @@ public class DeleteFileFromRecyclebin {
 	private boolean isFile;
 	private String recycleId;
 
-
-	public DeleteFileFromRecyclebin() {
-	}
-
 	public DeleteFileFromRecyclebin(String repositoryId, boolean isFile, String recycleId) {
 		this.repositoryId = repositoryId;
 		this.isFile = isFile;

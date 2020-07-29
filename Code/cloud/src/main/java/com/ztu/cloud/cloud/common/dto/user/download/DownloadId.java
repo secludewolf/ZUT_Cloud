@@ -15,15 +15,4 @@ public class DownloadId {
 	private Long userFileId;
 	private String fileName;
 	private Folder folder;
-
-	public DownloadId() {
-	}
-
-	public DownloadId(String repositoryId, String shareId, Long userFileId, String fileName, Folder folder) {
-		this.repositoryId = repositoryId;
-		this.shareId = shareId;
-		this.userFileId = userFileId;
-		this.fileName = fileName;
-		this.folder = folder;
-	}
 }

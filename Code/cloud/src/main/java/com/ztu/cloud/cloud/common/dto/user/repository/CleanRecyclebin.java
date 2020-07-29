@@ -11,9 +11,6 @@ import lombok.Data;
 public class CleanRecyclebin {
 	private String repositoryId;
 
-	public CleanRecyclebin() {
-	}
-
 	public CleanRecyclebin(String repositoryId) {
 		this.repositoryId = repositoryId;
 	}

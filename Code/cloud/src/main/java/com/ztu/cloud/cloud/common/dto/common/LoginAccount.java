@@ -11,12 +11,11 @@ import lombok.Data;
 public class LoginAccount {
 	private String account;
 	private String password;
+	private boolean rememberMe;
 
-	public LoginAccount() {
-	}
-
-	public LoginAccount(String account, String password) {
+	public LoginAccount(String account, String password, boolean rememberMe) {
 		this.account = account;
 		this.password = password;
+		this.rememberMe = rememberMe;
 	}
 }

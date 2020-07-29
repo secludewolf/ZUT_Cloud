@@ -14,9 +14,6 @@ public class CopyFolder {
 	private String oldPath;
 	private String newPath;
 
-	public CopyFolder() {
-	}
-
 	public CopyFolder(String repositoryId, String name, String oldPath, String newPath) {
 		this.repositoryId = repositoryId;
 		this.name = name;

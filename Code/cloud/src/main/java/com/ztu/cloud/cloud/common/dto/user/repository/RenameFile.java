@@ -14,9 +14,6 @@ public class RenameFile {
 	private String newName;
 	private String path;
 
-	public RenameFile() {
-	}
-
 	public RenameFile(String repositoryId, String oldName, String newName, String path) {
 		this.repositoryId = repositoryId;
 		this.oldName = oldName;

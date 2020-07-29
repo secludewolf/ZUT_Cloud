@@ -14,9 +14,6 @@ public class Download {
 	private String fileName;
 	private InputStream inputStream;
 
-	public Download() {
-	}
-
 	public Download(String fileName, InputStream inputStream) {
 		this.fileName = fileName;
 		this.inputStream = inputStream;

@@ -11,9 +11,6 @@ import lombok.Data;
 public class ForgetEmail {
 	private String email;
 
-	public ForgetEmail() {
-	}
-
 	public ForgetEmail(String email) {
 		this.email = email;
 	}

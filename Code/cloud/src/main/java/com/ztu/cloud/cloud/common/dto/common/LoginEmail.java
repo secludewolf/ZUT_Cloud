@@ -11,12 +11,11 @@ import lombok.Data;
 public class LoginEmail {
 	private String email;
 	private String password;
+	private boolean rememberMe;
 
-	public LoginEmail() {
-	}
-
-	public LoginEmail(String email, String password) {
+	public LoginEmail(String email, String password, boolean rememberMe) {
 		this.email = email;
 		this.password = password;
+		this.rememberMe = rememberMe;
 	}
 }

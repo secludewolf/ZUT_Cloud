@@ -15,9 +15,6 @@ public class CreateUser {
 	private String phone;
 	private String name;
 
-	public CreateUser() {
-	}
-
 	public CreateUser(String account, String password, String name) {
 		this.account = account;
 		this.password = password;

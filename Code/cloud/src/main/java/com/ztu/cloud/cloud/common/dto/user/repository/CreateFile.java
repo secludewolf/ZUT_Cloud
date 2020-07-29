@@ -14,9 +14,6 @@ public class CreateFile {
 	private String name;
 	private String path;
 
-	public CreateFile() {
-	}
-
 	public CreateFile(String repositoryId, String fileId, String name, String path) {
 		this.repositoryId = repositoryId;
 		this.fileId = fileId;

@@ -16,9 +16,6 @@ public class RegisterAdmin {
 	private String password;
 	private String key;
 
-	public RegisterAdmin() {
-	}
-
 	public RegisterAdmin(String name, String account, String email, String phone, String password, String key) {
 		this.name = name;
 		this.account = account;

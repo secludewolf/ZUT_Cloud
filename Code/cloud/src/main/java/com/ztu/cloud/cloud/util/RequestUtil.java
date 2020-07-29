@@ -1,5 +1,7 @@
 package com.ztu.cloud.cloud.util;
 
+import com.sun.org.apache.bcel.internal.generic.NEW;
+import com.sun.org.apache.regexp.internal.RE;
 import com.ztu.cloud.cloud.common.dto.admin.*;
 import com.ztu.cloud.cloud.common.dto.common.*;
 import com.ztu.cloud.cloud.common.dto.user.download.DownloadId;
@@ -9,6 +11,7 @@ import com.ztu.cloud.cloud.common.dto.user.share.GetShare;
 import com.ztu.cloud.cloud.common.dto.user.share.SaveShare;
 import com.ztu.cloud.cloud.common.dto.user.user.RegisterAccount;
 import com.ztu.cloud.cloud.common.dto.user.user.RegisterEmail;
+import org.apache.hadoop.yarn.webapp.hamlet.Hamlet;
 import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 
@@ -25,15 +28,18 @@ public class RequestUtil {
 	 * @return DTO
 	 */
 	public static LoginEmail getLoginEmail(String data) {
-		try {
-			JSONObject json = JsonUtil.parseJson(data);
-			return new LoginEmail(
-					JsonUtil.getString(json, "email"),
-					JsonUtil.getString(json, "password"));
-		} catch (JSONException e) {
-			e.printStackTrace();
+		JSONObject json = JsonUtil.parseJson(data);
+		if (json == null) {
 			return null;
 		}
+		String email = JsonUtil.getString(json, "email");
+		String password = JsonUtil.getString(json, "password");
+		Boolean remaberMe = JsonUtil.getBoolean(json, "remaberMe");
+		remaberMe = remaberMe == null ? false : true;
+		if (email == null || password == null) {
+			return null;
+		}
+		return new LoginEmail(email, password, remaberMe);
 	}
 
 	/**
@@ -43,15 +49,18 @@ public class RequestUtil {
 	 * @return DTO
 	 */
 	public static LoginAccount getLoginAccount(String data) {
-		try {
-			JSONObject json = JsonUtil.parseJson(data);
-			return new LoginAccount(
-					JsonUtil.getString(json, "account"),
-					JsonUtil.getString(json, "password"));
-		} catch (JSONException e) {
-			e.printStackTrace();
+		JSONObject json = JsonUtil.parseJson(data);
+		if (json == null) {
 			return null;
 		}
+		String account = JsonUtil.getString(json, "account");
+		String password = JsonUtil.getString(json, "password");
+		Boolean remaberMe = JsonUtil.getBoolean(json, "remaberMe");
+		remaberMe = remaberMe == null ? false : true;
+		if (account == null || password == null) {
+			return null;
+		}
+		return new LoginAccount(account, password, remaberMe);
 	}
 
 	/**
@@ -61,14 +70,15 @@ public class RequestUtil {
 	 * @return DTO
 	 */
 	public static ForgetEmail getForgetEmail(String data) {
-		try {
-			JSONObject json = JsonUtil.parseJson(data);
-			return new ForgetEmail(
-					JsonUtil.getString(json, "email"));
-		} catch (JSONException e) {
-			e.printStackTrace();
+		JSONObject json = JsonUtil.parseJson(data);
+		if (json == null) {
 			return null;
 		}
+		String email = JsonUtil.getString(json, "email");
+		if (email == null) {
+			return null;
+		}
+		return new ForgetEmail(email);
 	}
 
 	/**
@@ -78,17 +88,18 @@ public class RequestUtil {
 	 * @return DTO
 	 */
 	public static RegisterEmail getRegisterEmail(String data) {
-		try {
-			JSONObject json = JsonUtil.parseJson(data);
-			return new RegisterEmail(
-					JsonUtil.getString(json, "name"),
-					JsonUtil.getString(json, "account"),
-					JsonUtil.getString(json, "email"),
-					JsonUtil.getString(json, "password"));
-		} catch (JSONException e) {
-			e.printStackTrace();
+		JSONObject json = JsonUtil.parseJson(data);
+		if (json == null) {
 			return null;
 		}
+		String name = JsonUtil.getString(json, "name");
+		String account = JsonUtil.getString(json, "account");
+		String email = JsonUtil.getString(json, "email");
+		String password = JsonUtil.getString(json, "password");
+		if (name == null || account == null || email == null || password == null) {
+			return null;
+		}
+		return new RegisterEmail(name, account, email, password);
 	}
 
 	/**
@@ -98,16 +109,17 @@ public class RequestUtil {
 	 * @return DTO
 	 */
 	public static RegisterAccount getRegisterAccount(String data) {
-		try {
-			JSONObject json = JsonUtil.parseJson(data);
-			return new RegisterAccount(
-					JsonUtil.getString(json, "name"),
-					JsonUtil.getString(json, "account"),
-					JsonUtil.getString(json, "password"));
-		} catch (JSONException e) {
-			e.printStackTrace();
+		JSONObject json = JsonUtil.parseJson(data);
+		if (json == null) {
 			return null;
 		}
+		String name = JsonUtil.getString(json, "name");
+		String account = JsonUtil.getString(json, "account");
+		String password = JsonUtil.getString(json, "password");
+		if (name == null || account == null || password == null) {
+			return null;
+		}
+		return new RegisterAccount(name, account, password);
 	}
 
 	/**
@@ -119,27 +131,19 @@ public class RequestUtil {
 	public static ChangeUserInfo getChangeUserInfo(String data) {
 		JSONObject json;
 		ChangeUserInfo changeUserInfo;
-		try {
-			json = JsonUtil.parseJson(data);
-			changeUserInfo = new ChangeUserInfo(
-					JsonUtil.getInt(json, "id"),
-					JsonUtil.getString(json, "account"),
-					JsonUtil.getString(json, "name"));
-			System.out.println(1);
-		} catch (JSONException e) {
-			e.printStackTrace();
+		json = JsonUtil.parseJson(data);
+		if (json == null) {
 			return null;
 		}
-		try {
-			changeUserInfo.setEmail(JsonUtil.getString(json, "email"));
-		} catch (JSONException e) {
-			changeUserInfo.setEmail(null);
+		Integer id = JsonUtil.getInt(json, "id");
+		String account = JsonUtil.getString(json, "account");
+		String name = JsonUtil.getString(json, "name");
+		if (id == null || account == null || name == null) {
+			return null;
 		}
-		try {
-			changeUserInfo.setPhone(JsonUtil.getString(json, "phone"));
-		} catch (JSONException e) {
-			changeUserInfo.setPhone(null);
-		}
+		changeUserInfo = new ChangeUserInfo(id, account, name);
+		changeUserInfo.setEmail(JsonUtil.getString(json, "email"));
+		changeUserInfo.setPhone(JsonUtil.getString(json, "phone"));
 		return changeUserInfo;
 	}
 
@@ -150,16 +154,17 @@ public class RequestUtil {
 	 * @return DTO
 	 */
 	public static ChangePassword getChangePassword(String data) {
-		try {
-			JSONObject json = JsonUtil.parseJson(data);
-			return new ChangePassword(
-					JsonUtil.getInt(json, "id"),
-					JsonUtil.getString(json, "oldPassword"),
-					JsonUtil.getString(json, "newPassword"));
-		} catch (JSONException e) {
-			e.printStackTrace();
+		JSONObject json = JsonUtil.parseJson(data);
+		if (json == null) {
 			return null;
 		}
+		Integer id = JsonUtil.getInt(json, "id");
+		String oldPassword = JsonUtil.getString(json, "oldPassword");
+		String newPassword = JsonUtil.getString(json, "newPassword");
+		if (id == null || oldPassword == null || newPassword == null) {
+			return null;
+		}
+		return new ChangePassword(id, oldPassword, newPassword);
 	}
 
 	/**
@@ -169,19 +174,20 @@ public class RequestUtil {
 	 * @return DTO
 	 */
 	public static RegisterAdmin getRegisterAdmin(String data) {
-		try {
-			JSONObject json = JsonUtil.parseJson(data);
-			return new RegisterAdmin(
-					JsonUtil.getString(json, "name"),
-					JsonUtil.getString(json, "account"),
-					JsonUtil.getString(json, "email"),
-					JsonUtil.getString(json, "phone"),
-					JsonUtil.getString(json, "password"),
-					JsonUtil.getString(json, "key"));
-		} catch (JSONException e) {
-			e.printStackTrace();
+		JSONObject json = JsonUtil.parseJson(data);
+		if (json == null) {
 			return null;
 		}
+		String name = JsonUtil.getString(json, "name");
+		String account = JsonUtil.getString(json, "account");
+		String email = JsonUtil.getString(json, "email");
+		String phone = JsonUtil.getString(json, "phone");
+		String password = JsonUtil.getString(json, "password");
+		String key = JsonUtil.getString(json, "key");
+		if (name == null || account == null || email == null || phone == null || password == null || key == null) {
+			return null;
+		}
+		return new RegisterAdmin(name, account, email, phone, password, key);
 	}
 
 	/**
@@ -191,441 +197,388 @@ public class RequestUtil {
 	 * @return DTO
 	 */
 	public static CreateUser getCreateUser(String data) {
-		JSONObject json;
-		CreateUser createUser;
-		try {
-			json = JsonUtil.parseJson(data);
-			createUser = new CreateUser(
-					JsonUtil.getString(json, "account"),
-					JsonUtil.getString(json, "password"),
-					JsonUtil.getString(json, "name"));
-			System.out.println(1);
-		} catch (JSONException e) {
-			e.printStackTrace();
+		JSONObject json = JsonUtil.parseJson(data);
+		if (json == null) {
 			return null;
 		}
-		try {
-			createUser.setEmail(JsonUtil.getString(json, "email"));
-		} catch (JSONException e) {
-			createUser.setEmail(null);
+		String account = JsonUtil.getString(json, "account");
+		String password = JsonUtil.getString(json, "password");
+		String name = JsonUtil.getString(json, "name");
+		if (account == null || password == null || name == null) {
+			return null;
 		}
-		try {
-			createUser.setPhone(JsonUtil.getString(json, "phone"));
-		} catch (JSONException e) {
-			createUser.setPhone(null);
-		}
+		CreateUser createUser = new CreateUser(account, password, name);
+		createUser.setEmail(JsonUtil.getString(json, "email"));
+		createUser.setPhone(JsonUtil.getString(json, "phone"));
 		return createUser;
 	}
 
 	public static CreateAdmin getCreateAdmin(String data) {
-		try {
-			JSONObject json = JsonUtil.parseJson(data);
-			return new CreateAdmin(
-					JsonUtil.getString(json, "name"),
-					JsonUtil.getString(json, "account"),
-					JsonUtil.getString(json, "email"),
-					JsonUtil.getString(json, "phone"),
-					JsonUtil.getString(json, "password"),
-					JsonUtil.getString(json, "key"));
-		} catch (JSONException e) {
-			e.printStackTrace();
+		JSONObject json = JsonUtil.parseJson(data);
+		if (json == null) {
 			return null;
 		}
+		String name = JsonUtil.getString(json, "name");
+		String account = JsonUtil.getString(json, "account");
+		String email = JsonUtil.getString(json, "email");
+		String phone = JsonUtil.getString(json, "phone");
+		String password = JsonUtil.getString(json, "password");
+		String key = JsonUtil.getString(json, "key");
+		if (name == null || account == null || email == null || phone == null || password == null || key == null) {
+			return null;
+		}
+		return new CreateAdmin(name, account, email, phone, password, key);
 	}
 
 	public static DeleteUser getDeleteUser(String data) {
-		JSONObject json;
-		DeleteUser deleteUser = new DeleteUser();
-		try {
-			json = JsonUtil.parseJson(data);
-		} catch (JSONException e) {
-			e.printStackTrace();
+		JSONObject json = JsonUtil.parseJson(data);
+		if (json == null) {
 			return null;
 		}
-		try {
-			deleteUser.setId(JsonUtil.getInt(json, "id"));
+		DeleteUser deleteUser = new DeleteUser();
+		Integer id = JsonUtil.getInt(json, "id");
+		if (id != null) {
+			deleteUser.setId(id);
 			return deleteUser;
-		} catch (JSONException e) {
-			deleteUser.setId(0);
 		}
-		try {
-			deleteUser.setAccount(JsonUtil.getString(json, "account"));
+		String account = JsonUtil.getString(json, "account");
+		if (account != null) {
+			deleteUser.setAccount(account);
 			return deleteUser;
-		} catch (JSONException e) {
-			deleteUser.setAccount(null);
 		}
-		try {
-			deleteUser.setEmail(JsonUtil.getString(json, "email"));
+		String email = JsonUtil.getString(json, "email");
+		if (email != null) {
+			deleteUser.setEmail(email);
 			return deleteUser;
-		} catch (JSONException e) {
-			deleteUser.setEmail(null);
 		}
-		try {
-			deleteUser.setPhone(JsonUtil.getString(json, "phone"));
+		String phone = JsonUtil.getString(json, "phone");
+		if (phone != null) {
+			deleteUser.setPhone(phone);
 			return deleteUser;
-		} catch (JSONException e) {
-			deleteUser.setPhone(null);
 		}
 		return null;
 	}
 
 	public static DeleteAdmin getDeleteAdmin(String data) {
-		JSONObject json;
-		DeleteAdmin deleteAdmin = new DeleteAdmin();
-		try {
-			json = JsonUtil.parseJson(data);
-		} catch (JSONException e) {
-			e.printStackTrace();
+		JSONObject json = JsonUtil.parseJson(data);
+		if (json == null) {
 			return null;
 		}
-		try {
-			deleteAdmin.setId(JsonUtil.getInt(json, "id"));
+		DeleteAdmin deleteAdmin = new DeleteAdmin();
+		Integer id = JsonUtil.getInt(json, "id");
+		if (id != null) {
+			deleteAdmin.setId(id);
 			return deleteAdmin;
-		} catch (JSONException e) {
-			deleteAdmin.setId(0);
 		}
-		try {
-			deleteAdmin.setAccount(JsonUtil.getString(json, "account"));
+		String account = JsonUtil.getString(json, "account");
+		if (account != null) {
+			deleteAdmin.setAccount(account);
 			return deleteAdmin;
-		} catch (JSONException e) {
-			deleteAdmin.setAccount(null);
 		}
-		try {
-			deleteAdmin.setEmail(JsonUtil.getString(json, "email"));
+		String email = JsonUtil.getString(json, "email");
+		if (email != null) {
+			deleteAdmin.setEmail(email);
 			return deleteAdmin;
-		} catch (JSONException e) {
-			deleteAdmin.setEmail(null);
 		}
-		try {
-			deleteAdmin.setPhone(JsonUtil.getString(json, "phone"));
+		String phone = JsonUtil.getString(json, "phone");
+		if (phone != null) {
+			deleteAdmin.setPhone(phone);
 			return deleteAdmin;
-		} catch (JSONException e) {
-			deleteAdmin.setPhone(null);
 		}
 		return null;
 	}
 
 	public static ChangeUserInfoManage getChangeUserInfoManage(String data) {
-		JSONObject json;
-		ChangeUserInfoManage changeUserInfoManage;
-		try {
-			json = JsonUtil.parseJson(data);
-			changeUserInfoManage = new ChangeUserInfoManage(
-					JsonUtil.getInt(json, "id"),
-					JsonUtil.getString(json, "password"),
-					JsonUtil.getString(json, "account"),
-					JsonUtil.getString(json, "name"),
-					JsonUtil.getInt(json, "status"),
-					JsonUtil.getInt(json, "level"),
-					JsonUtil.getLong(json, "repoSize"));
-			System.out.println(1);
-		} catch (JSONException e) {
-			e.printStackTrace();
+		JSONObject json = JsonUtil.parseJson(data);
+		if (json == null) {
 			return null;
 		}
-		try {
-			changeUserInfoManage.setEmail(JsonUtil.getString(json, "email"));
-		} catch (JSONException e) {
-			changeUserInfoManage.setEmail(null);
+		Integer id = JsonUtil.getInt(json, "id");
+		String password = JsonUtil.getString(json, "account");
+		String account = JsonUtil.getString(json, "password");
+		String name = JsonUtil.getString(json, "name");
+		Integer status = JsonUtil.getInt(json, "status");
+		Integer level = JsonUtil.getInt(json, "level");
+		Long repoSize = JsonUtil.getLong(json, "repoSize");
+		if (id == null || password == null || account == null || name == null || status == null || level == null || repoSize == null) {
+			return null;
 		}
-		try {
-			changeUserInfoManage.setPhone(JsonUtil.getString(json, "phone"));
-		} catch (JSONException e) {
-			changeUserInfoManage.setPhone(null);
-		}
+		ChangeUserInfoManage changeUserInfoManage = new ChangeUserInfoManage(id, account, password, name, status, level, repoSize);
+		changeUserInfoManage.setEmail(JsonUtil.getString(json, "email"));
+		changeUserInfoManage.setPhone(JsonUtil.getString(json, "phone"));
 		return changeUserInfoManage;
 	}
 
 	public static ChangeAdminInfoManage getChangeAdminInfoManage(String data) {
-		JSONObject json;
-		ChangeAdminInfoManage changeAdminInfoManage;
-		try {
-			json = JsonUtil.parseJson(data);
-			changeAdminInfoManage = new ChangeAdminInfoManage(
-					JsonUtil.getInt(json, "id"),
-					JsonUtil.getString(json, "password"),
-					JsonUtil.getString(json, "account"),
-					JsonUtil.getString(json, "email"),
-					JsonUtil.getString(json, "phone"),
-					JsonUtil.getString(json, "name"),
-					JsonUtil.getInt(json, "status"),
-					JsonUtil.getInt(json, "level"));
-			System.out.println(1);
-		} catch (JSONException e) {
-			e.printStackTrace();
+		JSONObject json = JsonUtil.parseJson(data);
+		if (json == null) {
 			return null;
 		}
+		Integer id = JsonUtil.getInt(json, "id");
+		String password = JsonUtil.getString(json, "password");
+		String account = JsonUtil.getString(json, "account");
+		String email = JsonUtil.getString(json, "email");
+		String phone = JsonUtil.getString(json, "phone");
+		String name = JsonUtil.getString(json, "name");
+		Integer status = JsonUtil.getInt(json, "status");
+		Integer level = JsonUtil.getInt(json, "level");
+		Long repoSize = JsonUtil.getLong(json, "repoSize");
+		if (id == null || password == null || account == null || email == null || phone == null || name == null || status == null || level == null || repoSize == null) {
+			return null;
+		}
+		ChangeAdminInfoManage changeAdminInfoManage = new ChangeAdminInfoManage(id, account, password, email, phone, name, status, level);
 		return changeAdminInfoManage;
 	}
 
 	public static CreateFile getCreateFile(String data) {
-		try {
-			JSONObject json = JsonUtil.parseJson(data);
-			return new CreateFile(
-					JsonUtil.getString(json, "repositoryId"),
-					JsonUtil.getString(json, "fileId"),
-					JsonUtil.getString(json, "name"),
-					JsonUtil.getString(json, "path"));
-		} catch (JSONException e) {
-			e.printStackTrace();
+		JSONObject json = JsonUtil.parseJson(data);
+		if (json == null) {
 			return null;
 		}
+		String repositoryId = JsonUtil.getString(json, "repositoryId");
+		String fileId = JsonUtil.getString(json, "fileId");
+		String name = JsonUtil.getString(json, "name");
+		String path = JsonUtil.getString(json, "path");
+		if (repositoryId == null || fileId == null || name == null || path == null) {
+			return null;
+		}
+		return new CreateFile(repositoryId, fileId, name, path);
 	}
 
 	public static CreateFolder getCreateFolder(String data) {
-		try {
-			JSONObject json = JsonUtil.parseJson(data);
-			return new CreateFolder(
-					JsonUtil.getString(json, "repositoryId"),
-					JsonUtil.getString(json, "name"),
-					JsonUtil.getString(json, "path"));
-		} catch (JSONException e) {
-			e.printStackTrace();
+		JSONObject json = JsonUtil.parseJson(data);
+		if (json == null) {
 			return null;
 		}
+		String repositoryId = JsonUtil.getString(json, "repositoryId");
+		String name = JsonUtil.getString(json, "name");
+		String path = JsonUtil.getString(json, "path");
+		if (repositoryId == null || name == null || path == null) {
+			return null;
+		}
+		return new CreateFolder(repositoryId, name, path);
 	}
 
 	public static MoveFile getMoveFile(String data) {
-		try {
-			JSONObject json = JsonUtil.parseJson(data);
-			return new MoveFile(
-					JsonUtil.getString(json, "repositoryId"),
-					JsonUtil.getString(json, "name"),
-					JsonUtil.getString(json, "oldPath"),
-					JsonUtil.getString(json, "newPath"));
-		} catch (JSONException e) {
-			e.printStackTrace();
+		JSONObject json = JsonUtil.parseJson(data);
+		if (json == null) {
 			return null;
 		}
+		String repositoryId = JsonUtil.getString(json, "repositoryId");
+		String name = JsonUtil.getString(json, "name");
+		String oldPath = JsonUtil.getString(json, "oldPath");
+		String newPath = JsonUtil.getString(json, "newPath");
+		if (repositoryId == null || name == null || oldPath == null || newPath == null) {
+			return null;
+		}
+		return new MoveFile(repositoryId, name, oldPath, newPath);
 	}
 
 
 	public static MoveFolder getMoveFolder(String data) {
-		try {
-			JSONObject json = JsonUtil.parseJson(data);
-			return new MoveFolder(
-					JsonUtil.getString(json, "repositoryId"),
-					JsonUtil.getString(json, "name"),
-					JsonUtil.getString(json, "oldPath"),
-					JsonUtil.getString(json, "newPath"));
-		} catch (JSONException e) {
-			e.printStackTrace();
+		JSONObject json = JsonUtil.parseJson(data);
+		if (json == null) {
 			return null;
 		}
+		String repositoryId = JsonUtil.getString(json, "repositoryId");
+		String name = JsonUtil.getString(json, "name");
+		String oldPath = JsonUtil.getString(json, "oldPath");
+		String newPath = JsonUtil.getString(json, "newPath");
+		if (repositoryId == null || name == null || oldPath == null || newPath == null) {
+			return null;
+		}
+		return new MoveFolder(repositoryId, name, oldPath, newPath);
 	}
 
 	public static CopyFile getCopyFile(String data) {
-		try {
-			JSONObject json = JsonUtil.parseJson(data);
-			return new CopyFile(
-					JsonUtil.getString(json, "repositoryId"),
-					JsonUtil.getString(json, "name"),
-					JsonUtil.getString(json, "oldPath"),
-					JsonUtil.getString(json, "newPath"));
-		} catch (JSONException e) {
-			e.printStackTrace();
+		JSONObject json = JsonUtil.parseJson(data);
+		if (json == null) {
 			return null;
 		}
+		String repositoryId = JsonUtil.getString(json, "repositoryId");
+		String name = JsonUtil.getString(json, "name");
+		String oldPath = JsonUtil.getString(json, "oldPath");
+		String newPath = JsonUtil.getString(json, "newPath");
+		if (repositoryId == null || name == null || oldPath == null || newPath == null) {
+			return null;
+		}
+		return new CopyFile(repositoryId, name, oldPath, newPath);
 	}
 
 
 	public static CopyFolder getCopyFolder(String data) {
-		try {
-			JSONObject json = JsonUtil.parseJson(data);
-			return new CopyFolder(
-					JsonUtil.getString(json, "repositoryId"),
-					JsonUtil.getString(json, "name"),
-					JsonUtil.getString(json, "oldPath"),
-					JsonUtil.getString(json, "newPath"));
-		} catch (JSONException e) {
-			e.printStackTrace();
+		JSONObject json = JsonUtil.parseJson(data);
+		if (json == null) {
 			return null;
 		}
+		String repositoryId = JsonUtil.getString(json, "repositoryId");
+		String name = JsonUtil.getString(json, "name");
+		String oldPath = JsonUtil.getString(json, "oldPath");
+		String newPath = JsonUtil.getString(json, "newPath");
+		if (repositoryId == null || name == null || oldPath == null || newPath == null) {
+			return null;
+		}
+		return new CopyFolder(repositoryId, name, oldPath, newPath);
 	}
 
 	public static RenameFile getRenameFile(String data) {
-		try {
-			JSONObject json = JsonUtil.parseJson(data);
-			return new RenameFile(
-					JsonUtil.getString(json, "repositoryId"),
-					JsonUtil.getString(json, "oldName"),
-					JsonUtil.getString(json, "newName"),
-					JsonUtil.getString(json, "path"));
-		} catch (JSONException e) {
-			e.printStackTrace();
+		JSONObject json = JsonUtil.parseJson(data);
+		if (json == null) {
 			return null;
 		}
+		String repositoryId = JsonUtil.getString(json, "repositoryId");
+		String oldName = JsonUtil.getString(json, "oldName");
+		String newName = JsonUtil.getString(json, "newName");
+		String path = JsonUtil.getString(json, "path");
+		if (repositoryId == null || oldName == null || newName == null || path == null) {
+			return null;
+		}
+		return new RenameFile(repositoryId, oldName, newName, path);
 	}
 
 
 	public static RenameFolder getRenameFolder(String data) {
-		try {
-			JSONObject json = JsonUtil.parseJson(data);
-			return new RenameFolder(
-					JsonUtil.getString(json, "repositoryId"),
-					JsonUtil.getString(json, "oldName"),
-					JsonUtil.getString(json, "newName"),
-					JsonUtil.getString(json, "path"));
-		} catch (JSONException e) {
-			e.printStackTrace();
+		JSONObject json = JsonUtil.parseJson(data);
+		if (json == null) {
 			return null;
 		}
+		String repositoryId = JsonUtil.getString(json, "repositoryId");
+		String oldName = JsonUtil.getString(json, "oldName");
+		String newName = JsonUtil.getString(json, "newName");
+		String path = JsonUtil.getString(json, "path");
+		if (repositoryId == null || oldName == null || newName == null || path == null) {
+			return null;
+		}
+		return new RenameFolder(repositoryId, oldName, newName, path);
 	}
 
 	public static DeleteFileToRecyclebin getDeleteFileToRecyclebin(String data) {
-		try {
-			JSONObject json = JsonUtil.parseJson(data);
-			return new DeleteFileToRecyclebin(
-					JsonUtil.getString(json, "repositoryId"),
-					JsonUtil.getBoolean(json, "isFile"),
-					JsonUtil.getString(json, "name"),
-					JsonUtil.getString(json, "path"));
-		} catch (JSONException e) {
-			e.printStackTrace();
+		JSONObject json = JsonUtil.parseJson(data);
+		if (json == null) {
 			return null;
 		}
+		String repositoryId = JsonUtil.getString(json, "repositoryId");
+		Boolean isFile = JsonUtil.getBoolean(json, "isFile");
+		String name = JsonUtil.getString(json, "name");
+		String path = JsonUtil.getString(json, "path");
+		if (repositoryId == null || isFile == null || name == null || path == null) {
+			return null;
+		}
+		return new DeleteFileToRecyclebin(repositoryId, isFile, name, path);
 	}
 
 	public static RestoreFile getDeleteRestoreFile(String data) {
-		try {
-			JSONObject json = JsonUtil.parseJson(data);
-			return new RestoreFile(
-					JsonUtil.getString(json, "repositoryId"),
-					JsonUtil.getBoolean(json, "isFile"),
-					JsonUtil.getString(json, "recycleId"));
-		} catch (JSONException e) {
-			e.printStackTrace();
+		JSONObject json = JsonUtil.parseJson(data);
+		if (json == null) {
 			return null;
 		}
+		String repositoryId = JsonUtil.getString(json, "repositoryId");
+		Boolean isFile = JsonUtil.getBoolean(json, "isFile");
+		String recycleId = JsonUtil.getString(json, "recycleId");
+		if (repositoryId == null || isFile == null || recycleId == null) {
+			return null;
+		}
+		return new RestoreFile(repositoryId, isFile, recycleId);
 	}
 
 	public static DeleteFileFromRecyclebin getDeleteFileFromRecyclebin(String data) {
-		try {
-			JSONObject json = JsonUtil.parseJson(data);
-			return new DeleteFileFromRecyclebin(
-					JsonUtil.getString(json, "repositoryId"),
-					JsonUtil.getBoolean(json, "isFile"),
-					JsonUtil.getString(json, "recycleId"));
-		} catch (JSONException e) {
-			e.printStackTrace();
+		JSONObject json = JsonUtil.parseJson(data);
+		if (json == null) {
 			return null;
 		}
+		String repositoryId = JsonUtil.getString(json, "repositoryId");
+		Boolean isFile = JsonUtil.getBoolean(json, "isFile");
+		String recycleId = JsonUtil.getString(json, "recycleId");
+		if (repositoryId == null || isFile == null || recycleId == null) {
+			return null;
+		}
+		return new DeleteFileFromRecyclebin(repositoryId, isFile, recycleId);
 	}
 
 	public static CleanRecyclebin getCleanRecyclebin(String data) {
-		try {
-			JSONObject json = JsonUtil.parseJson(data);
-			return new CleanRecyclebin(JsonUtil.getString(json, "repositoryId"));
-		} catch (JSONException e) {
-			e.printStackTrace();
+		JSONObject json = JsonUtil.parseJson(data);
+		if (json == null) {
 			return null;
 		}
+		String repositoryId = JsonUtil.getString(json, "repositoryId");
+		if (repositoryId == null) {
+			return null;
+		}
+		return new CleanRecyclebin(repositoryId);
 	}
 
 	public static DownloadId getDownloadId(String data) {
-		DownloadId downloadId = new DownloadId();
-		JSONObject json;
-		try {
-			json = JsonUtil.parseJson(data);
-		} catch (JSONException e) {
-			e.printStackTrace();
+		JSONObject json = JsonUtil.parseJson(data);
+		if (json == null) {
 			return null;
 		}
-		try {
-			downloadId.setRepositoryId(JsonUtil.getString(json, "repositoryId"));
-		} catch (JSONException e) {
-			downloadId.setRepositoryId(null);
-		}
-		try {
-			downloadId.setShareId(JsonUtil.getString(json, "shareId"));
-		} catch (JSONException e) {
-			downloadId.setShareId(null);
-		}
-		try {
-			downloadId.setUserFileId(JsonUtil.getLong(json, "userFileId"));
-		} catch (JSONException e) {
-			downloadId.setUserFileId(null);
-		}
-		try {
-			downloadId.setFileName(JsonUtil.getString(json, "fileName"));
-		} catch (JSONException e) {
-			downloadId.setFileName(null);
-		}
+		DownloadId downloadId = new DownloadId();
+		downloadId.setRepositoryId(JsonUtil.getString(json, "repositoryId"));
+		downloadId.setShareId(JsonUtil.getString(json, "shareId"));
+		downloadId.setUserFileId(JsonUtil.getLong(json, "userFileId"));
+		downloadId.setFileName(JsonUtil.getString(json, "fileName"));
 		//TODO 多文件分享
-//        downloadId.setFolder(new Folder(JsonUtil.getJSONObject(json, "folder")));
 		downloadId.setFolder(null);
 		return downloadId;
 	}
 
 	public static CreateShare getCreateShare(String data) {
-		JSONObject json;
-		CreateShare createShare;
-		try {
-			json = JsonUtil.parseJson(data);
-			createShare = new CreateShare(
-					JsonUtil.getString(json, "repositoryId"),
-					JsonUtil.getString(json, "name"),
-					JsonUtil.getString(json, "path"),
-					JsonUtil.getLong(json, "validTime"));
-		} catch (JSONException e) {
-			e.printStackTrace();
+		JSONObject json = JsonUtil.parseJson(data);
+		if (json == null) {
 			return null;
 		}
-		try {
-			createShare.setPassword(JsonUtil.getString(json, "password"));
-		} catch (JSONException e) {
-			createShare.setPassword(null);
+		String repositoryId = JsonUtil.getString(json, "repositoryId");
+		String name = JsonUtil.getString(json, "name");
+		String path = JsonUtil.getString(json, "path");
+		Long validTime = JsonUtil.getLong(json, "validTime");
+		if (repositoryId == null || name == null || path == null || validTime == null) {
+			return null;
 		}
+		CreateShare createShare = new CreateShare(repositoryId, name, path, validTime);
+		createShare.setPassword(JsonUtil.getString(json, "password"));
 		return createShare;
 	}
 
 	public static GetShare getShare(String data) {
-		JSONObject json;
-		GetShare getShare;
-		try {
-			json = JsonUtil.parseJson(data);
-			getShare = new GetShare(JsonUtil.getString(json, "shareId"));
-		} catch (JSONException e) {
-			e.printStackTrace();
+		JSONObject json = JsonUtil.parseJson(data);
+		if (json == null) {
 			return null;
 		}
-		try {
-			getShare.setPassword(JsonUtil.getString(json, "password"));
-		} catch (JSONException e) {
-			getShare.setPassword(null);
+		String shareId = JsonUtil.getString(json, "shareId");
+		if (shareId == null) {
+			return null;
 		}
+		GetShare getShare = new GetShare(shareId);
+		getShare.setPassword(JsonUtil.getString(json, "password"));
 		return getShare;
 	}
 
 	public static SaveShare getSaveShare(String data) {
-		JSONObject json;
-		SaveShare saveShare;
-		try {
-			json = JsonUtil.parseJson(data);
-			saveShare = new SaveShare(JsonUtil.getString(json, "shareId"),
-					JsonUtil.getString(json, "path"));
-		} catch (JSONException e) {
-			e.printStackTrace();
+		JSONObject json = JsonUtil.parseJson(data);
+		if (json == null) {
 			return null;
 		}
-		try {
-			saveShare.setPassword(JsonUtil.getString(json, "password"));
-		} catch (JSONException e) {
-			saveShare.setPassword(null);
+		String shareId = JsonUtil.getString(json, "shareId");
+		String path = JsonUtil.getString(json, "path");
+		if (shareId == null || path == null) {
+			return null;
 		}
+		SaveShare saveShare = new SaveShare(shareId, path);
+		saveShare.setPassword(JsonUtil.getString(json, "password"));
 		return saveShare;
 	}
 
 	public static CreateInform getCreateInform(String data) {
-		try {
-			JSONObject json = JsonUtil.parseJson(data);
-			return new CreateInform(
-					JsonUtil.getString(json, "header"),
-					JsonUtil.getString(json, "content"),
-					JsonUtil.getLong(json, "validTime"));
-		} catch (JSONException e) {
-			e.printStackTrace();
+		JSONObject json = JsonUtil.parseJson(data);
+		if (json == null) {
 			return null;
 		}
+		String header = JsonUtil.getString(json, "header");
+		String content = JsonUtil.getString(json, "content");
+		Long validTime = JsonUtil.getLong(json, "validTime");
+		if (header == null || content == null || validTime == null) {
+			return null;
+		}
+		return new CreateInform(header, content, validTime);
 	}
 }

@@ -14,9 +14,6 @@ public class CopyFile {
 	private String oldPath;
 	private String newPath;
 
-	public CopyFile() {
-	}
-
 	public CopyFile(String repositoryId, String name, String oldPath, String newPath) {
 		this.repositoryId = repositoryId;
 		this.name = name;

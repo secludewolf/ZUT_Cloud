@@ -18,9 +18,6 @@ public class ChangeAdminInfoManage {
 	private int status;
 	private int level;
 
-	public ChangeAdminInfoManage() {
-	}
-
 	public ChangeAdminInfoManage(int id, String account, String password, String email, String phone, String name, int status, int level) {
 		this.id = id;
 		this.account = account;

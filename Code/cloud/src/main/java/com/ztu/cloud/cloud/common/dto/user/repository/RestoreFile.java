@@ -13,10 +13,6 @@ public class RestoreFile {
 	private boolean isFile;
 	private String recycleId;
 
-
-	public RestoreFile() {
-	}
-
 	public RestoreFile(String repositoryId, boolean isFile, String recycleId) {
 		this.repositoryId = repositoryId;
 		this.isFile = isFile;
