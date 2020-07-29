@@ -41,7 +41,7 @@ export function getFormatSize(size, fractionDigits = 2) {
     return "-";
   }
   let unitArr = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
-  let index = 0;
+  let index;
   size = parseFloat(size);
   index = Math.floor(Math.log(size) / Math.log(1024));
   let formatSize = size / Math.pow(1024, index);
