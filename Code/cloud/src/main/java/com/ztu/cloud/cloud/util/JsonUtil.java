@@ -14,10 +14,14 @@ public class JsonUtil {
 	 *
 	 * @param jsonString JSON字符串
 	 * @return JSONObject
-	 * @throws JSONException JSON解析错误
 	 */
-	public static JSONObject parseJson(String jsonString) throws JSONException {
-		return new JSONObject(jsonString);
+	public static JSONObject parseJson(String jsonString) {
+		try {
+			return new JSONObject(jsonString);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	/**
@@ -26,10 +30,14 @@ public class JsonUtil {
 	 * @param json JSON数据
 	 * @param key  Key
 	 * @return String
-	 * @throws JSONException JSON解析错误
 	 */
-	public static String getString(JSONObject json, String key) throws JSONException {
-		return json.getString(key);
+	public static String getString(JSONObject json, String key) {
+		try {
+			return json.getString(key);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	/**
@@ -38,10 +46,14 @@ public class JsonUtil {
 	 * @param json JSON数据
 	 * @param key  Key
 	 * @return Integer
-	 * @throws JSONException JSON解析错误
 	 */
-	public static Integer getInt(JSONObject json, String key) throws JSONException {
-		return json.getInt(key);
+	public static Integer getInt(JSONObject json, String key) {
+		try {
+			return json.getInt(key);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
 	/**
@@ -50,17 +62,37 @@ public class JsonUtil {
 	 * @param json JSON数据
 	 * @param key  Key
 	 * @return Long
-	 * @throws JSONException JSON解析错误
 	 */
-	public static Long getLong(JSONObject json, String key) throws JSONException {
-		return json.getLong(key);
+	public static Long getLong(JSONObject json, String key) {
+		try {
+			return json.getLong(key);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
-	public static boolean getBoolean(JSONObject json, String key) throws JSONException {
-		return json.getBoolean(key);
+	/**
+	 * 获取Boolean
+	 * @param json JSON数据
+	 * @param key Key
+	 * @return Boolean
+	 */
+	public static Boolean getBoolean(JSONObject json, String key) {
+		try {
+			return json.getBoolean(key);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 
-	public static JSONObject getJSONObject(JSONObject json, String key) throws JSONException {
-		return json.getJSONObject(key);
+	public static JSONObject getJSONObject(JSONObject json, String key) {
+		try {
+			return json.getJSONObject(key);
+		} catch (JSONException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 }
