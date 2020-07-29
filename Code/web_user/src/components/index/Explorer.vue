@@ -76,8 +76,8 @@
         </div>
       </a-drawer>
       <div style="position: absolute;text-align:right;bottom: 30px;left:10px;width: 180px;height: 20px;">
-        <a-progress :percent="50" :show-info="false" size="small"/>
-        <span>500GB/1000GB</span>
+        <a-progress :percent="percent" :show-info="false" size="small"/>
+        <span>{{useSize}} / {{repoSize}}</span>
       </div>
     </a-layout-sider>
     <a-layout-content style="height: 100%;">
@@ -100,7 +100,7 @@
 
 <script>
   import BaseExplorer from "../common/BaseExplorer";
-  import {getAllFile} from "../../util/Utils";
+  import {getAllFile, getFormatSize} from "../../util/Utils";
   import {FileType} from "../../util/Const";
   import {mapState} from 'vuex';
 
@@ -126,7 +126,20 @@
       }
     },
     computed: {
-      ...mapState(["repository"])
+      ...mapState(["repository"]),
+      percent() {
+        let percent = (this.repository.useSize / this.repository.repoSize) * 100;
+        if (percent < 3) {
+          percent = 3;
+        }
+        return percent;
+      },
+      useSize() {
+        return getFormatSize(this.repository.useSize, 0);
+      },
+      repoSize() {
+        return getFormatSize(this.repository.repoSize, 0);
+      }
     },
     watch: {
       repository(newValue, oldValue) {
