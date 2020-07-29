@@ -75,7 +75,7 @@
           </a-tabs>
           <a-form-item>
             <a-checkbox
-              v-decorator="['remember',{valuePropName: 'checked',initialValue: true,},]">
+              v-decorator="['rememberMe',{valuePropName: 'checked',initialValue: false,},]">
               记住我
             </a-checkbox>
             <router-link class="login-form-forgot" to="/forget">
@@ -131,6 +131,7 @@
               parent.$message.warn(content);
             };
             data.password = values.password;
+            data.rememberMe = values.rememberMe;
             if (this.loginMethod === "account") {
               data.account = values.account;
               loginByAccount(data, handler, catcher);
