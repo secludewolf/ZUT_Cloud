@@ -33,9 +33,10 @@ export function getTypeName(type) {
 /**
  * 获取格式化文件大小
  * @param size 文件大小
+ * @param fractionDigits 保留小数位数
  * @returns {string} 格式化文件大小
  */
-export function getFormatSize(size) {
+export function getFormatSize(size, fractionDigits = 2) {
   if (null == size || size === '') {
     return "-";
   }
@@ -44,7 +45,7 @@ export function getFormatSize(size) {
   size = parseFloat(size);
   index = Math.floor(Math.log(size) / Math.log(1024));
   let formatSize = size / Math.pow(1024, index);
-  formatSize = formatSize.toFixed(2);//保留的小数位数
+  formatSize = formatSize.toFixed(fractionDigits);//保留的小数位数
   return formatSize + unitArr[index];
 }
 
