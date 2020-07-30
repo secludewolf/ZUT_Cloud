@@ -120,12 +120,16 @@ public class RepositoryServiceImpl implements RepositoryService {
 		if (folder.getFiles().get(createFile.getName()) != null) {
 			return ResultConstant.FILE_EXISTED;
 		}
+		//创建新的用户文件关系
 		UserFile userFile = new UserFile(userId, fileId, createFile.getPath());
 		this.userFileDao.insertUserFile(userFile);
+		//增加文件引用数
 		this.fileDao.fileQuoteNumberAdd(file.getId(), 1);
 		String[] temp = createFile.getName().split("\\.");
 		String type = temp[temp.length - 1];
+		//将文件插入文件夹
 		folder.getFiles().put(createFile.getName(), new com.ztu.cloud.cloud.common.bean.mongodb.inside.File(createFile.getFileId(), userFile.getId(), createFile.getName(), createFile.getPath(), type, file.getSize()));
+		//更新仓库以使用空间大小
 		repository.setUseSize(repository.getUseSize() + file.getSize());
 		this.userRepositoryDao.updateFolderById(repository.getId(), repository.getFolder());
 		this.userRepositoryDao.updateUseSizeById(repository.getId(), repository.getUseSize());
@@ -369,15 +373,20 @@ public class RepositoryServiceImpl implements RepositoryService {
 		if (newFile == null) {
 			return ResultConstant.SERVER_ERROR;
 		}
+		//新增用户文件关系
 		UserFile userFile = new UserFile(userId, newFile.getId(), copyFile.getNewPath());
 		this.userFileDao.insertUserFile(userFile);
+		//增加文件引用数量
 		this.fileDao.fileQuoteNumberAdd(file.getId(), 1);
+		//将文件插入文件夹
 		newFile.setPath(copyFile.getNewPath());
 		newFile.setUserFileId(userFile.getId());
 		newFile.setChangeTime(System.currentTimeMillis());
 		newFolder.getFiles().put(newFile.getName(), newFile);
+		//更新仓库已用空间大小
 		repository.setUseSize(repository.getUseSize() + file.getSize());
 		this.userRepositoryDao.updateFolderById(repository.getId(), repository.getFolder());
+		this.userRepositoryDao.updateUseSizeById(repository.getId(), repository.getUseSize());
 		return ResultUtil.createResult("复制成功", new RepositoryInfo(repository));
 	}
 
@@ -461,7 +470,9 @@ public class RepositoryServiceImpl implements RepositoryService {
 		newFolder.setPath(folder.getPath().replaceFirst(copyFolder.getOldPath(), copyFolder.getNewPath()));
 		newFolder.setChangeTime(System.currentTimeMillis());
 		newParent.getFolders().put(copyFolder.getName(), newFolder);
+		//更新仓库已用空间大小
 		repository.setUseSize(repository.getUseSize() + size);
+		this.userRepositoryDao.updateUseSizeById(repository.getId(), repository.getUseSize());
 		this.userRepositoryDao.updateFolderById(repository.getId(), repository.getFolder());
 		return ResultUtil.createResult("复制成功", new RepositoryInfo(repository));
 	}
@@ -806,6 +817,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 		}
 		this.userRepositoryDao.updateFolderById(repository.getId(), repository.getFolder());
 		this.userRepositoryDao.updateRecycleBinById(repository.getId(), repository.getRecycleBin());
+		this.userRepositoryDao.updateUseSizeById(repository.getId(), repository.getUseSize());
 		return ResultUtil.createResult("删除成功", new RepositoryInfo(repository));
 	}
 
@@ -873,6 +885,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 		repository.setUseSize(repository.getUseSize() - size);
 		this.userRepositoryDao.updateFolderById(repository.getId(), repository.getFolder());
 		this.userRepositoryDao.updateRecycleBinById(repository.getId(), repository.getRecycleBin());
+		this.userRepositoryDao.updateUseSizeById(repository.getId(), repository.getUseSize());
 		return ResultUtil.createResult("删除成功", new RepositoryInfo(repository));
 	}
 
