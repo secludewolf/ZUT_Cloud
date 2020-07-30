@@ -11,31 +11,47 @@
           @click="() => (this.collapsed = !this.collapsed)"
         />
         <span>Header</span>
-        <a-badge :count="unReadInformNumber" style="float: right;margin: 16px 40px 0 0;">
-          <a-button @click="showDrawer">
-            通知
-          </a-button>
-        </a-badge>
-        <router-link to="/admin">
-          <span style="float: right;margin-right: 30px;">管理员</span>
-        </router-link>
-        <a-drawer
-          title="通知列表"
-          placement="right"
-          width="348"
-          :closable="false"
-          :visible="visible"
-          :after-visible-change="afterVisibleChange"
-          @close="onClose"
-        >
-          <div v-for="(value,index) in informList" :key="index">
-            <a-card :title="value.header" style="width: 300px">
-              <a slot="extra" v-if="value.status === 0" @click="changeInformStatus(index)">已读</a>
-              <p>{{value.content}}</p>
-            </a-card>
-            <br/>
-          </div>
-        </a-drawer>
+        <div style="float: right;height: 64px;padding:0 30px;background: white;line-height: 64px;">
+          <a-dropdown style="padding: 3px;">
+            <a class="ant-dropdown-link" @click="e => e.preventDefault()">
+              <a-icon type="user" style="margin: 0 5px;"/>
+              <!--              TODO 添加Vuex-->
+              <!--              {{ this.$store.getters.getUserName }}-->
+              管理员名称
+            </a>
+            <a-menu slot="overlay">
+              <a-menu-item>
+                <router-link to="/admin">用户信息</router-link>
+              </a-menu-item>
+              <a-menu-item>
+                <router-link to="/login" @click.native="">退出</router-link>
+              </a-menu-item>
+            </a-menu>
+          </a-dropdown>
+          <span style="padding: 0 5px;">|</span>
+          <a-badge :count="unReadInformNumber" dot>
+            <a-icon type="notification" style="padding: 3px;cursor:pointer;" @click="showDrawer"/>
+            <a-drawer
+              title="通知"
+              placement="right"
+              :closable="false"
+              :visible="visible"
+              @close="onClose"
+              width="450px"
+            >
+              <div v-for="(value,index) in informList"
+                   :key="index">
+                <a-card :title="value.header">
+                  <a slot="extra"
+                     v-if="value.status === 0"
+                     @click="changeInformStatus(index)">已读</a>
+                  <span>{{value.content}}</span>
+                </a-card>
+                <br/>
+              </div>
+            </a-drawer>
+          </a-badge>
+        </div>
       </a-layout-header>
       <a-layout-content style="height: 100%;;margin: 24px 16px 0">
         <div style="padding: 24px;background: #fff;">
@@ -95,9 +111,6 @@
           message(content, "warning")
         };
         changeInformStatus(data, handler, catcher);
-      },
-      afterVisibleChange(val) {
-        // console.log('visible', val);
       },
       showDrawer() {
         this.visible = true;
