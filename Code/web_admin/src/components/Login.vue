@@ -74,7 +74,8 @@
               rememberMe: values.rememberMe
             };
             const handler = (data) => {
-              console.log(data);
+              //Mock测试使用,正常使用请注释此行
+              localStorage.setItem("token", "token");
               this.$router.push("/index");
             };
             const catcher = (code, content) => {

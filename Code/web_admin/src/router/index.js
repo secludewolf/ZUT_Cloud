@@ -16,7 +16,7 @@ import Forget from "../components/Forget";
 
 Vue.use(Router);
 
-export default new Router({
+const router =  new Router({
   mode: "history",
   routes: [
     {
@@ -85,3 +85,15 @@ export default new Router({
     }
   ]
 })
+
+// 登录状态检测
+router.beforeEach(function (to, from, next) {
+  if (localStorage.getItem("token") === "") {
+    if (to.path !== '/login' && to.path !== '/register' && to.path !== '/forget') {
+      return next('login');
+    }
+  }
+  next();
+});
+
+export default router

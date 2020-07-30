@@ -22,7 +22,7 @@
                 <router-link to="/admin">用户信息</router-link>
               </a-menu-item>
               <a-menu-item>
-                <router-link to="/login" @click.native="">退出</router-link>
+                <router-link to="/login" @click.native="exit">退出</router-link>
               </a-menu-item>
             </a-menu>
           </a-dropdown>
@@ -115,6 +115,10 @@
       },
       onClose() {
         this.visible = false;
+      },
+      exit() {
+        localStorage.setItem("token", "");
+        this.$message.success("退出成功");
       },
     }
   }
