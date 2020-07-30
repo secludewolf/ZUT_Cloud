@@ -5,6 +5,8 @@ import org.springframework.boot.configurationprocessor.json.JSONObject;
 
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Jager
@@ -63,8 +65,49 @@ public class Folder implements Cloneable {
 		//TODO 根据JSON创建
 	}
 
+	public long getSize() {
+		return getSize(this);
+	}
+
+	private long getSize(Folder parent) {
+		long size = 0;
+		if (parent.getFiles() != null) {
+			for (File file : parent.getFiles().values()) {
+				size += file.getSize();
+			}
+		}
+		if (parent.getFolders() != null) {
+			for (Folder folder : parent.getFolders().values()) {
+				size += getSize(folder);
+			}
+		}
+		return size;
+	}
+
+	public List<File> getAllFiles() {
+		return getAllFiles(this);
+	}
+
+	private List<File> getAllFiles(Folder parent) {
+		LinkedList<File> files = new LinkedList<>();
+		if (parent.getFiles() != null) {
+			files.addAll(parent.getFiles().values());
+		}
+		if (parent.getFolders() != null) {
+			for (Folder folder : parent.getFolders().values()) {
+				files.addAll(getAllFiles(folder));
+			}
+		}
+		return files;
+	}
+
 	@Override
 	public Folder clone() {
+		try {
+			super.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
 		return new Folder(this);
 	}
 }
