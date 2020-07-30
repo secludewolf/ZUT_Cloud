@@ -74,8 +74,8 @@
               rememberMe: values.rememberMe
             };
             const handler = (data) => {
-              //Mock测试使用,正常使用请注释此行
-              localStorage.setItem("token", "token");
+              // localStorage.setItem("token", "token"); // Mock测试使用,正常使用请注释此行
+              this.$store.commit("updateAdmin", data.admin);
               this.$router.push("/index");
             };
             const catcher = (code, content) => {

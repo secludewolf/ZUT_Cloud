@@ -11,7 +11,7 @@ Vue.config.productionTip = false;
 
 
 //Mock测试
-import "./mock/mock";
+//import "./mock/mock";
 
 Vue.use(Antd);
 Vue.use(mavonEditor);

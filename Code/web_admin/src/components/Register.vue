@@ -112,7 +112,6 @@
 </template>
 
 <script>
-  //TODO 合法性检验
   import {registerByAccount} from "../api/admin";
   import {message} from "../util/message";
 

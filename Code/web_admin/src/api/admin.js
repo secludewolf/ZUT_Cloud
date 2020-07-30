@@ -41,8 +41,8 @@ export function forgetEmail(data, handler, catcher = catcher) {
   post(adminApi.forgetEmail, data, handler, catcher);
 }
 
-export function getAdminInfo(handler, catcher = catcher) {
-  get(adminApi.getAdminInfo, null, handler, catcher);
+export function getAdminInfo(data, handler, catcher = catcher) {
+  get(adminApi.getAdminInfo + data, null, handler, catcher);
 }
 
 export function changeAdminInfo(data, handler, catcher = catcher) {

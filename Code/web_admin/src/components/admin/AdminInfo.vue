@@ -36,7 +36,6 @@
 </template>
 
 <script>
-  //TODO 合法性检验
   import {changeAdminInfo, getAdminInfo} from "../../api/admin";
   import {message} from "../../util/message";
 
@@ -49,6 +48,7 @@
       };
     },
     mounted() {
+      const data = this.$store.getters.getAdminId;
       const handler = (data) => {
         this.admin = data.admin;
         this.form.setFieldsValue({
@@ -61,7 +61,7 @@
       const catcher = (code, content) => {
         message(content, "warning")
       };
-      getAdminInfo(handler, catcher);
+      getAdminInfo(data, handler, catcher);
     },
     methods: {
       change(e) {

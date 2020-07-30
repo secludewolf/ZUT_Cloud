@@ -34,13 +34,14 @@
   export default {
     name: "changeAdminPassword",
     mounted() {
+      const data = this.$store.getters.getAdminId;
       const handler = (data) => {
         this.admin = data.admin;
       };
       const catcher = (code, content) => {
         message(content, "warning")
       };
-      getAdminInfo(handler, catcher);
+      getAdminInfo(data, handler, catcher);
     },
     data() {
       return {

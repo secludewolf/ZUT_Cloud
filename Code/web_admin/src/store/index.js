@@ -19,7 +19,11 @@ export default new Vuex.Store({
       "changeTime": 0
     },
   },
-  mutations: {},
+  mutations: {
+    updateAdmin(state, admin) {
+      state.admin = admin;
+    },
+  },
   actions: {
     loginByToken(context) {
       const handler = function (data) {
