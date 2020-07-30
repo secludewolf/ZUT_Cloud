@@ -15,9 +15,7 @@
           <a-dropdown style="padding: 3px;">
             <a class="ant-dropdown-link" @click="e => e.preventDefault()">
               <a-icon type="user" style="margin: 0 5px;"/>
-              <!--              TODO 添加Vuex-->
-              <!--              {{ this.$store.getters.getUserName }}-->
-              管理员名称
+              {{ this.$store.getters.getAdminName }}
             </a>
             <a-menu slot="overlay">
               <a-menu-item>

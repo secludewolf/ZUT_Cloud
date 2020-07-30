@@ -32,14 +32,7 @@
       </a-form-item>
       <a-form-item>
         <a-checkbox
-          v-decorator="[
-          'remember',
-          {
-            valuePropName: 'checked',
-            initialValue: true,
-          },
-        ]"
-        >
+          v-decorator="['rememberMe',{valuePropName: 'checked',initialValue: false,},]">
           记住我
         </a-checkbox>
         <router-link class="login-form-forgot" to="/forget">
@@ -63,10 +56,12 @@
   export default {
     name: "Login",
     beforeCreate() {
-      this.loginForm = this.$form.createForm(this, {name: 'normal_login'});
+      // this.loginForm = this.$form.createForm(this, {name: 'normal_login'});
     },
     data() {
-      return {}
+      return {
+        loginForm: this.$form.createForm(this, {name: 'normal_login'}),
+      }
     },
     methods: {
       login(e) {
@@ -75,7 +70,8 @@
           if (!err) {
             const data = {
               account: values.account,
-              password: values.password
+              password: values.password,
+              rememberMe: values.rememberMe
             };
             const handler = (data) => {
               console.log(data);
