@@ -98,86 +98,6 @@
                     :trigger="['contextmenu']"
                     v-on:contextmenu.prevent.native="showMenu"
                     v-on:click.native="closeMenu">
-          <a-menu slot="overlay" style="text-align: center">
-            <a-menu-item key="1"
-                         v-if="isRepository && (isFile || isFolder)"
-                         @click="copy">
-              复制
-            </a-menu-item>
-            <a-menu-item key="2"
-                         v-if="isRepository && (isFile || isFolder)"
-                         @click="move">
-              剪贴
-            </a-menu-item>
-            <a-menu-item key="3"
-                         v-if="isRepository"
-                         :disabled="!(lastOption === 'copy' || lastOption === 'move')"
-                         @click="paste">
-              粘贴
-            </a-menu-item>
-            <a-menu-item key="4"
-                         v-if="isRepository && (isFile || isFolder)"
-                         @click="()=>{this.menuVisible = false;this.renameVisible = true}">
-              重命名
-            </a-menu-item>
-            <a-modal v-model="renameVisible"
-                     title="重命名"
-                     okText="确认"
-                     cancelText="取消"
-                     :confirm-loading="renameLoading"
-                     @cancel="()=>{this.renameVisible = false;this.renameName = '';}"
-                     @ok="rename">
-              <a-form :label-col="{ span: 3 }" :wrapper-col="{ span: 21 }">
-                <a-form-item label="新名称">
-                  <a-input placeholder="请输入新名称" v-model="renameName"/>
-                </a-form-item>
-              </a-form>
-            </a-modal>
-            <a-menu-item key="5"
-                         v-if="isRepository && isFolder"
-                         @click="()=>{this.menuVisible = false;this.shareVisible = true}">
-              分享
-            </a-menu-item>
-            <a-modal v-model="shareVisible"
-                     title="创建分享"
-                     okText="确认"
-                     cancelText="取消"
-                     :confirm-loading="shareLoading"
-                     @cancel="()=>{this.shareVisible = false;this.shareName = '';this.sharePassword = '';this.shareTime = null;}"
-                     @ok="share">
-              <a-form :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
-                <a-form-item label="分享名称">
-                  <a-input placeholder="请输入分享名称" v-model="shareName"/>
-                </a-form-item>
-                <a-form-item label="分享密码">
-                  <a-input placeholder="请输入分享密码" v-model="sharePassword"/>
-                </a-form-item>
-                <a-form-item label="截止日期">
-                  <a-date-picker v-model="shareTime" :locale="locale"/>
-                </a-form-item>
-              </a-form>
-            </a-modal>
-            <a-modal v-model="shareCreatedVisible"
-                     title="创建成功"
-                     :footer="null">
-              <router-link :to="shareLink" target="_blank">{{shareLink}}</router-link>
-            </a-modal>
-            <a-menu-item key="6"
-                         v-if="(isRepository || isShare || isSearch) && (isFile || isFolder)"
-                         @click="download">
-              下载
-            </a-menu-item>
-            <a-menu-item key="7"
-                         v-if="isRecycleBin && (isFile || isFolder)"
-                         @click="restore">
-              恢复
-            </a-menu-item>
-            <a-menu-item key="8"
-                         v-if="(isRepository || isRecycleBin) && (isFile || isFolder)"
-                         @click="delete_">
-              删除
-            </a-menu-item>
-          </a-menu>
           <a-layout-content style="position:absolute;top: 20px;bottom:0;left:0;right:0;padding:5px;">
             <a-layout-content v-if="view === 'appstore'" style="height: 100%;margin: 0;padding: 0">
               <a-card id="folder"
@@ -249,7 +169,88 @@
               </a-table>
             </a-layout-content>
           </a-layout-content>
+          <a-menu slot="overlay" style="text-align: center">
+            <a-menu-item key="1"
+                         v-if="isRepository && (isFile || isFolder)"
+                         @click="copy">
+              复制
+            </a-menu-item>
+            <a-menu-item key="2"
+                         v-if="isRepository && (isFile || isFolder)"
+                         @click="move">
+              剪贴
+            </a-menu-item>
+            <a-menu-item key="3"
+                         v-if="isRepository"
+                         :disabled="!(lastOption === 'copy' || lastOption === 'move')"
+                         @click="paste">
+              粘贴
+            </a-menu-item>
+            <a-menu-item key="4"
+                         v-if="isRepository && (isFile || isFolder)"
+                         @click="()=>{this.menuVisible = false;this.renameVisible = true}">
+              重命名
+            </a-menu-item>
+            <a-menu-item key="5"
+                         v-if="isRepository && isFolder"
+                         @click="()=>{this.menuVisible = false;this.shareVisible = true;}">
+              分享
+            </a-menu-item>
+            <a-menu-item key="6"
+                         v-if="(isRepository || isShare || isSearch) && (isFile || isFolder)"
+                         @click="download">
+              下载
+            </a-menu-item>
+            <a-menu-item key="7"
+                         v-if="isRecycleBin && (isFile || isFolder)"
+                         @click="restore">
+              恢复
+            </a-menu-item>
+            <a-menu-item key="8"
+                         v-if="(isRepository || isRecycleBin) && (isFile || isFolder)"
+                         @click="delete_">
+              删除
+            </a-menu-item>
+          </a-menu>
         </a-dropdown>
+        <a-modal v-model="renameVisible"
+                 title="重命名"
+                 okText="确认"
+                 cancelText="取消"
+                 :confirm-loading="renameLoading"
+                 @cancel="()=>{this.renameVisible = false;this.renameName = '';}"
+                 @ok="rename">
+          <a-form :label-col="{ span: 3 }" :wrapper-col="{ span: 21 }">
+            <a-form-item label="新名称">
+              <a-input placeholder="请输入新名称" v-model="renameName"/>
+            </a-form-item>
+          </a-form>
+        </a-modal>
+        <a-modal v-model="shareVisible"
+                 title="创建分享"
+                 okText="确认"
+                 cancelText="取消"
+                 :maskClosable="false"
+                 :confirm-loading="shareLoading"
+                 @cancel="()=>{this.shareVisible = false;this.shareName = '';this.sharePassword = '';this.shareTime = null;}"
+                 @ok="share">
+          <a-form :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
+            <a-form-item label="分享名称">
+              <a-input placeholder="请输入分享名称" v-model="shareName"/>
+            </a-form-item>
+            <a-form-item label="分享密码">
+              <a-input placeholder="请输入分享密码" v-model="sharePassword"/>
+            </a-form-item>
+            <a-form-item label="截止日期">
+              <a-date-picker v-model="shareTime" :locale="locale"/>
+            </a-form-item>
+          </a-form>
+        </a-modal>
+        <a-modal v-model="shareCreatedVisible"
+                 title="创建成功"
+                 :footer="null">
+          <router-link :to="shareLink" target="_blank">{{shareLink}}</router-link>
+        </a-modal>
       </a-layout>
     </a-layout-content>
   </a-layout>
@@ -610,7 +611,6 @@
         console.log("在" + path + "上传文件:" + event.target.value);
         const repositoryId = this.repository.id;
         const parent = this;
-        const changeRepository = this.changeRepository;
         //获取文件列表
         const files = event.target.files;
         for (let i = 0; i < files.length; i++) {
@@ -695,7 +695,7 @@
                 parent.$emit("changeRepository", data.repository);
                 parent.$message.success("秒传成功");
               };
-              const catcher = (code, content) => {
+              const catcher = () => {
                 uploadSmallFile(files[i], files[i].name, md5, () => {
                   const data = {
                     repositoryId: parent.$store.getters.getRepositoryId,
