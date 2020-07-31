@@ -39,6 +39,10 @@ export function request(url, data, method, handler, catcher) {
   }).catch(error => {
     message.warn("网络异常!");
     console.log(error);
+    if (url === "/login/token") {
+      localStorage.setItem("token", "");
+      self.location.href = "/login";
+    }
   })
 }
 
