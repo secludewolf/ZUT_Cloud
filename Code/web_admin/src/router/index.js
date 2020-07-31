@@ -7,12 +7,13 @@ import Share from "../components/fileManager/Share";
 import UserInform from "../components/informManager/UserInform";
 import AdminInform from "../components/informManager/AdminInform";
 import CreateInform from "../components/informManager/CreateInform";
-import Index from "../components/Index";
+import Index from "../views/Index";
 import AdminInfo from "../components/admin/AdminInfo";
 import AdminPassword from "../components/admin/AdminPassword";
-import Login from "../components/Login";
-import Register from "../components/Register";
-import Forget from "../components/Forget";
+import Login from "../views/Login";
+import Register from "../views/Register";
+import Forget from "../views/Forget";
+import NotFoundTarget from "../views/404"
 
 Vue.use(Router);
 
@@ -82,7 +83,14 @@ const router =  new Router({
         },
       ],
       redirect: "/userManager"
-    }
+    }, {
+      path: '*',
+      name: 'error',
+      component: NotFoundTarget,
+      meta: {
+        title: "404",
+      },
+    },
   ]
 })
 

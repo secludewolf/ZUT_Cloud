@@ -44,10 +44,11 @@
   export default {
     name: "forget",
     beforeCreate() {
-      this.forgetForm = this.$form.createForm(this, {name: 'normal_login'});
     },
     data() {
-      return {}
+      return {
+        forgetForm: this.$form.createForm(this, {name: 'normal_login'}),
+      }
     },
     methods: {
       forget(e) {

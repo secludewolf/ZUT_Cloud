@@ -119,6 +119,7 @@
     name: 'Register',
     data() {
       return {
+        registerForm: this.$form.createForm(this, {name: 'register'}),
         formItemLayout: {
           labelCol: {
             xs: {span: 24},
@@ -142,9 +143,6 @@
           },
         },
       };
-    },
-    beforeCreate() {
-      this.registerForm = this.$form.createForm(this, {name: 'register'});
     },
     methods: {
       register(e) {
