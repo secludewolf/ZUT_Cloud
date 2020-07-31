@@ -107,7 +107,7 @@
             <a-menu-item key="2"
                          v-if="isRepository && (isFile || isFolder)"
                          @click="move">
-              移动
+              剪贴
             </a-menu-item>
             <a-menu-item key="3"
                          v-if="isRepository"
@@ -734,14 +734,14 @@
         };
         const handler = (data) => {
           parent.$emit("changeRepository", data.repository);
-          this.createFolderName = "";
-          this.createFolderVisible = false;
-          this.createFolderLoading = false;
-          this.$message.success("文件夹创建成功");
+          parent.createFolderName = "";
+          parent.createFolderVisible = false;
+          parent.createFolderLoading = false;
+          parent.$message.success("文件夹创建成功");
         };
         const catcher = (code, content) => {
           parent.$message.warn(content);
-          this.createFolderLoading = false;
+          parent.createFolderLoading = false;
         };
         createFolder(data, handler, catcher);
       },
@@ -798,7 +798,7 @@
           parent.$message.success("操作成功");
         };
         const catcher = function (code, content) {
-          this.$message.warn(content);
+          parent.$message.warn(content);
         };
         if (this.lastOption === "copy") {
           if (this.optionTarget.depth == null) {
@@ -834,7 +834,7 @@
           parent.$message.success("操作成功");
         };
         const catcher = function (code, content) {
-          this.$message.warn(content);
+          parent.$message.warn(content);
         };
         if (this.target.depth == null) {
           renameFile(data, handler, catcher);
@@ -858,7 +858,7 @@
           parent.shareTime = null;
           parent.shareLoading = false;
           parent.shareVisible = false;
-          this.shareLink = "/share?id=" + data.share.id;
+          parent.shareLink = "/share?id=" + data.share.id;
           parent.shareCreatedVisible = true;
           parent.$message.success("分享成功");
         };
@@ -909,7 +909,7 @@
           parent.$message.success("操作成功");
         };
         const catcher = (code, content) => {
-          this.$message.warn(content);
+          parent.$message.warn(content);
         };
         restoreFromRecycleBin(data, handler, catcher);
         this.menuVisible = false;
@@ -927,7 +927,7 @@
           parent.$message.success("操作成功");
         };
         const catcher = (code, content) => {
-          this.$message.warn(content);
+          parent.$message.warn(content);
         };
         if (this.isRepository) {
           data.name = this.target.name;
