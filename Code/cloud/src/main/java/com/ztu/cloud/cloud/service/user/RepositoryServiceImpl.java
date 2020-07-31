@@ -241,6 +241,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 		}
 		file.setPath(moveFile.getNewPath());
 		file.setChangeTime(System.currentTimeMillis());
+		//修改对应用户文件关系
 		this.userFileDao.updateUserFilePath(file.getUserFileId(), moveFile.getNewPath());
 		oldFolder.getFiles().remove(file.getName());
 		newFolder.getFiles().put(file.getName(), file);
@@ -323,12 +324,16 @@ public class RepositoryServiceImpl implements RepositoryService {
 			temp.setPath(temp.getPath().replaceFirst(moveFolder.getOldPath(), moveFolder.getNewPath()));
 		}
 		for (File file : files) {
+			//修改文件路径
 			file.setPath(file.getPath().replaceFirst(moveFolder.getOldPath(), moveFolder.getNewPath()));
+			//修改对应用户文件关系
+			this.userFileDao.updateUserFilePath(file.getUserFileId(), file.getPath());
 		}
 		//修改文件夹深度
 		folder.setDepth(folder.getDepth() - depthDiffer);
 		//修改文件夹路径
 		folder.setPath(folder.getPath().replaceFirst(moveFolder.getOldPath(), moveFolder.getNewPath()));
+		//修改文件修改时间
 		folder.setChangeTime(System.currentTimeMillis());
 		//移除源文件
 		oldFolder.getFolders().remove(folder.getName());
@@ -619,6 +624,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 		getFolderList(folder, folders);
 		for (File file : files) {
 			file.setPath(file.getPath().replaceFirst(folder.getPath() + "/" + renameFolder.getOldName(), folder.getPath() + "/" + renameFolder.getNewName()));
+			this.userFileDao.updateUserFilePath(file.getUserFileId(), file.getPath());
 		}
 		for (Folder temp : folders) {
 			temp.setPath(temp.getPath().replaceFirst(folder.getPath() + "/" + renameFolder.getOldName(), folder.getPath() + "/" + renameFolder.getNewName()));
