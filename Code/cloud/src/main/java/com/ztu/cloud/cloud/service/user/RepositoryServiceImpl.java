@@ -173,6 +173,11 @@ public class RepositoryServiceImpl implements RepositoryService {
 		if (folder == null) {
 			return ResultConstant.FOLDER_NOT_EXISTED;
 		}
+		//TODO 配置文件
+		//判断是否超出最大深度
+		if (folder.getDepth() >= 64) {
+			return ResultConstant.FOLDER_DEPTH_TOO_BIG;
+		}
 		if (folder.getFolders() == null) {
 			folder.setFolders(new HashMap<>(1));
 		}
@@ -273,9 +278,12 @@ public class RepositoryServiceImpl implements RepositoryService {
 		if (!repository.getId().equals(moveFolder.getRepositoryId())) {
 			return ResultConstant.NO_ACCESS;
 		}
-		if ((moveFolder.getOldPath() + "/" + moveFolder.getName()).equals(moveFolder.getNewPath().substring(0, (moveFolder.getOldPath() + "/" + moveFolder.getName()).length()))) {
+		//判断是否文件嵌套
+		if (moveFolder.getNewPath().length() >= (moveFolder.getOldPath() + "/" + moveFolder.getName()).length()
+				&& (moveFolder.getOldPath() + "/" + moveFolder.getName()).equals(moveFolder.getNewPath().substring(0, (moveFolder.getOldPath() + "/" + moveFolder.getName()).length()))) {
 			return ResultConstant.PATH_INVALID;
 		}
+		//获取源文件父文件夹
 		Folder oldFolder = getFolder(repository, moveFolder.getOldPath());
 		if (oldFolder == null) {
 			return ResultConstant.FOLDER_NOT_EXISTED;
@@ -283,10 +291,12 @@ public class RepositoryServiceImpl implements RepositoryService {
 		if (oldFolder.getFolders() == null) {
 			oldFolder.setFolders(new HashMap<>(1));
 		}
+		//获取源文件
 		Folder folder = oldFolder.getFolders().get(moveFolder.getName());
 		if (folder == null) {
 			return ResultConstant.FOLDER_NOT_EXISTED;
 		}
+		//获取新文件父文件夹
 		Folder newFolder = getFolder(repository, moveFolder.getNewPath());
 		if (newFolder == null) {
 			return ResultConstant.FOLDER_NOT_EXISTED;
@@ -302,16 +312,26 @@ public class RepositoryServiceImpl implements RepositoryService {
 		getFileList(folder, files);
 		getFolderList(folder, folders);
 		int depthDiffer = oldFolder.getDepth() - newFolder.getDepth();
+		for (Folder temp : folders) {
+			temp.setDepth(temp.getDepth() - depthDiffer);
+			//TODO 配置文件
+			//判断是否超出最大深度
+			if (temp.getDepth() >= 64) {
+				return ResultConstant.FOLDER_DEPTH_TOO_BIG;
+			}
+			temp.setPath(temp.getPath().replaceFirst(moveFolder.getOldPath(), moveFolder.getNewPath()));
+		}
 		for (File file : files) {
 			file.setPath(file.getPath().replaceFirst(moveFolder.getOldPath(), moveFolder.getNewPath()));
 		}
-		for (Folder temp : folders) {
-			temp.setPath(temp.getPath().replaceFirst(moveFolder.getOldPath(), moveFolder.getNewPath()));
-			temp.setDepth(temp.getDepth() - depthDiffer);
-		}
+		//修改文件夹深度
+		folder.setDepth(folder.getDepth() - depthDiffer);
+		//修改文件夹路径
 		folder.setPath(folder.getPath().replaceFirst(moveFolder.getOldPath(), moveFolder.getNewPath()));
 		folder.setChangeTime(System.currentTimeMillis());
+		//移除源文件
 		oldFolder.getFolders().remove(folder.getName());
+		//增加新文件
 		newFolder.getFolders().put(moveFolder.getName(), folder);
 		this.userRepositoryDao.updateFolderById(repository.getId(), repository.getFolder());
 		return ResultUtil.createResult("移动成功", new RepositoryInfo(repository));
@@ -421,7 +441,9 @@ public class RepositoryServiceImpl implements RepositoryService {
 		if (!repository.getId().equals(copyFolder.getRepositoryId())) {
 			return ResultConstant.NO_ACCESS;
 		}
-		if ((copyFolder.getOldPath() + "/" + copyFolder.getName()).equals(copyFolder.getNewPath().substring(0, (copyFolder.getOldPath() + "/" + copyFolder.getName()).length()))) {
+		//判断是否文件嵌套
+		if (copyFolder.getNewPath().length() >= (copyFolder.getOldPath() + "/" + copyFolder.getName()).length()
+				&& (copyFolder.getOldPath() + "/" + copyFolder.getName()).equals(copyFolder.getNewPath().substring(0, (copyFolder.getOldPath() + "/" + copyFolder.getName()).length()))) {
 			return ResultConstant.PATH_INVALID;
 		}
 		Folder oldParent = getFolder(repository, copyFolder.getOldPath());
@@ -452,6 +474,15 @@ public class RepositoryServiceImpl implements RepositoryService {
 		getFolderList(newFolder, folders);
 		long size = 0;
 		int depthDiffer = oldParent.getDepth() - newParent.getDepth();
+		for (Folder temp : folders) {
+			temp.setDepth(temp.getDepth() - depthDiffer);
+			//TODO 配置文件
+			//判断是否超出最大深度
+			if (temp.getDepth() >= 64) {
+				return ResultConstant.FOLDER_DEPTH_TOO_BIG;
+			}
+			temp.setPath(temp.getPath().replaceFirst(copyFolder.getOldPath(), copyFolder.getNewPath()));
+		}
 		for (File file : files) {
 			size += file.getSize();
 			file.setPath(file.getPath().replaceFirst(copyFolder.getOldPath(), copyFolder.getNewPath()));
@@ -460,13 +491,11 @@ public class RepositoryServiceImpl implements RepositoryService {
 			file.setUserFileId(userFile.getId());
 			this.fileDao.fileQuoteNumberAdd(file.getId(), 1);
 		}
-		for (Folder temp : folders) {
-			temp.setPath(temp.getPath().replaceFirst(copyFolder.getOldPath(), copyFolder.getNewPath()));
-			temp.setDepth(temp.getDepth() - depthDiffer);
-		}
 		if ((repository.getUseSize() + size) > repository.getRepoSize()) {
 			return ResultConstant.REPOSITORY_FULL;
 		}
+		//修改文件夹深度
+		newFolder.setDepth(newFolder.getDepth() - depthDiffer);
 		newFolder.setPath(folder.getPath().replaceFirst(copyFolder.getOldPath(), copyFolder.getNewPath()));
 		newFolder.setChangeTime(System.currentTimeMillis());
 		newParent.getFolders().put(copyFolder.getName(), newFolder);
