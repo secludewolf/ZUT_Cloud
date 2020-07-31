@@ -396,7 +396,7 @@
         target: {},
         targetIndex: "",
         optionTarget: {},
-        optionTargetIndex: {},
+        optionTargetIndex: "",
         lastOption: "",
         renameVisible: false,
         renameLoading: false,
@@ -794,6 +794,11 @@
           newPath: path
         };
         const handler = function (data) {
+          if (parent.lastOption === "move") {
+            parent.lastOption = "";
+            parent.optionTarget = {};
+            parent.optionTargetIndex = "";
+          }
           parent.$emit("changeRepository", data.repository);
           parent.$message.success("操作成功");
         };
