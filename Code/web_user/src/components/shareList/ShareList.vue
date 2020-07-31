@@ -1,43 +1,36 @@
 <template>
-  <a-layout id="Index" style="height: 100%;background:white;">
-    <a-layout-header
-      style="position:relative;margin:0 0 6px 0;padding:0;background:white;box-shadow:0 0 6px 0 #B39696;">
-      <Header></Header>
-    </a-layout-header>
-    <a-layout-content style="position:relative;margin:0;padding:0;">
-      <a-table :columns="columns"
-               :data-source="data"
-               :pagination="false"
-               :rowKey="record => record.id"
+  <a-layout-content style="position:relative;margin:0;padding:0;">
+    <a-table :columns="columns"
+             :data-source="data"
+             :pagination="false"
+             :rowKey="record => record.id"
+    >
+      <router-link :to="'/share?id=' + record.id" target="_blank" slot="name" slot-scope="text,record">
+        <a-icon type="link"/>
+        {{ text }}
+      </router-link>
+      <span slot="password" slot-scope="text">{{ text == null ? "无密码" : text }}</span>
+      <span slot="createTime" slot-scope="text">{{ getFormatDate(text) }}</span>
+      <span slot="validTime" slot-scope="text">{{ getFormatDate(text) }}</span>
+      <span slot="status" slot-scope="text">{{ text === 1 ? "有效" : "失效" }}</span>
+      <a-popconfirm
+        slot="action" slot-scope="text, record, key"
+        title="确定要禁用分享吗?"
+        ok-text="确定"
+        cancel-text="取消"
+        @confirm="disableShare(key)"
       >
-        <router-link :to="'/share?id=' + record.id" target="_blank" slot="name" slot-scope="text,record">
-          <a-icon type="link"/>
-          {{ text }}
-        </router-link>
-        <span slot="password" slot-scope="text">{{ text == null ? "无密码" : text }}</span>
-        <span slot="createTime" slot-scope="text">{{ getFormatDate(text) }}</span>
-        <span slot="validTime" slot-scope="text">{{ getFormatDate(text) }}</span>
-        <span slot="status" slot-scope="text">{{ text === 1 ? "有效" : "失效" }}</span>
-        <a-popconfirm
-          slot="action" slot-scope="text, record, key"
-          title="确定要禁用分享吗?"
-          ok-text="确定"
-          cancel-text="取消"
-          @confirm="disableShare(key)"
-        >
           <span>
             <a v-if="record.status === 1">禁用</a>
           </span>
-        </a-popconfirm>
-      </a-table>
-    </a-layout-content>
-  </a-layout>
+      </a-popconfirm>
+    </a-table>
+  </a-layout-content>
 </template>
 
 <script>
-  import Header from "../components/common/Header";
-  import {getFormatDate} from "../util/Utils";
-  import {deleteShare, getShareList} from "../api/share";
+  import {getFormatDate} from "../../util/Utils";
+  import {deleteShare, getShareList} from "../../api/share";
 
   const columns = [
     {
@@ -82,33 +75,8 @@
       align: "center",
     },
   ];
-
-  // const data = [
-  //   {
-  //     id: "share1",
-  //     userId: 17,
-  //     repoId: "test",
-  //     name: "test",
-  //     password: null,
-  //     status: 1,
-  //     createTime: 1594365511023,
-  //     validTime: 1594365511023
-  //   }, {
-  //     id: "share2",
-  //     userId: 17,
-  //     repoId: "test",
-  //     name: "test",
-  //     password: "123456",
-  //     status: 0,
-  //     createTime: 1594365511023,
-  //     validTime: 1594365511023
-  //   },
-  // ];
   export default {
     name: "ShareList",
-    components: {
-      Header,
-    },
     mounted() {
       this.getShareList();
     },

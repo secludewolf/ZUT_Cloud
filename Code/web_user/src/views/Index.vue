@@ -5,20 +5,24 @@
       <Header></Header>
     </a-layout-header>
     <a-layout-content style="position:relative;margin:0;padding:0;">
-      <Explorer></Explorer>
+      <router-view/>
     </a-layout-content>
   </a-layout>
 </template>
 
 <script>
   import Header from "../components/common/Header";
-  import Explorer from "../components/index/Explorer";
 
   export default {
     name: "Index",
+    created() {
+      if (this.$store.state.user.id === 0 && localStorage.getItem("token") !== "" && localStorage.getItem("token") !== null) {
+        this.$store.dispatch("loginByToken");
+      }
+      console.log(this.$route.path);
+    },
     components: {
       Header,
-      Explorer
     }
   };
 </script>

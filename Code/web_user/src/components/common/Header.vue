@@ -6,13 +6,13 @@
       </router-link>
     </div>
     <a-menu v-model="current" mode="horizontal" style="float:left;height:64px;line-height:64px;font-size: 16px;">
-      <a-menu-item key="cloud" style="padding: 0 50px;">
+      <a-menu-item key="/index" style="padding: 0 50px;">
         <router-link to="/index">
           <a-icon type="cloud"/>
           网盘
         </router-link>
       </a-menu-item>
-      <a-menu-item key="share" style="padding: 0 50px;">
+      <a-menu-item key="/shareList" style="padding: 0 50px;">
         <router-link to="/shareList">
           <a-icon type="share-alt"/>
           分享
@@ -67,14 +67,14 @@
   export default {
     name: "Header",
     props: {
-      userName: {
+      defaultKey: {
         type: String,
-        default: "用户昵称"
+        default: "cloud"
       },
     },
     data() {
       return {
-        current: ["cloud"],
+        current: ["/index"],
         informList: [],
         visible: false,
       };
@@ -90,13 +90,22 @@
         return number;
       }
     },
+    watch: {
+      $route() {
+        this.flashCurrent();
+      }
+    },
     components: {},
     created() {
+      this.flashCurrent();
     },
     mounted() {
       this.getInformList();
     },
     methods: {
+      flashCurrent() {
+        this.current = [this.$route.path,];
+      },
       showDrawer() {
         this.visible = true;
       },
