@@ -822,6 +822,10 @@
         this.$message.info("将位置" + this.optionTarget.path + "的" + this.optionTarget.name + (this.lastOption === "copy" ? "复制" : "移动") + "到" + path)
       },
       rename() {
+        if (this.renameName === "") {
+          this.$message.warn("文件名称不能为空!")
+          return;
+        }
         this.renameLoading = true;
         const path = this.getCurrentPath();
         const parent = this;
@@ -839,6 +843,7 @@
           parent.$message.success("操作成功");
         };
         const catcher = function (code, content) {
+          parent.renameLoading = false;
           parent.$message.warn(content);
         };
         if (this.target.depth == null) {
@@ -848,6 +853,10 @@
         }
       },
       share() {
+        if (this.shareName === "") {
+          this.$message.warn("分享名称不能为空!")
+          return;
+        }
         this.shareLoading = true;
         const parent = this;
         const data = {
@@ -868,6 +877,7 @@
           parent.$message.success("分享成功");
         };
         const catcher = (code, content) => {
+          parent.shareLoading = false;
           parent.$message.warn(content);
         };
         createShare(data, handler, catcher);
