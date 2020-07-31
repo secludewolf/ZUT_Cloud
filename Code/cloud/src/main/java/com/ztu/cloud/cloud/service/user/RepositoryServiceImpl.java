@@ -107,6 +107,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 		if (file == null) {
 			return ResultConstant.FILE_NOT_EXISTED;
 		}
+		//判断是否超出仓库大小
 		if ((repository.getUseSize() + file.getSize()) > repository.getRepoSize()) {
 			return ResultConstant.REPOSITORY_FULL;
 		}
@@ -376,6 +377,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 		if (file == null) {
 			return ResultConstant.FILE_NOT_EXISTED;
 		}
+		//判断是否超出仓库大小
 		if ((repository.getUseSize() + file.getSize()) > repository.getRepoSize()) {
 			return ResultConstant.REPOSITORY_FULL;
 		}
@@ -491,6 +493,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 			file.setUserFileId(userFile.getId());
 			this.fileDao.fileQuoteNumberAdd(file.getId(), 1);
 		}
+		//判断是否超出仓库大小
 		if ((repository.getUseSize() + size) > repository.getRepoSize()) {
 			return ResultConstant.REPOSITORY_FULL;
 		}

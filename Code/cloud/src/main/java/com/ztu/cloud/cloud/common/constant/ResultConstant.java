@@ -33,7 +33,7 @@ public class ResultConstant {
 	public final static ResultResponseEntity FOLDER_NOT_EXISTED = ResultUtil.createResult(-18, "文件夹不存在");
 	public final static ResultResponseEntity FILE_EXISTED = ResultUtil.createResult(-19, "文件已存在");
 	public final static ResultResponseEntity FOLDER_EXISTED = ResultUtil.createResult(-20, "文件夹已存在");
-	public final static ResultResponseEntity REPOSITORY_FULL = ResultUtil.createResult(-21, "仓库已满");
+	public final static ResultResponseEntity REPOSITORY_FULL = ResultUtil.createResult(-21, "仓库空间不足");
 	public final static ResultResponseEntity PATH_INVALID = ResultUtil.createResult(-22, "文件嵌套");
 	public final static ResultResponseEntity FILE_DAMAGE = ResultUtil.createResult(-23, "文件损坏");
 	public final static ResultResponseEntity SHARE_INVALID = ResultUtil.createResult(-24, "分享失效");
