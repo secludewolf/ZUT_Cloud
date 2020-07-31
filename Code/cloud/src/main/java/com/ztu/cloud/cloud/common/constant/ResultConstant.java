@@ -37,4 +37,5 @@ public class ResultConstant {
 	public final static ResultResponseEntity PATH_INVALID = ResultUtil.createResult(-22, "文件嵌套");
 	public final static ResultResponseEntity FILE_DAMAGE = ResultUtil.createResult(-23, "文件损坏");
 	public final static ResultResponseEntity SHARE_INVALID = ResultUtil.createResult(-24, "分享失效");
+	public final static ResultResponseEntity FOLDER_DEPTH_TOO_BIG = ResultUtil.createResult(-25, "文件深度过大");
 }
