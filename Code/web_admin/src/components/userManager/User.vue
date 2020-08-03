@@ -124,7 +124,8 @@
           sortOrder: sorter.order,
           ...filters,
         });
-      }, request(params = {}) {
+      },
+      request() {
         //TODO RepoSize大小
         this.loading = true;
         const data = this.pagination.current != null ? this.pagination.current : 1;
@@ -134,7 +135,7 @@
             data.userList[i].key = data.userList[i].id;
           }
           const pagination = {...this.pagination};
-          pagination.total = 20;
+          pagination.total = data.pageLength;
           this.data = data.userList;
           this.cacheData = data.userList.map(item => ({...item}));
           this.pagination = pagination;
@@ -144,28 +145,6 @@
           message(content, "warning")
         };
         getUserListManage(data, handler, catcher);
-        // const data = [];
-        // let i = 0;
-        // let length = 10;
-        // if (this.pagination.current != null) {
-        //   i = (this.pagination.current - 1) * 10;
-        //   length = this.pagination.current * 10;
-        // }
-        // for (; i < length; i++) {
-        //   console.log(i);
-        //   data.push({
-        //     key: i.toString(),
-        //     name: `Edrward ${i}`,
-        //     age: 32,
-        //     address: `London Park no. ${i}`,
-        //   });
-        // }
-        // this.loading = false;
-        // const pagination = {...this.pagination};
-        // pagination.total = 20;
-        // this.data = data;
-        // this.cacheData = data.map(item => ({...item}));
-        // this.pagination = pagination;
       },
       handleChange(value, key, column) {
         const newData = [...this.data];

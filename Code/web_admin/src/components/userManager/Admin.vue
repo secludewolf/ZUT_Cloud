@@ -125,7 +125,8 @@
           sortOrder: sorter.order,
           ...filters,
         });
-      }, request(params = {}) {
+      },
+      request() {
         this.loading = true;
         const data = this.pagination.current != null ? this.pagination.current : 1;
         const handler = (data) => {
@@ -135,7 +136,7 @@
           }
           this.loading = false;
           const pagination = {...this.pagination};
-          pagination.total = 20;
+          pagination.total = data.pageLength;
           this.data = data.adminList;
           this.cacheData = data.adminList.map(item => ({...item}));
           this.pagination = pagination;
@@ -144,22 +145,6 @@
           message(content, "warning")
         };
         getAdminListManage(data, handler, catcher);
-        // const data = [];
-        // let i = 0;
-        // let length = 10;
-        // if (this.pagination.current != null) {
-        //   i = (this.pagination.current - 1) * 10;
-        //   length = this.pagination.current * 10;
-        // }
-        // for (; i < length; i++) {
-        //   console.log(i);
-        //   data.push({
-        //     key: i.toString(),
-        //     name: `Edrward ${i}`,
-        //     age: 32,
-        //     address: `London Park no. ${i}`,
-        //   });
-        // }
       },
       handleChange(value, key, column) {
         const newData = [...this.data];
