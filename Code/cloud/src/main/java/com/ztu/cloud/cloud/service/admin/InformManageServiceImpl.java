@@ -67,7 +67,7 @@ public class InformManageServiceImpl implements InformManageService {
 		if (admin.getStatus() != 1) {
 			return ResultConstant.USER_STATUS_ABNORMAL;
 		}
-		//TODO 权限验证
+		// 权限验证
 		if (admin.getLevel() <= 0) {
 			return ResultConstant.NO_ACCESS;
 		}
@@ -103,7 +103,7 @@ public class InformManageServiceImpl implements InformManageService {
 		if (admin.getStatus() != 1) {
 			return ResultConstant.USER_STATUS_ABNORMAL;
 		}
-		//TODO 权限验证
+		// 权限验证
 		if (admin.getLevel() <= 0) {
 			return ResultConstant.NO_ACCESS;
 		}

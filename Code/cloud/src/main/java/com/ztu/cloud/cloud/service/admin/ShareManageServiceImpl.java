@@ -55,12 +55,14 @@ public class ShareManageServiceImpl implements ShareManageService {
 		if (admin.getStatus() != 1) {
 			return ResultConstant.USER_STATUS_ABNORMAL;
 		}
-		//TODO 权限验证
+		// 权限验证
 		if (admin.getLevel() <= 0) {
 			return ResultConstant.NO_ACCESS;
 		}
+		Long shareCount = this.shareDao.getShareCount();
+		long pageLength = shareCount / 20 + (shareCount % 20 == 0 ? 0 : 1);
 		List<Share> shareList = this.shareDao.getShare((pageNumber - 1) * 20, pageNumber * 20);
-		return ResultUtil.createResult("成功", new ShareList(shareList));
+		return ResultUtil.createResult("成功", new ShareList(pageLength, shareList));
 	}
 
 	/**
@@ -86,7 +88,7 @@ public class ShareManageServiceImpl implements ShareManageService {
 		if (admin.getStatus() != 1) {
 			return ResultConstant.USER_STATUS_ABNORMAL;
 		}
-		//TODO 权限验证
+		// 权限验证
 		if (admin.getLevel() <= 0) {
 			return ResultConstant.NO_ACCESS;
 		}
@@ -121,7 +123,7 @@ public class ShareManageServiceImpl implements ShareManageService {
 		if (admin.getStatus() != 1) {
 			return ResultConstant.USER_STATUS_ABNORMAL;
 		}
-		//TODO 权限验证
+		// 权限验证
 		if (admin.getLevel() <= 0) {
 			return ResultConstant.NO_ACCESS;
 		}

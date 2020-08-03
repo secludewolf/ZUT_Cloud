@@ -57,7 +57,7 @@ public class FileServiceImpl implements FileService {
 		if (admin.getStatus() != 1) {
 			return null;
 		}
-		//TODO 权限验证
+		// 权限验证
 		if (admin.getLevel() <= 0) {
 			return null;
 		}
@@ -92,12 +92,14 @@ public class FileServiceImpl implements FileService {
 		if (admin.getStatus() != 1) {
 			return ResultConstant.USER_STATUS_ABNORMAL;
 		}
-		//TODO 权限验证
+		// 权限验证
 		if (admin.getLevel() <= 0) {
 			return ResultConstant.NO_ACCESS;
 		}
+		Long fileCount = this.fileDao.getFileCount();
+		long pageLength = fileCount / 20 + (fileCount % 20 == 0 ? 0 : 1);
 		List<File> fileList = this.fileDao.getFile((pageNumber - 1) * 20, pageNumber * 20);
-		return ResultUtil.createResult("", new FileList(fileList));
+		return ResultUtil.createResult("", new FileList(pageLength, fileList));
 	}
 
 	/**
@@ -123,7 +125,7 @@ public class FileServiceImpl implements FileService {
 		if (admin.getStatus() != 1) {
 			return ResultConstant.USER_STATUS_ABNORMAL;
 		}
-		//TODO 权限验证
+		// 权限验证
 		if (admin.getLevel() <= 0) {
 			return ResultConstant.NO_ACCESS;
 		}
@@ -157,7 +159,7 @@ public class FileServiceImpl implements FileService {
 		if (admin.getStatus() != 1) {
 			return ResultConstant.USER_STATUS_ABNORMAL;
 		}
-		//TODO 权限验证
+		// 权限验证
 		if (admin.getLevel() <= 0) {
 			return ResultConstant.NO_ACCESS;
 		}

@@ -13,8 +13,10 @@ import java.util.List;
 @Data
 public class ShareList {
 	private List<Share> shareList;
+	private long pageLength;
 
-	public ShareList(List<Share> shareList) {
+	public ShareList(long pageLength, List<Share> shareList) {
+		this.pageLength = pageLength;
 		this.shareList = shareList;
 	}
 }

@@ -343,7 +343,7 @@ public class AdminServiceImpl implements AdminService {
 		if (admin.getStatus() != 1) {
 			return ResultConstant.USER_STATUS_ABNORMAL;
 		}
-		//TODO 权限验证
+		//权限验证
 		if (admin.getLevel() <= 0) {
 			return ResultConstant.NO_ACCESS;
 		}
@@ -409,7 +409,7 @@ public class AdminServiceImpl implements AdminService {
 		if (admin.getStatus() != 1) {
 			return ResultConstant.USER_STATUS_ABNORMAL;
 		}
-		//TODO 权限验证
+		//权限验证
 		if (admin.getLevel() <= 0) {
 			return ResultConstant.NO_ACCESS;
 		}
@@ -461,7 +461,7 @@ public class AdminServiceImpl implements AdminService {
 		if (admin.getStatus() != 1) {
 			return ResultConstant.USER_STATUS_ABNORMAL;
 		}
-		//TODO 权限验证
+		//权限验证
 		if (admin.getLevel() <= 0) {
 			return ResultConstant.NO_ACCESS;
 		}
@@ -517,7 +517,7 @@ public class AdminServiceImpl implements AdminService {
 		if (admin.getStatus() != 1) {
 			return ResultConstant.USER_STATUS_ABNORMAL;
 		}
-		//TODO 权限验证
+		//权限验证
 		if (admin.getLevel() <= 0) {
 			return ResultConstant.NO_ACCESS;
 		}
@@ -566,13 +566,15 @@ public class AdminServiceImpl implements AdminService {
 		if (admin.getStatus() != 1) {
 			return ResultConstant.USER_STATUS_ABNORMAL;
 		}
-		//TODO 权限验证
+		//权限验证
 		if (admin.getLevel() <= 0) {
 			return ResultConstant.NO_ACCESS;
 		}
+		Long userCount = this.userDao.getUserCount();
+		long pageLength = userCount / 20 + (userCount % 20 == 0 ? 0 : 1);
 		//TODO 获取仓库大小
 		List<User> userList = this.userDao.getUser((pageNumber - 1) * 20, pageNumber * 20);
-		return ResultUtil.createResult("", new UserList(userList));
+		return ResultUtil.createResult("", new UserList(pageLength, userList));
 	}
 
 	/**
@@ -598,12 +600,14 @@ public class AdminServiceImpl implements AdminService {
 		if (admin.getStatus() != 1) {
 			return ResultConstant.USER_STATUS_ABNORMAL;
 		}
-		//TODO 权限验证
+		//权限验证
 		if (admin.getLevel() <= 0) {
 			return ResultConstant.NO_ACCESS;
 		}
+		Long adminCount = this.adminDao.getAdminCount();
+		long pageLength = adminCount / 20 + (adminCount % 20 == 0 ? 0 : 1);
 		List<Admin> adminList = this.adminDao.getAdmin((pageNumber - 1) * 20, pageNumber * 20);
-		return ResultUtil.createResult("", new AdminList(adminList));
+		return ResultUtil.createResult("", new AdminList(pageLength, adminList));
 	}
 
 	/**
@@ -681,7 +685,7 @@ public class AdminServiceImpl implements AdminService {
 		if (admin.getStatus() != 1) {
 			return ResultConstant.USER_STATUS_ABNORMAL;
 		}
-		//TODO 权限验证
+		// 权限验证
 		if (admin.getLevel() <= 0) {
 			return ResultConstant.NO_ACCESS;
 		}
@@ -760,7 +764,7 @@ public class AdminServiceImpl implements AdminService {
 		if (admin.getStatus() != 1) {
 			return ResultConstant.USER_STATUS_ABNORMAL;
 		}
-		//TODO 权限验证
+		// 权限验证
 		if (admin.getLevel() <= 0) {
 			return ResultConstant.NO_ACCESS;
 		}

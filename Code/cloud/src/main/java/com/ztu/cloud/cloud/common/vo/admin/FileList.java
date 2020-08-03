@@ -13,11 +13,13 @@ import java.util.List;
 @Data
 public class FileList {
 	List<File> fileList;
+	long pageLength;
 
 	public FileList() {
 	}
 
-	public FileList(List<File> fileList) {
+	public FileList(long pageLength, List<File> fileList) {
+		this.pageLength = pageLength;
 		this.fileList = fileList;
 	}
 }

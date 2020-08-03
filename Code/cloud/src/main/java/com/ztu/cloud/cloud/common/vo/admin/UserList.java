@@ -13,11 +13,13 @@ import java.util.List;
 @Data
 public class UserList {
 	List<User> userList;
+	long pageLength;
 
 	public UserList() {
 	}
 
-	public UserList(List<com.ztu.cloud.cloud.common.bean.mysql.User> userList) {
+	public UserList(long pageLength, List<com.ztu.cloud.cloud.common.bean.mysql.User> userList) {
+		this.pageLength = pageLength;
 		this.userList = new LinkedList<User>();
 		for (com.ztu.cloud.cloud.common.bean.mysql.User user : userList) {
 			this.userList.add(new User(user));

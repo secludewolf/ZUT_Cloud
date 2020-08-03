@@ -13,11 +13,13 @@ import java.util.List;
 @Data
 public class AdminList {
 	List<Admin> adminList;
+	long pageLength;
 
 	public AdminList() {
 	}
 
-	public AdminList(List<com.ztu.cloud.cloud.common.bean.mysql.Admin> adminList) {
+	public AdminList(long pageLength, List<com.ztu.cloud.cloud.common.bean.mysql.Admin> adminList) {
+		this.pageLength = pageLength;
 		this.adminList = new LinkedList<Admin>();
 		for (com.ztu.cloud.cloud.common.bean.mysql.Admin admin : adminList) {
 			this.adminList.add(new Admin(admin));
