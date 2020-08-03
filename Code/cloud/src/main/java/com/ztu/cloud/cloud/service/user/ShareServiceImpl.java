@@ -66,6 +66,9 @@ public class ShareServiceImpl implements ShareService {
 		if (createShare == null) {
 			return ResultConstant.REQUEST_PARAMETER_ERROR;
 		}
+		if (createShare.getName() == null || createShare.getName().length() == 0) {
+			return ResultConstant.NAME_INVALID;
+		}
 		int userId = TokenUtil.getId(token);
 		UserRepository repository = this.userRepositoryDao.getByUserId(userId);
 		if (repository == null) {
