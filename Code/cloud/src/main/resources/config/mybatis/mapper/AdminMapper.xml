@@ -33,6 +33,11 @@
             resultType="com.ztu.cloud.cloud.common.bean.mysql.Admin">
         select * from admin limit #{start},#{end}
     </select>
+    <!--    获取管理员数量-->
+    <select id="getAdminCount"
+            resultType="long">
+        select count(*) from admin
+    </select>
     <!--    通过用户信息实体类修改用户信息-->
     <update id="updateAdmin"
             parameterType="com.ztu.cloud.cloud.common.bean.mysql.Admin">

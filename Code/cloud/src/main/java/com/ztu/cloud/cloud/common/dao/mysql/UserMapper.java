@@ -58,6 +58,12 @@ public interface UserMapper {
 	List<User> getUser(int start, int end);
 
 	/**
+	 * 获取用户数量
+	 * @return 用户数量
+	 */
+	Long getUserCount();
+
+	/**
 	 * 更新用户信息
 	 *
 	 * @param user 用户信息

@@ -55,6 +55,13 @@ public interface FileMapper {
 	 */
 	List<File> getFile(int start, int end);
 
+	/**
+	 * 获取文件数量
+	 *
+	 * @return 文件数量
+	 */
+	Long getFileCount();
+
 	//TODO 只更新了FileInfo
 
 	/**

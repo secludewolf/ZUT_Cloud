@@ -61,6 +61,14 @@ public class UserMapperTest {
 	}
 
 	@Test
+	public void getUserCount() {
+		this.userMapper.insertUser(new User("test", "test4", "test1", "test1", "test1", "test1", 1, 1, System.currentTimeMillis(), System.currentTimeMillis()));
+		User user = this.userMapper.getUserByAccount("test4");
+		System.out.println(this.userMapper.getUserCount());
+		this.userMapper.deleteUserById(user.getId());
+	}
+
+	@Test
 	public void insertUser() {
 		User user = new User("test", "test5", "test4", "test4", "test4", "test4", 4, 4, System.currentTimeMillis(), System.currentTimeMillis());
 		this.userMapper.insertUser(user);

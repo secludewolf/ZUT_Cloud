@@ -57,6 +57,13 @@ public interface AdminMapper {
 	List<Admin> getAdmin(int start, int end);
 
 	/**
+	 * 获取管理员数量
+	 *
+	 * @return 管理员数量
+	 */
+	Long getAdminCount();
+
+	/**
 	 * 更新用户信息
 	 *
 	 * @param admin 用户信息

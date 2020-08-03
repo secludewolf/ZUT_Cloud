@@ -5,8 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 
-import static org.junit.jupiter.api.Assertions.*;
-
 @SpringBootTest
 class FileMapperTest {
 
@@ -37,6 +35,22 @@ class FileMapperTest {
 		File file = new File("test3", "test1", "test1", 1, 1, "test1", 1, System.currentTimeMillis(), System.currentTimeMillis());
 		this.fileMapper.insertFile(file);
 		System.out.println(this.fileMapper.getFileById(file.getId()));
+		this.fileMapper.deleteFileById(file.getId());
+	}
+
+	@Test
+	public void getFile() {
+		File file = new File("test3", "test1", "test1", 1, 1, "test1", 1, System.currentTimeMillis(), System.currentTimeMillis());
+		this.fileMapper.insertFile(file);
+		System.out.println(this.fileMapper.getFile(0, 2));
+		this.fileMapper.deleteFileById(file.getId());
+	}
+
+	@Test
+	public void getFileCount() {
+		File file = new File("test3", "test1", "test1", 1, 1, "test1", 1, System.currentTimeMillis(), System.currentTimeMillis());
+		this.fileMapper.insertFile(file);
+		System.out.println(this.fileMapper.getFileCount());
 		this.fileMapper.deleteFileById(file.getId());
 	}
 

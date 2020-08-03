@@ -34,6 +34,11 @@
             resultType="com.ztu.cloud.cloud.common.bean.mysql.User">
         select * from user limit #{start},#{end}
     </select>
+    <!--    获取用户数量-->
+    <select id="getUserCount"
+            resultType="long">
+        select count(*) from user
+    </select>
     <!--    通过用户信息实体类修改用户信息-->
     <update id="updateUser"
             parameterType="com.ztu.cloud.cloud.common.bean.mysql.User">

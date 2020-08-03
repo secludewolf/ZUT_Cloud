@@ -60,6 +60,11 @@
             resultType="com.ztu.cloud.cloud.common.bean.mysql.File">
         select * from file limit #{start},#{end}
     </select>
+    <!--    获取文件数量-->
+    <select id="getFileCount"
+            resultType="long">
+        select count(*) from file
+    </select>
     <update id="fileQuoteNumberAdd">
         update file
         set

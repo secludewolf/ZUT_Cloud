@@ -20,6 +20,11 @@
             resultType="com.ztu.cloud.cloud.common.bean.mysql.Share">
         select * from share limit #{start},#{end}
     </select>
+    <!--    获取分享数量-->
+    <select id="getShareCount"
+            resultType="long">
+        select count(*) from share
+    </select>
     <!--    通过用户信息实体类修改用户信息-->
     <update id="updateShare"
             parameterType="com.ztu.cloud.cloud.common.bean.mysql.Share">

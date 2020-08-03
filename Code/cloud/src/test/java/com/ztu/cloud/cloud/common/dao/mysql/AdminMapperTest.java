@@ -55,6 +55,14 @@ class AdminMapperTest {
 	}
 
 	@Test
+	public void getAdminCount() {
+		this.adminMapper.insertAdmin(new Admin("test4", "test1", "test1", "test1", "test1", 1, 1, System.currentTimeMillis(), System.currentTimeMillis()));
+		Admin admin = this.adminMapper.getAdminByAccount("test4");
+		System.out.println(this.adminMapper.getAdminCount());
+		this.adminMapper.deleteAdminById(admin.getId());
+	}
+
+	@Test
 	public void insertAdmin() {
 		Admin admin = new Admin("test5", "test4", "test4", "test4", "test4", 4, 4, System.currentTimeMillis(), System.currentTimeMillis());
 		this.adminMapper.insertAdmin(admin);
