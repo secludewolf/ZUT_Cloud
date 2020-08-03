@@ -43,7 +43,7 @@
                   <a slot="extra"
                      v-if="value.status === 0"
                      @click="changeInformStatus(index)">已读</a>
-                  <span>{{value.content}}</span>
+                  <span>{{ value.content }}</span>
                 </a-card>
                 <br/>
               </div>
@@ -69,6 +69,12 @@
     name: 'Index',
     components: {
       Menu
+    },
+    created() {
+      console.log(localStorage.getItem("token"));
+      if (this.$store.state.admin.id === 0 && (localStorage.getItem("token") !== "" || localStorage.getItem("token") !== null)) {
+        this.$store.dispatch("loginByToken");
+      }
     },
     mounted() {
       const handler = (data) => {

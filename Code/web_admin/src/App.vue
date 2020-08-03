@@ -10,10 +10,6 @@
   export default {
     name: 'App',
     created() {
-      console.log(localStorage.getItem("token"));
-      if (this.$store.state.admin.id === 0 && (localStorage.getItem("token") !== "" || localStorage.getItem("token") !== null)) {
-        this.$store.dispatch("loginByToken");
-      }
     },
     components: {
       Index
