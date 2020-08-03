@@ -10,6 +10,7 @@ import org.springframework.http.HttpStatus;
  * @date 2020/06/23-12:10
  **/
 public class ResultConstant {
+	/* 通用返回体 */
 	public final static ResultResponseEntity SERVER_ERROR = ResultUtil.createResult(HttpStatus.INTERNAL_SERVER_ERROR, 0, "服务器错误", null);
 	public final static ResultResponseEntity SUCCESS = ResultUtil.createResult(1, "成功");
 	public final static ResultResponseEntity REQUEST_PARAMETER_ERROR = ResultUtil.createResult(0, "请求参数错误");
@@ -38,4 +39,8 @@ public class ResultConstant {
 	public final static ResultResponseEntity FILE_DAMAGE = ResultUtil.createResult(-23, "文件损坏");
 	public final static ResultResponseEntity SHARE_INVALID = ResultUtil.createResult(-24, "分享失效");
 	public final static ResultResponseEntity FOLDER_DEPTH_TOO_BIG = ResultUtil.createResult(-25, "文件深度过大");
+	/* 用户操作类返回体 */
+	/* 仓库操作类返回体 */
+	/* 分享操作类返回体 */
+	/* 管理员操作类返回体 */
 }

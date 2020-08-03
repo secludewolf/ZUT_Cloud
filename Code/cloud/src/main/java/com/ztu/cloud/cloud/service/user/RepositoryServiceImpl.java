@@ -12,16 +12,12 @@ import com.ztu.cloud.cloud.common.dao.mysql.UserFileMapper;
 import com.ztu.cloud.cloud.common.dto.user.repository.*;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.common.vo.user.RepositoryInfo;
-import com.ztu.cloud.cloud.util.ForbiddenUtil;
-import com.ztu.cloud.cloud.util.RequestUtil;
-import com.ztu.cloud.cloud.util.ResultUtil;
-import com.ztu.cloud.cloud.util.TokenUtil;
+import com.ztu.cloud.cloud.util.*;
 import org.springframework.stereotype.Component;
 
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.LinkedList;
-import java.util.UUID;
 
 /**
  * @author Jager
@@ -84,11 +80,11 @@ public class RepositoryServiceImpl implements RepositoryService {
 		if (!TokenUtil.isUser(token)) {
 			return ResultConstant.TOKEN_INVALID;
 		}
+		int userId = TokenUtil.getId(token);
 		CreateFile createFile = RequestUtil.getCreateFile(data);
 		if (createFile == null) {
 			return ResultConstant.REQUEST_PARAMETER_ERROR;
 		}
-		int userId = TokenUtil.getId(token);
 		UserRepository repository = this.userRepositoryDao.getByUserId(userId);
 		if (repository == null) {
 			return ResultConstant.REPOSITORY_NOT_FOUND;
@@ -104,6 +100,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 		}
 		String fileId = createFile.getFileId();
 		com.ztu.cloud.cloud.common.bean.mysql.File file = this.fileDao.getFileById(fileId);
+		//判断目标文件是否存在
 		if (file == null) {
 			return ResultConstant.FILE_NOT_EXISTED;
 		}
@@ -112,13 +109,15 @@ public class RepositoryServiceImpl implements RepositoryService {
 			return ResultConstant.REPOSITORY_FULL;
 		}
 		Folder folder = getFolder(repository, createFile.getPath());
+		//判断目标路径是否存在
 		if (folder == null) {
 			return ResultConstant.FOLDER_NOT_EXISTED;
 		}
 		if (folder.getFiles() == null) {
 			folder.setFiles(new HashMap<>(1));
 		}
-		if (folder.getFiles().get(createFile.getName()) != null) {
+		//判断文件名是否已被使用
+		if (RepositoryUtil.nameIsExist(createFile.getName(), folder)) {
 			return ResultConstant.FILE_EXISTED;
 		}
 		//创建新的用户文件关系
@@ -182,7 +181,8 @@ public class RepositoryServiceImpl implements RepositoryService {
 		if (folder.getFolders() == null) {
 			folder.setFolders(new HashMap<>(1));
 		}
-		if (folder.getFolders().get(createFolder.getName()) != null) {
+		//判断文件名是否被使用
+		if (RepositoryUtil.nameIsExist(createFolder.getName(), folder)) {
 			return ResultConstant.FOLDER_EXISTED;
 		}
 		folder.getFolders().put(createFolder.getName(), new Folder(createFolder.getName(), createFolder.getPath(), folder.getDepth() + 1));
@@ -236,7 +236,8 @@ public class RepositoryServiceImpl implements RepositoryService {
 		if (newFolder.getFiles() == null) {
 			newFolder.setFiles(new HashMap<>(1));
 		}
-		if (newFolder.getFiles().get(moveFile.getName()) != null) {
+		//判断文件名是否被使用
+		if (RepositoryUtil.nameIsExist(moveFile.getName(), newFolder)) {
 			return ResultConstant.FILE_EXISTED;
 		}
 		file.setPath(moveFile.getNewPath());
@@ -306,7 +307,8 @@ public class RepositoryServiceImpl implements RepositoryService {
 		if (newFolder.getFolders() == null) {
 			newFolder.setFolders(new HashMap<>());
 		}
-		if (newFolder.getFolders().get(folder.getName()) != null) {
+		//判断文件名是否被使用
+		if (RepositoryUtil.nameIsExist(folder.getName(), newFolder)) {
 			return ResultConstant.FOLDER_EXISTED;
 		}
 		LinkedList<File> files = new LinkedList<>();
@@ -393,7 +395,8 @@ public class RepositoryServiceImpl implements RepositoryService {
 		if (newFolder.getFiles() == null) {
 			newFolder.setFiles(new HashMap<>(1));
 		}
-		if (newFolder.getFiles().get(copyFile.getName()) != null) {
+		//判断文件名是否被使用
+		if (RepositoryUtil.nameIsExist(copyFile.getName(), newFolder)) {
 			return ResultConstant.FILE_EXISTED;
 		}
 		File newFile = file.clone();
@@ -471,7 +474,8 @@ public class RepositoryServiceImpl implements RepositoryService {
 		if (newParent.getFolders() == null) {
 			newParent.setFolders(new HashMap<>());
 		}
-		if (newParent.getFolders().get(folder.getName()) != null) {
+		//判断文件名是否被使用
+		if (RepositoryUtil.nameIsExist(folder.getName(), newParent)) {
 			return ResultConstant.FOLDER_EXISTED;
 		}
 		LinkedList<File> files = new LinkedList<>();
@@ -555,7 +559,8 @@ public class RepositoryServiceImpl implements RepositoryService {
 		if (folder.getFiles() == null) {
 			return ResultConstant.FILE_NOT_EXISTED;
 		}
-		if (folder.getFiles().get(renameFile.getNewName()) != null) {
+		//判断文件名是否被使用
+		if (RepositoryUtil.nameIsExist(renameFile.getNewName(), folder)) {
 			return ResultConstant.FILE_EXISTED;
 		}
 		File file = folder.getFiles().get(renameFile.getOldName());
@@ -611,7 +616,8 @@ public class RepositoryServiceImpl implements RepositoryService {
 		if (parent.getFolders() == null) {
 			return ResultConstant.FOLDER_NOT_EXISTED;
 		}
-		if (parent.getFolders().get(renameFolder.getNewName()) != null) {
+		//判断文件名是否已经被使用
+		if (RepositoryUtil.nameIsExist(renameFolder.getNewName(), parent)) {
 			return ResultConstant.FOLDER_EXISTED;
 		}
 		Folder folder = parent.getFolders().get(renameFolder.getOldName());
@@ -680,7 +686,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 			if (file == null) {
 				return ResultConstant.TARGET_NOT_EXISTED;
 			}
-			String uuid = getUUID();
+			String uuid = CommonUtil.getUuid();
 			if (repository.getRecycleBin().getFiles() == null) {
 				repository.getRecycleBin().setFiles(new HashMap<>(1));
 			}
@@ -694,7 +700,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 			if (folder == null) {
 				return ResultConstant.TARGET_NOT_EXISTED;
 			}
-			String uuid = getUUID();
+			String uuid = CommonUtil.getUuid();
 			if (repository.getRecycleBin().getFolders() == null) {
 				repository.getRecycleBin().setFolders(new HashMap<>(1));
 			}
@@ -751,7 +757,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 			if (folder.getFiles() == null) {
 				folder.setFiles(new HashMap<>(1));
 			}
-			if (folder.getFiles().get(file.getName()) != null) {
+			if (RepositoryUtil.nameIsExist(file.getName(), folder)) {
 				return ResultConstant.FILE_EXISTED;
 			}
 			folder.getFiles().put(file.getName(), file);
@@ -771,7 +777,7 @@ public class RepositoryServiceImpl implements RepositoryService {
 			if (parent.getFolders() == null) {
 				parent.setFolders(new HashMap<>(1));
 			}
-			if (parent.getFolders().get(folder.getName()) != null) {
+			if (RepositoryUtil.nameIsExist(folder.getName(), parent)) {
 				return ResultConstant.FOLDER_EXISTED;
 			}
 			parent.getFolders().put(folder.getName(), folder);
@@ -960,11 +966,5 @@ public class RepositoryServiceImpl implements RepositoryService {
 				getFolderList(temp, folders);
 			}
 		}
-	}
-
-	private static String getUUID() {
-		UUID uuid = UUID.randomUUID();
-		String str = uuid.toString();
-		return str.replace("-", "");
 	}
 }
