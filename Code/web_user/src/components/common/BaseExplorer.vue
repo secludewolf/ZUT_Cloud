@@ -85,11 +85,11 @@
                 <a-icon style="margin: 0 3px;color: #1890ff;" type="line" :rotate="90"></a-icon>
               </li>
               <li style="display: inline" v-for="(value,index) in path" :key="'path-'+index">
-                <a v-on:click="selectParent(index)" style="cursor:pointer "><a>{{value}}</a></a>
+                <a v-on:click="selectParent(index)" style="cursor:pointer "><a>{{ value }}</a></a>
                 <a-icon type="right" style="margin: 0 3px;color: #1890ff;" v-if="index < path.length - 1"></a-icon>
               </li>
               <li style="display: inline;float:right;color: #666;padding-right: 10px">
-                <span class="number">已全部加载，共<span> {{total}} </span>个</span>
+                <span class="number">已全部加载，共<span> {{ total }} </span>个</span>
               </li>
             </ul>
           </div>
@@ -148,10 +148,10 @@
                   />
                   <span>{{ text }}</span>
                 </div>
-                <span slot="size" slot-scope="text, record">{{getFormatSize(record.size)}}</span>
+                <span slot="size" slot-scope="text, record">{{ getFormatSize(record.size) }}</span>
                 <span slot="type"
-                      slot-scope="text, record">{{getTypeName(record.depth == null ? record.type : 'folder')}}</span>
-                <span slot="changeTime" slot-scope="text">{{getFormatDate(text)}}</span>
+                      slot-scope="text, record">{{ getTypeName(record.depth == null ? record.type : 'folder') }}</span>
+                <span slot="changeTime" slot-scope="text">{{ getFormatDate(text) }}</span>
                 <span slot="action" slot-scope="text, record, index">
                 <a @click="download(index)">
                   <a-icon type="download" style="padding-right:5px;"/>下载
@@ -211,6 +211,11 @@
                          @click="delete_">
               删除
             </a-menu-item>
+            <a-menu-item key="9"
+                         v-if="isFile || isFolder"
+                         @click="()=>{this.menuVisible = false;this.fileInfoVisible = true;}">
+              详细信息
+            </a-menu-item>
           </a-menu>
         </a-dropdown>
         <a-modal v-model="renameVisible"
@@ -249,7 +254,38 @@
         <a-modal v-model="shareCreatedVisible"
                  title="创建成功"
                  :footer="null">
-          <router-link :to="shareLink" target="_blank">{{shareLink}}</router-link>
+          <router-link :to="shareLink" target="_blank">{{ shareLink }}</router-link>
+        </a-modal>
+        <a-modal v-model="fileInfoVisible"
+                 title="详细信息"
+                 :footer="null"
+                 width="50%">
+          <a-descriptions :title="target.name" size="small" bordered>
+            <a-descriptions-item label="文件名" :span="3">
+              {{ target.name }}
+            </a-descriptions-item>
+            <a-descriptions-item label="位置" :span="3">
+              {{ target.path }}
+            </a-descriptions-item>
+            <a-descriptions-item label="大小" :span="1">
+              {{ getFormatSize(target.size) }}
+            </a-descriptions-item>
+            <a-descriptions-item label="类型" :span="2">
+              {{ target.type != null ? target.type.toUpperCase() : '-' }}
+            </a-descriptions-item>
+            <a-descriptions-item label="创建时间" :span="3">
+              {{ getFormatDate(target.createTime) }}
+            </a-descriptions-item>
+            <a-descriptions-item label="修改时间" :span="2">
+              {{ getFormatDate(target.changeTime) }}
+            </a-descriptions-item>
+            <a-descriptions-item label="状态" :span="1">
+              {{ target.status === 1 ? '正常' : '异常' }}
+            </a-descriptions-item>
+            <a-descriptions-item label="深度" :span="2">
+              {{ target.depth != null ? target.depth : '-' }}
+            </a-descriptions-item>
+          </a-descriptions>
         </a-modal>
       </a-layout>
     </a-layout-content>
@@ -389,6 +425,7 @@
         saveShareLoading: false,
         shareCreatedVisible: false,
         shareLink: "",
+        fileInfoVisible: false,
         treeData: {},
         selectFolderKey: "/root",
         isFile: false,
@@ -953,6 +990,9 @@
           deleteFromRecycleBin(data, handler, catcher);
         }
         this.menuVisible = false;
+      },
+      showInfo() {
+
       },
       tableOptionInit(index) {
         if (this.tableSource[index].depth != null) {
