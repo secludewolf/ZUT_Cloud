@@ -1,10 +1,13 @@
 <template>
-  <a-table :columns="columns" :data-source="data" bordered
+  <a-table bordered
+           :columns="columns"
+           :data-source="data"
            :loading="loading"
            :pagination="pagination"
+           :rowKey="record => record.id"
            @change="handleTableChange">
     <template
-      v-for="col in ['name', 'size', 'status','type','quoteNumber']"
+      v-for="col in ['name','quoteNumber']"
       :slot="col"
       slot-scope="text, record, index"
     >
@@ -20,6 +23,39 @@
         </template>
       </div>
     </template>
+    <div slot="status" slot-scope="text, record,col">
+      <a-input
+        v-if="record.editable"
+        style="margin: -5px 0"
+        :value="text"
+        @change="e => handleChange(e.target.value, record.key, 'status')"
+      />
+      <template v-else>
+        {{ text === 1 ? '正常' : '异常' }}
+      </template>
+    </div>
+    <div slot="size" slot-scope="text, record,col">
+      <a-input
+        v-if="record.editable"
+        style="margin: -5px 0"
+        :value="text"
+        @change="e => handleChange(e.target.value, record.key, 'size')"
+      />
+      <template v-else>
+        {{ getFormatSize(text) }}
+      </template>
+    </div>
+    <div slot="type" slot-scope="text, record,col">
+      <a-input
+        v-if="record.editable"
+        style="margin: -5px 0"
+        :value="text"
+        @change="e => handleChange(e.target.value, record.key, 'type')"
+      />
+      <template v-else>
+        {{ text.toUpperCase() }}
+      </template>
+    </div>
     <template slot="operation" slot-scope="text, record, index">
       <div class="editable-row-operations">
         <!--                <span v-if="record.editable">-->
@@ -32,10 +68,9 @@
         <div>
           <!--          <a :disabled="editingKey !== ''" @click="() => edit(record.key)">编辑</a>-->
           <a-popconfirm
-            title="确定要删除此用户吗?"
-            @confirm="() => onDelete(record.key)"
-          >
-            <a href="javascript:">删除</a>
+            title="确定要禁用此文件吗?"
+            @confirm="() => onDelete(record.key)">
+            <a href="javascript:">禁用</a>
           </a-popconfirm>
         </div>
       </div>
@@ -45,6 +80,7 @@
 <script>
   import {deleteFile, getFileList} from "../../api/file";
   import {message} from "../../util/message";
+  import {getFormatSize} from "../../util/util";
 
   const columns = [
     {
@@ -120,9 +156,6 @@
         const data = this.pagination.current != null ? this.pagination.current : 1;
         const handler = (data) => {
           console.log(data);
-          for (let i = 0; i < data.fileList.length; i++) {
-            data.fileList[i].key = data.fileList[i].id;
-          }
           const pagination = {...this.pagination};
           pagination.pageSize = 20;
           pagination.total = data.fileCount;
@@ -188,6 +221,9 @@
           this.data = newData;
         }
       },
+      getFormatSize(size) {
+        return getFormatSize(size);
+      }
     },
   };
 </script>

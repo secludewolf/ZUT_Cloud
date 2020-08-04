@@ -1,10 +1,13 @@
 <template>
-  <a-table :columns="columns" :data-source="data" bordered
+  <a-table bordered
+           :columns="columns"
+           :data-source="data"
            :loading="loading"
            :pagination="pagination"
+           :rowKey="record => record.id"
            @change="handleTableChange">
     <template
-      v-for="col in ['name', 'userId', 'password','status','validTime']"
+      v-for="col in ['name', 'userId']"
       :slot="col"
       slot-scope="text, record, index"
     >
@@ -20,24 +23,56 @@
         </template>
       </div>
     </template>
+    <div slot="password" slot-scope="text, record,col">
+      <a-input
+        v-if="record.editable"
+        style="margin: -5px 0"
+        :value="text"
+        @change="e => handleChange(e.target.value, record.key, 'password')"
+      />
+      <template v-else>
+        {{ (text === '') ? '无密码' : text }}
+      </template>
+    </div>
+    <div slot="status" slot-scope="text, record,col">
+      <a-input
+        v-if="record.editable"
+        style="margin: -5px 0"
+        :value="text"
+        @change="e => handleChange(e.target.value, record.key, 'status')"
+      />
+      <template v-else>
+        {{ text === 1 ? '正常' : '失效' }}
+      </template>
+    </div>
+    <div slot="validTime" slot-scope="text, record,col">
+      <a-input
+        v-if="record.editable"
+        style="margin: -5px 0"
+        :value="text"
+        @change="e => handleChange(e.target.value, record.key, 'validTime')"
+      />
+      <template v-else>
+        {{ getFormatDate(text) }}
+      </template>
+    </div>
     <template slot="operation" slot-scope="text, record, index">
       <div class="editable-row-operations">
-        <!--        <span v-if="record.editable">-->
-        <!--          <a @click="() => cancel(record.key)">取消</a>-->
-        <!--          <a @click="() => save(record.key)">更新</a>-->
-        <!--          &lt;!&ndash;          <a-popconfirm title="确定要修改吗?" @confirm="() => save(record.key)">&ndash;&gt;-->
-        <!--          &lt;!&ndash;            <a>更新</a>&ndash;&gt;-->
-        <!--          &lt;!&ndash;          </a-popconfirm>&ndash;&gt;-->
-        <!--        </span>-->
         <div>
           <!--          <a :disabled="editingKey !== ''" @click="() => edit(record.key)">编辑</a>-->
           <a-popconfirm
-            title="确定要删除此用户吗?"
-            @confirm="() => onDelete(record.key)"
-          >
-            <a href="javascript:">删除</a>
+            title="确定要禁用此分享吗?"
+            @confirm="() => onDelete(record.key)">
+            <a href="javascript:">禁用</a>
           </a-popconfirm>
         </div>
+        <!--                <span v-if="record.editable">-->
+        <!--                  <a @click="() => cancel(record.key)">取消</a>-->
+        <!--                  <a @click="() => save(record.key)">更新</a>-->
+        <!--                  &lt;!&ndash;          <a-popconfirm title="确定要修改吗?" @confirm="() => save(record.key)">&ndash;&gt;-->
+        <!--                  &lt;!&ndash;            <a>更新</a>&ndash;&gt;-->
+        <!--                  &lt;!&ndash;          </a-popconfirm>&ndash;&gt;-->
+        <!--                </span>-->
       </div>
     </template>
   </a-table>
@@ -45,6 +80,7 @@
 <script>
   import {deleteShare, getShareList} from "../../api/share";
   import {message} from "../../util/message";
+  import {getFormatDate} from "../../util/util";
 
   const columns = [
     {
@@ -120,9 +156,6 @@
         const data = this.pagination.current != null ? this.pagination.current : 1;
         const handler = (data) => {
           console.log(data);
-          for (let i = 0; i < data.shareList.length; i++) {
-            data.shareList[i].key = data.shareList[i].id;
-          }
           const pagination = {...this.pagination};
           pagination.pageSize = 20;
           pagination.total = data.shareCount;
@@ -188,6 +221,9 @@
           this.data = newData;
         }
       },
+      getFormatDate(date) {
+        return getFormatDate(date);
+      }
     },
   };
 </script>

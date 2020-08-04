@@ -1,10 +1,13 @@
 <template>
-  <a-table :columns="columns" :data-source="data" bordered
+  <a-table bordered
+           :columns="columns"
+           :data-source="data"
            :loading="loading"
            :pagination="pagination"
+           :rowKey="record => record.id"
            @change="handleTableChange">
     <template
-      v-for="col in ['account', 'email', 'phone','name','password','level','status']"
+      v-for="col in ['account', 'email', 'phone','name','password','level']"
       :slot="col"
       slot-scope="text, record, index"
     >
@@ -20,6 +23,11 @@
         </template>
       </div>
     </template>
+    <div slot="status" slot-scope="text, record">
+      <template>
+        {{ text === 1 ? '正常' : '异常' }}
+      </template>
+    </div>
     <template slot="operation" slot-scope="text, record, index">
       <div class="editable-row-operations">
         <span v-if="record.editable">
@@ -85,6 +93,7 @@
     {
       title: '状态',
       dataIndex: 'status',
+      scopedSlots: {customRender: 'status'},
       align: "center",
     },
     {
@@ -131,9 +140,6 @@
         const data = this.pagination.current != null ? this.pagination.current : 1;
         const handler = (data) => {
           console.log(data);
-          for (let i = 0; i < data.userList.length; i++) {
-            data.userList[i].key = data.userList[i].id;
-          }
           const pagination = {...this.pagination};
           pagination.pageSize = 20;
           pagination.total = data.userCount;

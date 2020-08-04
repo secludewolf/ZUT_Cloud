@@ -1,10 +1,13 @@
 <template>
-  <a-table :columns="columns" :data-source="data" bordered
+  <a-table bordered
+           :columns="columns"
+           :data-source="data"
            :loading="loading"
            :pagination="pagination"
+           :rowKey="record => record.id"
            @change="handleTableChange">
     <template
-      v-for="col in ['account', 'email', 'phone','name','password','level','status']"
+      v-for="col in ['account', 'email', 'phone','name','password','level']"
       :slot="col"
       slot-scope="text, record, index">
       <div :key="col">
@@ -19,6 +22,17 @@
         </template>
       </div>
     </template>
+    <div slot="status" slot-scope="text, record,col">
+      <a-input
+        v-if="record.editable"
+        style="margin: -5px 0"
+        :value="text"
+        @change="e => handleChange(e.target.value, record.key, 'status')"
+      />
+      <template v-else>
+        {{ text === 1 ? '正常' : '异常' }}
+      </template>
+    </div>
     <template slot="operation" slot-scope="text, record, index">
       <div class="editable-row-operations">
         <span v-if="record.editable">
@@ -131,9 +145,6 @@
         const data = this.pagination.current != null ? this.pagination.current : 1;
         const handler = (data) => {
           console.log(data);
-          for (let i = 0; i < data.adminList.length; i++) {
-            data.adminList[i].key = data.adminList[i].id;
-          }
           this.loading = false;
           const pagination = {...this.pagination};
           pagination.pageSize = 20;
