@@ -1,114 +1,68 @@
 <template>
-  <div style="height: 100%;width: 100%">
-    <a-form :form="registerForm" @submit="register"
-            style="position: relative;top:15%;bottom:0;left:0;right:0;margin:0 auto;width: 30%;">
-      <a-form-item v-bind="formItemLayout" label="邮箱">
-        <a-input
-          v-decorator="[
-          'email',
-          {
-            rules: [
-              {
-                type: 'email',
-                message: '邮箱不合法!',
-              },
-              {
-                required: true,
-                message: '请输入邮箱!',
-              },
-            ],
-          },
-        ]"
-        />
-      </a-form-item>
-      <a-form-item v-bind="formItemLayout" label="账号">
-        <a-input
-          v-decorator="[
-          'account',
-          {
-            rules: [{ required: true, message: '请输入账号!', whitespace: true }],
-          },
-        ]"
-        />
-      </a-form-item>
-      <a-form-item v-bind="formItemLayout" label="手机号">
-        <a-input
-          v-decorator="[
-          'phone',
-          {
-            rules: [{ required: true, message: '请输入手机号!', whitespace: true }],
-          },
-        ]"
-        />
-      </a-form-item>
-      <a-form-item v-bind="formItemLayout" label="密码" has-feedback>
-        <a-input
-          v-decorator="[
-          'password',
-          {
-            rules: [
-              {
-                required: true,
-                message: '请输入密码!',
-              },
-            ],
-          },
-        ]"
-          type="password"
-        />
-      </a-form-item>
-      <a-form-item v-bind="formItemLayout" label="确认密码" has-feedback>
-        <a-input
-          v-decorator="[
-          'confirmPassword',
-          {
-            rules: [
-              {
-                required: true,
-                message: '请确认密码!',
-              },
-            ],
-          },
-        ]"
-          type="password"
-        />
-      </a-form-item>
-      <a-form-item v-bind="formItemLayout">
-      <span slot="label">
-        昵称
-      </span>
-        <a-input
-          v-decorator="[
-          'name',
-          {
-            rules: [{ required: true, message: '请输入昵称!', whitespace: true }],
-          },
-        ]"
-        />
-      </a-form-item>
-      <a-form-item v-bind="formItemLayout" label="授权码">
-        <a-input
-          v-decorator="[
-          'key',
-          {
-            rules: [{ required: true, message: '请输入授权码!', whitespace: true }],
-          },
-        ]"
-        />
-      </a-form-item>
+  <a-layout style="background: white">
+    <a-layout-content style="margin-top: 50px;">
+      <div style="width: 15%;min-width:300px;margin: 0 auto;">
+        <img src="../assets/logo.png" style="height: 100%;width: 100%;" alt="Logo"/>
+      </div>
+      <a-form :form="registerForm" @submit="register"
+              style="width: 25%;min-width:400px;margin: 0 auto;padding-top: 20px;">
+        <a-form-item>
+          <a-input
+            v-decorator="['email',{rules: [{type: 'email',message: '邮箱不合法!',},{required: true,message: '请输入邮箱!',},],},]"
+            placeholder="请输入邮箱">
+            <a-icon slot="prefix" type="mail" style="color: rgba(0,0,0,.25)"/>
+          </a-input>
+        </a-form-item>
+        <a-form-item>
+          <a-input v-decorator="['account',{rules: [{ required: true, message: '请输入账号!', whitespace: true }],},]"
+                   placeholder="请输入账号">
+            <a-icon slot="prefix" type="user" style="color: rgba(0,0,0,.25)"/>
+          </a-input>
+        </a-form-item>
+        <a-form-item>
+          <a-input v-decorator="['phone',{rules: [{ required: true, message: '请输入手机号!', whitespace: true }],},]"
+                   placeholder="请输入手机号">
+            <a-icon slot="prefix" type="phone" style="color: rgba(0,0,0,.25)"/>
+          </a-input>
+        </a-form-item>
+        <a-form-item has-feedback>
+          <a-input v-decorator="['password',{rules: [{required: true,message: '请输入密码!',},],},]" type="password"
+                   placeholder="请输入密码">
+            <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)"/>
+          </a-input>
+        </a-form-item>
+        <a-form-item has-feedback>
+          <a-input v-decorator="['confirmPassword',{rules: [{required: true,message: '请确认密码!',},],},]" type="password"
+                   placeholder="请确认密码">
+            <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)"/>
+          </a-input>
+        </a-form-item>
+        <a-form-item>
+          <a-input v-decorator="['name',{rules: [{ required: true, message: '请输入昵称!', whitespace: true }],},]"
+                   placeholder="请输入昵称">
+            <a-icon slot="prefix" type="user" style="color: rgba(0,0,0,.25)"/>
+          </a-input>
+        </a-form-item>
+        <a-form-item>
+          <a-input v-decorator="['key',{rules: [{ required: true, message: '请输入授权码!', whitespace: true }],},]"
+                   placeholder="请输入授权码">
+            <a-icon slot="prefix" type="key" style="color: rgba(0,0,0,.25)"/>
+          </a-input>
+        </a-form-item>
 
-      <a-form-item v-bind="tailFormItemLayout">
-        <router-link to="/login" style="margin: 0 20px">
-          <a-button>
-            登陆
+        <a-form-item style="text-align: center">
+          <router-link to="/login">
+            <a-button style="width:150px; margin: 0 20px">
+              登陆
+            </a-button>
+          </router-link>
+          <a-button type="primary" style="width:150px; margin: 0 20px" html-type="submit">
+            注册
           </a-button>
-        </router-link>
-        <a-button type="primary" style="margin: 0 20px" html-type="submit">
-          注册
-        </a-button>
-      </a-form-item>
-    </a-form>
-  </div>
+        </a-form-item>
+      </a-form>
+    </a-layout-content>
+  </a-layout>
 </template>
 
 <script>
@@ -120,28 +74,6 @@
     data() {
       return {
         registerForm: this.$form.createForm(this, {name: 'register'}),
-        formItemLayout: {
-          labelCol: {
-            xs: {span: 24},
-            sm: {span: 8},
-          },
-          wrapperCol: {
-            xs: {span: 24},
-            sm: {span: 16},
-          },
-        },
-        tailFormItemLayout: {
-          wrapperCol: {
-            xs: {
-              span: 24,
-              offset: 0,
-            },
-            sm: {
-              span: 16,
-              offset: 8,
-            },
-          },
-        },
       };
     },
     methods: {

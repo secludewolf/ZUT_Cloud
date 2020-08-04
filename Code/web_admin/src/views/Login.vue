@@ -1,32 +1,23 @@
 <template>
-  <div style="height: 100%;width: 100%;">
+  <a-layout style="background: white">
+    <a-layout-content style="margin-top: 50px;">
+      <div style="width: 15%;min-width:300px;margin: 0 auto;">
+        <img src="../assets/logo.png" style="height: 100%;width: 100%;" alt="Logo"/>
+      </div>
     <a-form
       id="components-form-demo-normal-login"
       :form="loginForm"
       class="login-form"
       @submit="login"
-      style="position: relative;top:30%;bottom:0;left:0;right:0;margin:0 auto;width: 25%;"
+      style="position: relative; margin:50px auto;width: 25%;min-width: 400px;"
     >
       <a-form-item>
-        <a-input
-          v-decorator="[
-          'account',
-          { rules: [{ required: true, message: '账号不能为空!' }] },
-        ]"
-          placeholder="请输入账号"
-        >
+        <a-input v-decorator="['account',{ rules: [{ required: true, message: '账号不能为空!' }] },]"placeholder="请输入账号">
           <a-icon slot="prefix" type="user" style="color: rgba(0,0,0,.25)"/>
         </a-input>
       </a-form-item>
       <a-form-item>
-        <a-input
-          v-decorator="[
-          'password',
-          { rules: [{ required: true, message: '密码不能为空!' }] },
-        ]"
-          type="password"
-          placeholder="请输入密码"
-        >
+        <a-input v-decorator="['password',{ rules: [{ required: true, message: '密码不能为空!' }] },]" type="password" placeholder="请输入密码">
           <a-icon slot="prefix" type="lock" style="color: rgba(0,0,0,.25)"/>
         </a-input>
       </a-form-item>
@@ -46,7 +37,8 @@
         </router-link>
       </a-form-item>
     </a-form>
-  </div>
+    </a-layout-content>
+  </a-layout>
 </template>
 
 <script>

@@ -1,15 +1,19 @@
 <template>
-  <div style="height: 100%;width: 100%;">
-    <a-form
-      id="components-form-demo-normal-login"
-      :form="forgetForm"
-      class="login-form"
-      @submit="forget"
-      style="position: relative;top:30%;bottom:0;left:0;right:0;margin:0 auto;width: 25%;"
-    >
-      <a-form-item>
-        <a-input
-          v-decorator="[
+  <a-layout style="background: white">
+    <a-layout-content style="margin-top: 50px;">
+      <div style="width: 15%;min-width:300px;margin: 0 auto;">
+        <img src="../assets/logo.png" style="height: 100%;width: 100%;" alt="Logo"/>
+      </div>
+      <a-form
+        id="components-form-demo-normal-login"
+        :form="forgetForm"
+        class="login-form"
+        @submit="forget"
+        style="width: 25%;min-width:400px;margin: 50px auto;padding-top: 20px;"
+      >
+        <a-form-item>
+          <a-input
+            v-decorator="[
           'email',
           { rules: [
             {
@@ -21,20 +25,21 @@
             }]
            },
         ]"
-          placeholder="请输入邮箱">
-          <a-icon slot="prefix" type="mail" style="color: rgba(0,0,0,.25)"/>
-        </a-input>
-      </a-form-item>
-      <a-form-item>
-        <a-button type="primary" html-type="submit" class="login-form-button">
-          找回
-        </a-button>
-        <router-link to="/login">
-          登陆
-        </router-link>
-      </a-form-item>
-    </a-form>
-  </div>
+            placeholder="请输入邮箱">
+            <a-icon slot="prefix" type="mail" style="color: rgba(0,0,0,.25)"/>
+          </a-input>
+        </a-form-item>
+        <a-form-item>
+          <a-button type="primary" html-type="submit" class="login-form-button">
+            找回
+          </a-button>
+          <router-link to="/login">
+            登陆
+          </router-link>
+        </a-form-item>
+      </a-form>
+    </a-layout-content>
+  </a-layout>
 </template>
 
 <script>

@@ -1,6 +1,8 @@
 <template>
   <div style="position:relative;top:0;bottom: 0;width: 100%;">
-    <div class="logo"></div>
+    <div class="logo">
+      <img src="../../assets/logo.png" alt="logo" style="height: 100%;margin: 0 60px;"/>
+    </div>
     <a-menu
       :default-selected-keys="['1']"
       :default-open-keys="['sub1']"
@@ -93,7 +95,7 @@
 <style scoped>
   .logo {
     height: 32px;
-    background: rgba(255, 255, 255, 0.2);
+    background: white;
     margin: 16px;
   }
 </style>
