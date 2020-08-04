@@ -9,7 +9,7 @@ import com.ztu.cloud.cloud.common.dao.mysql.AdminMapper;
 import com.ztu.cloud.cloud.common.dao.mysql.UserMapper;
 import com.ztu.cloud.cloud.common.dto.admin.*;
 import com.ztu.cloud.cloud.common.dto.common.ChangePassword;
-import com.ztu.cloud.cloud.common.dto.common.ChangeUserInfo;
+import com.ztu.cloud.cloud.common.dto.user.user.ChangeUserInfo;
 import com.ztu.cloud.cloud.common.dto.common.ForgetEmail;
 import com.ztu.cloud.cloud.common.dto.common.LoginAccount;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;

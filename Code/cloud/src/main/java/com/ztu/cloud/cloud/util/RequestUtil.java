@@ -1,7 +1,5 @@
 package com.ztu.cloud.cloud.util;
 
-import com.sun.org.apache.bcel.internal.generic.NEW;
-import com.sun.org.apache.regexp.internal.RE;
 import com.ztu.cloud.cloud.common.dto.admin.*;
 import com.ztu.cloud.cloud.common.dto.common.*;
 import com.ztu.cloud.cloud.common.dto.user.download.DownloadId;
@@ -9,10 +7,9 @@ import com.ztu.cloud.cloud.common.dto.user.repository.*;
 import com.ztu.cloud.cloud.common.dto.user.share.CreateShare;
 import com.ztu.cloud.cloud.common.dto.user.share.GetShare;
 import com.ztu.cloud.cloud.common.dto.user.share.SaveShare;
+import com.ztu.cloud.cloud.common.dto.user.user.ChangeUserInfo;
 import com.ztu.cloud.cloud.common.dto.user.user.RegisterAccount;
 import com.ztu.cloud.cloud.common.dto.user.user.RegisterEmail;
-import org.apache.hadoop.yarn.webapp.hamlet.Hamlet;
-import org.springframework.boot.configurationprocessor.json.JSONException;
 import org.springframework.boot.configurationprocessor.json.JSONObject;
 
 /**
