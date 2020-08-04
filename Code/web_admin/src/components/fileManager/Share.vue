@@ -124,7 +124,8 @@
             data.shareList[i].key = data.shareList[i].id;
           }
           const pagination = {...this.pagination};
-          pagination.total = data.pageLength;
+          pagination.pageSize = 20;
+          pagination.total = data.shareCount;
           this.data = data.shareList;
           this.cacheData = data.shareList.map(item => ({...item}));
           this.pagination = pagination;

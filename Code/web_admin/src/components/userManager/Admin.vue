@@ -136,7 +136,8 @@
           }
           this.loading = false;
           const pagination = {...this.pagination};
-          pagination.total = data.pageLength;
+          pagination.pageSize = 20;
+          pagination.total = data.adminCount;
           this.data = data.adminList;
           this.cacheData = data.adminList.map(item => ({...item}));
           this.pagination = pagination;

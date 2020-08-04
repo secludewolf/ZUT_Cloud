@@ -135,7 +135,8 @@
             data.userList[i].key = data.userList[i].id;
           }
           const pagination = {...this.pagination};
-          pagination.total = data.pageLength;
+          pagination.pageSize = 20;
+          pagination.total = data.userCount;
           this.data = data.userList;
           this.cacheData = data.userList.map(item => ({...item}));
           this.pagination = pagination;

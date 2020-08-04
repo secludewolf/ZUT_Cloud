@@ -59,10 +59,8 @@ public class ShareManageServiceImpl implements ShareManageService {
 		if (admin.getLevel() <= 0) {
 			return ResultConstant.NO_ACCESS;
 		}
-		Long shareCount = this.shareDao.getShareCount();
-		long pageLength = shareCount / 20 + (shareCount % 20 == 0 ? 0 : 1);
 		List<Share> shareList = this.shareDao.getShare((pageNumber - 1) * 20, pageNumber * 20);
-		return ResultUtil.createResult("成功", new ShareList(pageLength, shareList));
+		return ResultUtil.createResult("成功", new ShareList(this.shareDao.getShareCount(), shareList));
 	}
 
 	/**

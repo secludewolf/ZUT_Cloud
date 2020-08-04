@@ -124,7 +124,8 @@
             data.fileList[i].key = data.fileList[i].id;
           }
           const pagination = {...this.pagination};
-          pagination.total = data.pageLength;
+          pagination.pageSize = 20;
+          pagination.total = data.fileCount;
           this.data = data.fileList;
           this.cacheData = data.fileList.map(item => ({...item}));
           this.pagination = pagination;

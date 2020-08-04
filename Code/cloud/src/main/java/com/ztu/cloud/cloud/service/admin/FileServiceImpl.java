@@ -96,10 +96,8 @@ public class FileServiceImpl implements FileService {
 		if (admin.getLevel() <= 0) {
 			return ResultConstant.NO_ACCESS;
 		}
-		Long fileCount = this.fileDao.getFileCount();
-		long pageLength = fileCount / 20 + (fileCount % 20 == 0 ? 0 : 1);
 		List<File> fileList = this.fileDao.getFile((pageNumber - 1) * 20, pageNumber * 20);
-		return ResultUtil.createResult("", new FileList(pageLength, fileList));
+		return ResultUtil.createResult("", new FileList(this.fileDao.getFileCount(), fileList));
 	}
 
 	/**
