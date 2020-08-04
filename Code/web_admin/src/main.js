@@ -9,6 +9,13 @@ import 'mavon-editor/dist/css/index.css'
 
 Vue.config.productionTip = false;
 
+router.beforeEach((to, from, next) => {
+  /* 路由发生变化修改页面title */
+  if (to.meta.title) {
+    document.title = to.meta.title + " | 控制台";
+  }
+  next()
+})
 
 //Mock测试
 //import "./mock/mock";

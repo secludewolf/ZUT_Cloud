@@ -17,7 +17,7 @@ import NotFoundTarget from "../views/404"
 
 Vue.use(Router);
 
-const router =  new Router({
+const router = new Router({
   mode: "history",
   routes: [
     {
@@ -27,17 +27,26 @@ const router =  new Router({
     {
       path: '/login',
       name: 'Login',
-      component: Login
+      component: Login,
+      meta: {
+        title: '登陆',
+      },
     },
     {
       path: '/register',
       name: 'Register',
-      component: Register
+      component: Register,
+      meta: {
+        title: '注册',
+      },
     },
     {
       path: '/forget',
       name: 'Forget',
-      component: Forget
+      component: Forget,
+      meta: {
+        title: '忘记密码',
+      },
     },
     {
       path: '/index',
@@ -47,39 +56,66 @@ const router =  new Router({
         {
           path: "/admin",
           name: "admin",
-          component: AdminInfo
+          component: AdminInfo,
+          meta: {
+            title: '用户信息',
+          },
         }, {
           path: "/password",
           name: "password",
-          component: AdminPassword
+          component: AdminPassword,
+          meta: {
+            title: '修改密码',
+          },
         }, {
           path: "/userManager",
           name: "userManager",
-          component: User
+          component: User,
+          meta: {
+            title: '用户管理',
+          },
         }, {
           path: "/adminManager",
           name: "adminManager",
-          component: Admin
+          component: Admin,
+          meta: {
+            title: '管理员管理',
+          },
         }, {
           path: "/fileManager",
           name: "fileManager",
-          component: File
+          component: File,
+          meta: {
+            title: '文件管理',
+          },
         }, {
           path: "/shareManager",
           name: "shareManager",
-          component: Share
+          component: Share,
+          meta: {
+            title: '分享管理',
+          },
         }, {
           path: "/userInform",
           name: "userInform",
-          component: UserInform
+          component: UserInform,
+          meta: {
+            title: '用户通知管理',
+          },
         }, {
           path: "/adminInform",
           name: "adminInform",
-          component: AdminInform
+          component: AdminInform,
+          meta: {
+            title: '管理员通知管理',
+          },
         }, {
           path: "/createInform",
           name: "createInform",
-          component: CreateInform
+          component: CreateInform,
+          meta: {
+            title: '创建通知',
+          },
         },
       ],
       redirect: "/userManager"

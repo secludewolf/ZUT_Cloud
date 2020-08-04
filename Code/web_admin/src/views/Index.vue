@@ -10,7 +10,7 @@
           :type="collapsed ? 'menu-unfold' : 'menu-fold'"
           @click="() => (this.collapsed = !this.collapsed)"
         />
-        <span>Header</span>
+        <span>{{ this.$route.meta.title }}</span>
         <div style="float: right;height: 64px;padding:0 30px;background: white;line-height: 64px;">
           <a-dropdown style="padding: 3px;">
             <a class="ant-dropdown-link" @click="e => e.preventDefault()">
