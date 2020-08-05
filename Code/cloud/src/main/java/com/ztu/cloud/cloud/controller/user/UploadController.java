@@ -9,6 +9,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 /**
  * @author Jager
  * @description 上传接口
@@ -35,7 +38,13 @@ public class UploadController {
 	 * @return 已接收的文件块号
 	 */
 	@PostMapping("/upload")
-	public ResultResponseEntity upload(@RequestHeader(TokenUtil.TOKEN_HEADER) String token, @RequestParam("block") MultipartFile block, @RequestParam("fileName") String fileName, @RequestParam("blockMd5") String blockMd5, @RequestParam("fileMd5") String fileMd5, @RequestParam("index") Integer index, @RequestParam("length") Integer length) {
+	public ResultResponseEntity upload(@RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+	                                   @RequestParam("block") @NotNull(message = "文件块不能为空") MultipartFile block,
+	                                   @RequestParam("fileName") @NotBlank(message = "文件名不能为空") String fileName,
+	                                   @RequestParam("blockMd5") @NotBlank(message = "文件块特征码不能为空") String blockMd5,
+	                                   @RequestParam("fileMd5") @NotBlank(message = "文件特征码不能为空") String fileMd5,
+	                                   @RequestParam("index") @NotNull(message = "文件块序号不能为空") Integer index,
+	                                   @RequestParam("length") @NotNull(message = "文件块长度不能为空") Integer length) {
 		return uploadService.upload(token, fileName, block, blockMd5, fileMd5, index, length);
 	}
 }
