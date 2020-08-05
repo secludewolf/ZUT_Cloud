@@ -18,7 +18,7 @@ import com.ztu.cloud.cloud.common.dto.user.share.SaveShare;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.common.vo.user.ShareInfo;
 import com.ztu.cloud.cloud.common.vo.user.ShareList;
-import com.ztu.cloud.cloud.util.RequestUtil;
+import com.ztu.cloud.cloud.util.CommonUtil;
 import com.ztu.cloud.cloud.util.ResultUtil;
 import com.ztu.cloud.cloud.util.TokenUtil;
 import org.springframework.stereotype.Component;
@@ -49,24 +49,20 @@ public class ShareServiceImpl implements ShareService {
 	/**
 	 * 创建分享
 	 *
-	 * @param token 用户Token
-	 * @param data  请求参数
-	 *              repositoryId 仓库ID
-	 *              name 分享名称
-	 *              path 分享位置
-	 *              password 密码
+	 * @param token     用户Token
+	 * @param parameter 请求参数
+	 *                  repositoryId 仓库ID
+	 *                  name 分享名称
+	 *                  path 分享位置
+	 *                  password 密码
 	 * @return 分享信息
 	 */
 	@Override
-	public ResultResponseEntity createShare(String token, String data) {
+	public ResultResponseEntity createShare(String token, CreateShare parameter) {
 		if (!TokenUtil.isUser(token)) {
 			return ResultConstant.TOKEN_INVALID;
 		}
-		CreateShare createShare = RequestUtil.getCreateShare(data);
-		if (createShare == null) {
-			return ResultConstant.REQUEST_PARAMETER_ERROR;
-		}
-		if (createShare.getName() == null || createShare.getName().length() == 0) {
+		if (parameter.getName() == null || parameter.getName().length() == 0) {
 			return ResultConstant.NAME_INVALID;
 		}
 		int userId = TokenUtil.getId(token);
@@ -77,15 +73,15 @@ public class ShareServiceImpl implements ShareService {
 		if (repository.getStatus() != 1) {
 			return ResultConstant.REPOSITORY_STATUS_ABNORMAL;
 		}
-		if (!repository.getId().equals(createShare.getRepositoryId())) {
+		if (!repository.getId().equals(parameter.getRepositoryId())) {
 			return ResultConstant.NO_ACCESS;
 		}
-		Folder source = getFolder(repository, createShare.getPath());
+		Folder source = getFolder(repository, parameter.getPath());
 		if (source == null) {
 			return ResultConstant.FOLDER_NOT_EXISTED;
 		}
 		Folder folder = source.clone();
-		String shareId = getUUID();
+		String shareId = CommonUtil.getUuid();
 		ShareRepository shareRepository = new ShareRepository(shareId, userId, folder);
 		LinkedList<File> files = new LinkedList<>();
 		LinkedList<Folder> folders = new LinkedList<>();
@@ -115,7 +111,7 @@ public class ShareServiceImpl implements ShareService {
 			}
 		}
 		this.shareRepositoryDao.insert(shareRepository);
-		Share share = new Share(shareId, userId, shareRepository.getId(), createShare.getName(), createShare.getPassword(), createShare.getValidTime());
+		Share share = new Share(shareId, userId, shareRepository.getId(), parameter.getName(), parameter.getPassword(), parameter.getValidTime());
 		this.shareDao.insertShare(share);
 		this.userRepositoryDao.updateFolderById(repository.getId(), repository.getFolder());
 		return ResultUtil.createResult("成功", new ShareInfo(share));
@@ -164,22 +160,18 @@ public class ShareServiceImpl implements ShareService {
 	/**
 	 * 获取分享信息
 	 *
-	 * @param token 用户Token
-	 * @param data  请求参数
-	 *              shareId 分享ID
-	 *              password 分享密码
+	 * @param token     用户Token
+	 * @param parameter 请求参数
+	 *                  shareId 分享ID
+	 *                  password 分享密码
 	 * @return 分享信息
 	 */
 	@Override
-	public ResultResponseEntity getShare(String token, String data) {
+	public ResultResponseEntity getShare(String token, GetShare parameter) {
 		if (!TokenUtil.isUser(token)) {
 			return ResultConstant.TOKEN_INVALID;
 		}
-		GetShare getShare = RequestUtil.getShare(data);
-		if (getShare == null) {
-			return ResultConstant.REQUEST_PARAMETER_ERROR;
-		}
-		Share shareInfo = this.shareDao.getShareById(getShare.getShareId());
+		Share shareInfo = this.shareDao.getShareById(parameter.getShareId());
 		if (shareInfo == null) {
 			return ResultConstant.TARGET_NOT_EXISTED;
 		}
@@ -188,8 +180,8 @@ public class ShareServiceImpl implements ShareService {
 		}
 		if (shareInfo.getPassword() != null
 				&& shareInfo.getPassword().length() != 0
-				&& getShare.getPassword() == null
-				&& !shareInfo.getPassword().equals(getShare.getPassword())) {
+				&& parameter.getPassword() == null
+				&& !shareInfo.getPassword().equals(parameter.getPassword())) {
 			return ResultConstant.PASSWORD_INVALID;
 		}
 		ShareRepository shareRepository = this.shareRepositoryDao.getById(shareInfo.getRepoId());
@@ -199,38 +191,34 @@ public class ShareServiceImpl implements ShareService {
 	/**
 	 * 保存分享
 	 *
-	 * @param token 用户信Token
-	 * @param data  请求参数
-	 *              shareId 分享ID
-	 *              password 分享密码
-	 *              path 保存位置
+	 * @param token     用户信Token
+	 * @param parameter 请求参数
+	 *                  shareId 分享ID
+	 *                  password 分享密码
+	 *                  path 保存位置
 	 * @return 是否保存成功
 	 */
 	@Override
-	public ResultResponseEntity saveShare(String token, String data) {
+	public ResultResponseEntity saveShare(String token, SaveShare parameter) {
 		if (!TokenUtil.isUser(token)) {
 			return ResultConstant.TOKEN_INVALID;
 		}
-		SaveShare saveShare = RequestUtil.getSaveShare(data);
-		if (saveShare == null) {
-			return ResultConstant.REQUEST_PARAMETER_ERROR;
-		}
 		int userId = TokenUtil.getId(token);
-		Share shareInfo = this.shareDao.getShareById(saveShare.getShareId());
+		Share shareInfo = this.shareDao.getShareById(parameter.getShareId());
 		if (shareInfo == null) {
 			return ResultConstant.TARGET_NOT_EXISTED;
 		}
-		if (shareInfo.getPassword() != null && saveShare.getPassword() == null) {
+		if (shareInfo.getPassword() != null && parameter.getPassword() == null) {
 			return ResultConstant.PASSWORD_INVALID;
 		}
-		if (shareInfo.getPassword() != null && !shareInfo.getPassword().equals(saveShare.getPassword())) {
+		if (shareInfo.getPassword() != null && !shareInfo.getPassword().equals(parameter.getPassword())) {
 			return ResultConstant.PASSWORD_INVALID;
 		}
 		UserRepository userRepository = this.userRepositoryDao.getByUserId(userId);
 		if (userRepository.getStatus() != 1) {
 			return ResultConstant.REPOSITORY_STATUS_ABNORMAL;
 		}
-		Folder folder = getFolder(userRepository, saveShare.getPath());
+		Folder folder = getFolder(userRepository, parameter.getPath());
 		if (folder == null) {
 			return ResultConstant.FOLDER_NOT_EXISTED;
 		}
@@ -263,7 +251,7 @@ public class ShareServiceImpl implements ShareService {
 		folder.getFolders().put(source.getName(), source);
 		this.userRepositoryDao.updateFolderById(userRepository.getId(), userRepository.getFolder());
 		if (shareRepository.getSaveUserIdList() == null) {
-			shareRepository.setSaveUserIdList(new HashMap<>());
+			shareRepository.setSaveUserIdList(new HashMap<>(1));
 			shareRepository.getSaveUserIdList().put(userId, new LinkedList<>());
 		}
 		if (shareRepository.getSaveUserIdList() != null && shareRepository.getSaveUserIdList().get(userId) == null) {
@@ -307,11 +295,5 @@ public class ShareServiceImpl implements ShareService {
 				getFolderList(temp, folders);
 			}
 		}
-	}
-
-	private static String getUUID() {
-		UUID uuid = UUID.randomUUID();
-		String str = uuid.toString();
-		return str.replace("-", "");
 	}
 }
