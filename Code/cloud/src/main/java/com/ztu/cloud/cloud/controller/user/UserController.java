@@ -136,7 +136,7 @@ public class UserController {
 	 */
 	@PatchMapping("/user/info")
 	public ResultResponseEntity changeUserInfo(@RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token, 
-	                                           @RequestBody ChangeUserInfo parameter) {
+	                                           @RequestBody @Valid ChangeUserInfo parameter) {
 		return this.userService.changeUserInfo(token, parameter);
 	}
 
@@ -152,7 +152,7 @@ public class UserController {
 	 */
 	@PatchMapping("/user/password")
 	public ResultResponseEntity changeUserPassword(@RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
-	                                               @RequestBody ChangePassword parameter) {
+	                                               @RequestBody @Valid ChangePassword parameter) {
 		return this.userService.changeUserPassword(token, parameter);
 	}
 }
