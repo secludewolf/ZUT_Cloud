@@ -4,6 +4,7 @@ import com.ztu.cloud.cloud.common.dto.admin.*;
 import com.ztu.cloud.cloud.common.dto.common.ChangePassword;
 import com.ztu.cloud.cloud.common.dto.common.ForgetEmail;
 import com.ztu.cloud.cloud.common.dto.common.LoginAccount;
+import com.ztu.cloud.cloud.common.validation.Token;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.service.admin.AdminService;
 import com.ztu.cloud.cloud.util.TokenUtil;
@@ -36,7 +37,7 @@ public class AdminController {
      */
     @GetMapping("/login/token")
     public ResultResponseEntity
-        loginByToken(@RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token) {
+        loginByToken(@RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token) {
         return this.adminService.loginByToken(token);
     }
 
@@ -87,7 +88,7 @@ public class AdminController {
      */
     @GetMapping("/info/{adminId}")
     public ResultResponseEntity getAdminInfo(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
         @PathVariable("adminId") @NotBlank(message = "管理员ID不能为空") int adminId) {
         return this.adminService.getAdminInfo(token, adminId);
     }
@@ -103,7 +104,7 @@ public class AdminController {
      */
     @PatchMapping("/info")
     public ResultResponseEntity changeAdminInfo(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
         @RequestBody @Valid ChangeAdminInfo parameter) {
         return this.adminService.changeAdminInfo(token, parameter);
     }
@@ -119,7 +120,7 @@ public class AdminController {
      */
     @PatchMapping("/password")
     public ResultResponseEntity changeAdminPassword(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
         @RequestBody @Valid ChangePassword parameter) {
         return this.adminService.changeAdminPassword(token, parameter);
     }
@@ -135,7 +136,7 @@ public class AdminController {
      */
     @PutMapping("/user")
     public ResultResponseEntity createUserManage(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
         @RequestBody @Valid CreateUser parameter) {
         return this.adminService.createUserManage(token, parameter);
     }
@@ -151,7 +152,7 @@ public class AdminController {
      */
     @PutMapping("/admin")
     public ResultResponseEntity createAdminManage(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
         @RequestBody @Valid CreateAdmin parameter) {
         return this.adminService.createAdminManage(token, parameter);
     }
@@ -167,7 +168,7 @@ public class AdminController {
      */
     @DeleteMapping("/user")
     public ResultResponseEntity deleteUserManage(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
         @RequestBody @Valid DeleteUser parameter) {
         return this.adminService.deleteUserManage(token, parameter);
     }
@@ -183,7 +184,7 @@ public class AdminController {
      */
     @DeleteMapping("/admin")
     public ResultResponseEntity deleteAdminManage(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
         @RequestBody @Valid DeleteAdmin parameter) {
         return this.adminService.deleteAdminManage(token, parameter);
     }
@@ -199,7 +200,7 @@ public class AdminController {
      */
     @GetMapping("/user/list/{pageNumber}")
     public ResultResponseEntity getUserListManage(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
         @PathVariable("pageNumber") @NotNull(message = "分页数不能为空") Integer pageNumber) {
         return this.adminService.getUserListManage(token, pageNumber);
     }
@@ -215,7 +216,7 @@ public class AdminController {
      */
     @GetMapping("/admin/list/{pageNumber}")
     public ResultResponseEntity getAdminListManage(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
         @PathVariable("pageNumber") @NotNull(message = "分页数不能为空") Integer pageNumber) {
         return this.adminService.getAdminListManage(token, pageNumber);
     }
@@ -231,7 +232,7 @@ public class AdminController {
      */
     @GetMapping("/user/{userId}/info")
     public ResultResponseEntity getUserInfoManage(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
         @PathVariable("userId") @NotNull(message = "用户ID不能为空") Integer userId) {
         return this.adminService.getUserInfoManage(token, userId);
     }
@@ -247,7 +248,7 @@ public class AdminController {
      */
     @GetMapping("/admin/{adminId}/info")
     public ResultResponseEntity getAdminInfoManage(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
         @PathVariable("adminId") @NotNull(message = "管理员ID不能为空") Integer adminId) {
         return this.adminService.getAdminInfoManage(token, adminId);
     }
@@ -263,7 +264,7 @@ public class AdminController {
      */
     @PatchMapping("/user")
     public ResultResponseEntity changeUserInfoManage(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
         @RequestBody @Valid ChangeUserInfoManage parameter) {
         return this.adminService.changeUserInfoManage(token, parameter);
     }
@@ -279,7 +280,7 @@ public class AdminController {
      */
     @PatchMapping("/admin")
     public ResultResponseEntity changeAdminInfoManage(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
         @RequestBody @Valid ChangeAdminInfoManage parameter) {
         return this.adminService.changeAdminInfoManage(token, parameter);
     }

@@ -29,7 +29,7 @@ public interface InformManageService {
      *            请求参数 header 标题 content 内容 validTime 有消息
      * @return 通知信息
      */
-    ResultResponseEntity createAdminInform(String token,CreateInform parameter);
+    ResultResponseEntity createAdminInform(String token, CreateInform parameter);
 
     /**
      * 获取通知列表

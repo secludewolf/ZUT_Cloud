@@ -3,6 +3,7 @@ package com.ztu.cloud.cloud.controller.user;
 import com.ztu.cloud.cloud.common.dto.user.share.CreateShare;
 import com.ztu.cloud.cloud.common.dto.user.share.GetShare;
 import com.ztu.cloud.cloud.common.dto.user.share.SaveShare;
+import com.ztu.cloud.cloud.common.validation.Token;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.service.user.ShareService;
 import com.ztu.cloud.cloud.util.TokenUtil;
@@ -37,7 +38,7 @@ public class ShareController {
 	 * @return 分享信息
 	 */
 	@PutMapping("/share")
-	public ResultResponseEntity createShare(@RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+	public ResultResponseEntity createShare(@RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "user") String token,
 	                                        @RequestBody @Valid CreateShare parameter) {
 		return this.shareService.createShare(token, parameter);
 	}
@@ -49,7 +50,7 @@ public class ShareController {
 	 * @return 分享列表
 	 */
 	@GetMapping("/share/list")
-	public ResultResponseEntity getShareList(@RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token) {
+	public ResultResponseEntity getShareList(@RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "user") String token) {
 		return this.shareService.getShareList(token);
 	}
 
@@ -61,7 +62,7 @@ public class ShareController {
 	 * @return 删除结果
 	 */
 	@DeleteMapping("/share/{shareId}")
-	public ResultResponseEntity deleteShare(@RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+	public ResultResponseEntity deleteShare(@RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "user") String token,
 	                                        @PathVariable("shareId") @NotBlank(message = "分享ID不能为空") String shareId) {
 		return this.shareService.deleteShare(token, shareId);
 	}
@@ -76,7 +77,7 @@ public class ShareController {
 	 * @return 分享信息
 	 */
 	@PostMapping("/share")
-	public ResultResponseEntity getShare(@RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+	public ResultResponseEntity getShare(@RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "user") String token,
 	                                     @RequestBody @Valid GetShare parameter) {
 		return this.shareService.getShare(token, parameter);
 	}
@@ -92,7 +93,7 @@ public class ShareController {
 	 * @return 是否保存成功
 	 */
 	@PostMapping("/share/save")
-	public ResultResponseEntity saveShare(@RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+	public ResultResponseEntity saveShare(@RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "user") String token,
 	                                      @RequestBody @Valid SaveShare parameter) {
 		return this.shareService.saveShare(token, parameter);
 	}

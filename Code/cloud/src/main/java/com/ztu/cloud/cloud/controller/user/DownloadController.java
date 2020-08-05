@@ -2,6 +2,7 @@ package com.ztu.cloud.cloud.controller.user;
 
 import com.ztu.cloud.cloud.common.dto.user.download.Download;
 import com.ztu.cloud.cloud.common.dto.user.download.DownloadId;
+import com.ztu.cloud.cloud.common.validation.Token;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.service.user.DownloadService;
 import com.ztu.cloud.cloud.util.TokenUtil;
@@ -40,7 +41,7 @@ public class DownloadController {
      */
     @PostMapping("/download")
     public ResultResponseEntity getDownloadId(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "user") String token,
         @RequestBody @Valid DownloadId parameter) {
         return this.downloadService.getDownloadId(token, parameter);
     }

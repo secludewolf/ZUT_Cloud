@@ -1,5 +1,9 @@
 package com.ztu.cloud.cloud.service.admin;
 
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
 import com.ztu.cloud.cloud.common.bean.mongodb.UserRepository;
 import com.ztu.cloud.cloud.common.bean.mysql.Admin;
 import com.ztu.cloud.cloud.common.bean.mysql.User;
@@ -16,9 +20,6 @@ import com.ztu.cloud.cloud.common.vo.admin.*;
 import com.ztu.cloud.cloud.util.EmailUtil;
 import com.ztu.cloud.cloud.util.ResultUtil;
 import com.ztu.cloud.cloud.util.TokenUtil;
-import org.springframework.stereotype.Component;
-
-import java.util.List;
 
 /**
  * @author Jager
@@ -50,9 +51,7 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public ResultResponseEntity loginByToken(String token) {
-        if (!TokenUtil.isAdmin(token)) {
-            return ResultConstant.TOKEN_INVALID;
-        }
+
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
@@ -164,9 +163,7 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public ResultResponseEntity getAdminInfo(String token, int adminId) {
-        if (!TokenUtil.isAdmin(token)) {
-            return ResultConstant.TOKEN_INVALID;
-        }
+
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
@@ -193,9 +190,7 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public ResultResponseEntity changeAdminInfo(String token, ChangeAdminInfo parameter) {
-        if (!TokenUtil.isAdmin(token)) {
-            return ResultConstant.TOKEN_INVALID;
-        }
+
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
@@ -251,9 +246,7 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public ResultResponseEntity changeAdminPassword(String token, ChangePassword parameter) {
-        if (!TokenUtil.isAdmin(token)) {
-            return ResultConstant.TOKEN_INVALID;
-        }
+
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
@@ -288,9 +281,7 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public ResultResponseEntity createUserManage(String token, CreateUser parameter) {
-        if (!TokenUtil.isAdmin(token)) {
-            return ResultConstant.TOKEN_INVALID;
-        }
+
         if (parameter.getPassword().length() < 6 || parameter.getPassword().length() > 15) {
             return ResultConstant.PASSWORD_INVALID;
         }
@@ -347,9 +338,7 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public ResultResponseEntity createAdminManage(String token, CreateAdmin parameter) {
-        if (!TokenUtil.isAdmin(token)) {
-            return ResultConstant.TOKEN_INVALID;
-        }
+
         if (parameter.getPassword().length() < 6 || parameter.getPassword().length() > 15) {
             return ResultConstant.PASSWORD_INVALID;
         }
@@ -408,9 +397,7 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public ResultResponseEntity deleteUserManage(String token, DeleteUser parameter) {
-        if (!TokenUtil.isAdmin(token)) {
-            return ResultConstant.TOKEN_INVALID;
-        }
+
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
@@ -450,9 +437,7 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public ResultResponseEntity deleteAdminManage(String token, DeleteAdmin parameter) {
-        if (!TokenUtil.isAdmin(token)) {
-            return ResultConstant.TOKEN_INVALID;
-        }
+
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
@@ -490,9 +475,7 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public ResultResponseEntity getUserListManage(String token, int pageNumber) {
-        if (!TokenUtil.isAdmin(token)) {
-            return ResultConstant.TOKEN_INVALID;
-        }
+
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
@@ -524,9 +507,7 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public ResultResponseEntity getAdminListManage(String token, int pageNumber) {
-        if (!TokenUtil.isAdmin(token)) {
-            return ResultConstant.TOKEN_INVALID;
-        }
+
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
@@ -557,9 +538,7 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public ResultResponseEntity getUserInfoManage(String token, int userId) {
-        if (!TokenUtil.isAdmin(token)) {
-            return ResultConstant.TOKEN_INVALID;
-        }
+
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
@@ -600,9 +579,7 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public ResultResponseEntity changeUserInfoManage(String token, ChangeUserInfoManage parameter) {
-        if (!TokenUtil.isAdmin(token)) {
-            return ResultConstant.TOKEN_INVALID;
-        }
+
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
@@ -674,9 +651,7 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public ResultResponseEntity changeAdminInfoManage(String token, ChangeAdminInfoManage parameter) {
-        if (!TokenUtil.isAdmin(token)) {
-            return ResultConstant.TOKEN_INVALID;
-        }
+
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {

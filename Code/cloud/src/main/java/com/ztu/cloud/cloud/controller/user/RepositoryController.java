@@ -1,6 +1,7 @@
 package com.ztu.cloud.cloud.controller.user;
 
 import com.ztu.cloud.cloud.common.dto.user.repository.*;
+import com.ztu.cloud.cloud.common.validation.Token;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.service.user.RepositoryService;
 import com.ztu.cloud.cloud.util.TokenUtil;
@@ -34,7 +35,7 @@ public class RepositoryController {
      */
     @GetMapping("/{repositoryId}")
     public ResultResponseEntity getRepository(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "user") String token,
         @PathVariable("repositoryId") @NotBlank(message = "仓库ID不能为空") String repositoryId) {
         return this.repositoryService.getRepository(token, repositoryId);
     }
@@ -50,7 +51,7 @@ public class RepositoryController {
      */
     @PutMapping("/file/create")
     public ResultResponseEntity createFile(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "user") String token,
         @RequestBody @Valid CreateFile parameter) {
         return this.repositoryService.createFile(token, parameter);
     }
@@ -66,7 +67,7 @@ public class RepositoryController {
      */
     @PutMapping("/folder/create")
     public ResultResponseEntity createFolder(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "user") String token,
         @RequestBody @Valid CreateFolder parameter) {
         return this.repositoryService.createFolder(token, parameter);
     }
@@ -82,7 +83,7 @@ public class RepositoryController {
      */
     @PatchMapping("/file/move")
     public ResultResponseEntity moveFile(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "user") String token,
         @RequestBody @Valid MoveFile parameter) {
         return this.repositoryService.moveFile(token, parameter);
     }
@@ -98,7 +99,7 @@ public class RepositoryController {
      */
     @PatchMapping("/folder/move")
     public ResultResponseEntity moveFolder(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "user") String token,
         @RequestBody @Valid MoveFolder parameter) {
         return this.repositoryService.moveFolder(token, parameter);
     }
@@ -114,7 +115,7 @@ public class RepositoryController {
      */
     @PatchMapping("/file/copy")
     public ResultResponseEntity copyFile(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "user") String token,
         @RequestBody @Valid CopyFile parameter) {
         return this.repositoryService.copyFile(token, parameter);
     }
@@ -130,7 +131,7 @@ public class RepositoryController {
      */
     @PatchMapping("/folder/copy")
     public ResultResponseEntity copyFolder(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "user") String token,
         @RequestBody @Valid CopyFolder parameter) {
         return this.repositoryService.copyFolder(token, parameter);
     }
@@ -146,7 +147,7 @@ public class RepositoryController {
      */
     @PatchMapping("/file/rename")
     public ResultResponseEntity renameFile(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "user") String token,
         @RequestBody @Valid RenameFile parameter) {
         return this.repositoryService.renameFile(token, parameter);
     }
@@ -162,7 +163,7 @@ public class RepositoryController {
      */
     @PatchMapping("/folder/rename")
     public ResultResponseEntity renameFolder(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "user") String token,
         @RequestBody @Valid RenameFolder parameter) {
         return this.repositoryService.renameFolder(token, parameter);
     }
@@ -178,7 +179,7 @@ public class RepositoryController {
      */
     @DeleteMapping
     public ResultResponseEntity deleteFromRepository(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "user") String token,
         @RequestBody @Valid DeleteFileToRecyclebin parameter) {
         return this.repositoryService.deleteFromRepository(token, parameter);
     }
@@ -194,7 +195,7 @@ public class RepositoryController {
      */
     @PatchMapping("/recyclebin")
     public ResultResponseEntity restoreFromRecycleBin(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "user") String token,
         @RequestBody @Valid RestoreFile parameter) {
         return this.repositoryService.restoreFromRecycleBin(token, parameter);
     }
@@ -210,7 +211,7 @@ public class RepositoryController {
      */
     @DeleteMapping("/recyclebin")
     public ResultResponseEntity deleteFromRecycleBin(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "user") String token,
         @RequestBody @Valid DeleteFileFromRecyclebin parameter) {
         return this.repositoryService.deleteFromRecycleBin(token, parameter);
     }
@@ -226,7 +227,7 @@ public class RepositoryController {
      */
     @DeleteMapping("/recyclebin/clean")
     public ResultResponseEntity cleanRecycleBin(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "user") String token,
         @RequestBody @Valid CleanRecyclebin parameter) {
         return this.repositoryService.cleanRecycleBin(token, parameter);
     }

@@ -1,6 +1,7 @@
 package com.ztu.cloud.cloud.controller.admin;
 
 import com.ztu.cloud.cloud.common.dto.user.download.Download;
+import com.ztu.cloud.cloud.common.validation.Token;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.service.admin.FileService;
 import com.ztu.cloud.cloud.util.TokenUtil;
@@ -44,7 +45,7 @@ public class FileController {
      */
     @GetMapping("/download/{fileId}")
     public void download(HttpServletRequest request, HttpServletResponse response,
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
         @PathVariable @NotBlank(message = "文件ID不能为空") String fileId) {
         Download download = this.fileService.download(token, fileId);
         if (download == null) {
@@ -95,7 +96,7 @@ public class FileController {
      */
     @GetMapping("/file/list/{pageNumber}")
     public ResultResponseEntity getFileList(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
         @PathVariable @NotNull(message = "分页数不能为空") Integer pageNumber) {
         return this.fileService.getFileList(token, pageNumber);
     }
@@ -111,7 +112,7 @@ public class FileController {
      */
     @GetMapping("/file/{fileId}/info")
     public ResultResponseEntity getFileInfo(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
         @PathVariable @NotBlank(message = "文件ID不能为空") String fileId) {
         return this.fileService.getFileInfo(token, fileId);
     }
@@ -127,7 +128,7 @@ public class FileController {
      */
     @DeleteMapping("/file/{fileId}")
     public ResultResponseEntity deleteFile(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
         @PathVariable @NotBlank(message = "文件ID不能为空") String fileId) {
         return this.fileService.deleteFile(token, fileId);
     }

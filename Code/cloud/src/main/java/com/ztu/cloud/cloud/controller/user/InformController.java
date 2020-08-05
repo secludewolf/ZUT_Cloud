@@ -1,5 +1,6 @@
 package com.ztu.cloud.cloud.controller.user;
 
+import com.ztu.cloud.cloud.common.validation.Token;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.service.user.InformService;
 import com.ztu.cloud.cloud.util.TokenUtil;
@@ -28,7 +29,7 @@ public class InformController {
 	 * @return 通知列表
 	 */
 	@GetMapping("/inform")
-	public ResultResponseEntity getInformList(@RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token) {
+	public ResultResponseEntity getInformList(@RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "user") String token) {
 		return this.informService.getInformList(token);
 	}
 
@@ -40,7 +41,7 @@ public class InformController {
 	 * @return 通知信息
 	 */
 	@GetMapping("/inform/{informId}")
-	public ResultResponseEntity getInform(@RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+	public ResultResponseEntity getInform(@RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "user") String token,
 	                                      @PathVariable @NotBlank(message = "通知ID不能为空") String informId) {
 		return this.informService.getInform(token, informId);
 	}
@@ -54,7 +55,7 @@ public class InformController {
 	 * @return 是否成功
 	 */
 	@PatchMapping("/inform/{informId}/{status}")
-	public ResultResponseEntity changeInformStatus(@RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+	public ResultResponseEntity changeInformStatus(@RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "user") String token,
 	                                               @PathVariable @NotBlank(message = "通知ID不能为空") String informId, @PathVariable @NotNull(message = "状态不能为空") Integer status) {
 		return this.informService.changeInformStatus(token, informId, status);
 	}

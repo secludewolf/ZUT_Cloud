@@ -1,5 +1,10 @@
 package com.ztu.cloud.cloud.service.admin;
 
+import java.util.HashMap;
+import java.util.List;
+
+import org.springframework.stereotype.Component;
+
 import com.ztu.cloud.cloud.common.bean.mongodb.AdminInform;
 import com.ztu.cloud.cloud.common.bean.mongodb.CommonAdminInform;
 import com.ztu.cloud.cloud.common.bean.mongodb.CommonUserInform;
@@ -15,10 +20,6 @@ import com.ztu.cloud.cloud.common.vo.admin.Inform;
 import com.ztu.cloud.cloud.common.vo.admin.InformList;
 import com.ztu.cloud.cloud.util.ResultUtil;
 import com.ztu.cloud.cloud.util.TokenUtil;
-import org.springframework.stereotype.Component;
-
-import java.util.HashMap;
-import java.util.List;
 
 /**
  * @author Jager
@@ -51,9 +52,7 @@ public class InformManageServiceImpl implements InformManageService {
      */
     @Override
     public ResultResponseEntity createUserInform(String token, CreateInform parameter) {
-        if (!TokenUtil.isAdmin(token)) {
-            return ResultConstant.TOKEN_INVALID;
-        }
+
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
@@ -83,9 +82,7 @@ public class InformManageServiceImpl implements InformManageService {
      */
     @Override
     public ResultResponseEntity createAdminInform(String token, CreateInform parameter) {
-        if (!TokenUtil.isAdmin(token)) {
-            return ResultConstant.TOKEN_INVALID;
-        }
+
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
@@ -113,9 +110,7 @@ public class InformManageServiceImpl implements InformManageService {
      */
     @Override
     public ResultResponseEntity getInformList(String token) {
-        if (!TokenUtil.isAdmin(token)) {
-            return ResultConstant.TOKEN_INVALID;
-        }
+
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
@@ -155,9 +150,7 @@ public class InformManageServiceImpl implements InformManageService {
      */
     @Override
     public ResultResponseEntity getInform(String token, String informId) {
-        if (!TokenUtil.isAdmin(token)) {
-            return ResultConstant.TOKEN_INVALID;
-        }
+
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
@@ -196,9 +189,7 @@ public class InformManageServiceImpl implements InformManageService {
      */
     @Override
     public ResultResponseEntity changeInformStatus(String token, String informId, int status) {
-        if (!TokenUtil.isAdmin(token)) {
-            return ResultConstant.TOKEN_INVALID;
-        }
+
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {

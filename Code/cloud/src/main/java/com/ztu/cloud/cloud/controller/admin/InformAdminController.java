@@ -1,6 +1,7 @@
 package com.ztu.cloud.cloud.controller.admin;
 
 import com.ztu.cloud.cloud.common.dto.admin.CreateInform;
+import com.ztu.cloud.cloud.common.validation.Token;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.service.admin.InformManageService;
 import com.ztu.cloud.cloud.util.TokenUtil;
@@ -16,10 +17,10 @@ import javax.validation.constraints.NotNull;
  * @date 2020/06/28-17:46
  **/
 @RestController
-public class InformController {
+public class InformAdminController {
     InformManageService informManageService;
 
-    public InformController(InformManageService informManageService) {
+    public InformAdminController(InformManageService informManageService) {
         this.informManageService = informManageService;
     }
 
@@ -34,7 +35,7 @@ public class InformController {
      */
     @PutMapping("/admin/inform/user")
     public ResultResponseEntity createUserInform(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
         @RequestBody @Valid CreateInform parameter) {
         return this.informManageService.createUserInform(token, parameter);
     }
@@ -50,7 +51,7 @@ public class InformController {
      */
     @PutMapping("/admin/inform/admin")
     public ResultResponseEntity createAdminInform(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
         @RequestBody @Valid CreateInform parameter) {
         return this.informManageService.createAdminInform(token, parameter);
     }
@@ -64,7 +65,7 @@ public class InformController {
      */
     @GetMapping("/admin/inform")
     public ResultResponseEntity
-        getInformList(@RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token) {
+        getInformList(@RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token) {
         return this.informManageService.getInformList(token);
     }
 
@@ -79,7 +80,7 @@ public class InformController {
      */
     @GetMapping("/admin/inform/{informId}")
     public ResultResponseEntity getInform(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
         @PathVariable @NotBlank(message = "通知ID不能为空") String informId) {
         return this.informManageService.getInform(token, informId);
     }
@@ -97,7 +98,7 @@ public class InformController {
      */
     @PatchMapping("/admin/inform/{informId}/{status}")
     public ResultResponseEntity changeInformStatus(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
         @PathVariable @NotBlank(message = "通知ID不能为空") String informId,
         @PathVariable @NotNull(message = "状态不能为空") Integer status) {
         return this.informManageService.changeInformStatus(token, informId, status);

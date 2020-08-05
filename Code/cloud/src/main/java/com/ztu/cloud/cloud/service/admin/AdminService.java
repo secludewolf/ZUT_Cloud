@@ -123,7 +123,7 @@ public interface AdminService {
      *            请求数据 {id 管理员ID}
      * @return 成功或失败
      */
-    ResultResponseEntity deleteAdminManage(String token,DeleteAdmin parameter);
+    ResultResponseEntity deleteAdminManage(String token, DeleteAdmin parameter);
 
     /**
      * 获取用户列表

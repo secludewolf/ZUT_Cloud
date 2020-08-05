@@ -1,5 +1,6 @@
 package com.ztu.cloud.cloud.controller.user;
 
+import com.ztu.cloud.cloud.common.validation.Token;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.service.user.UploadService;
 import com.ztu.cloud.cloud.util.TokenUtil;
@@ -38,7 +39,7 @@ public class UploadController {
 	 * @return 已接收的文件块号
 	 */
 	@PostMapping("/upload")
-	public ResultResponseEntity upload(@RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+	public ResultResponseEntity upload(@RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "user") String token,
 	                                   @RequestParam("block") @NotNull(message = "文件块不能为空") MultipartFile block,
 	                                   @RequestParam("fileName") @NotBlank(message = "文件名不能为空") String fileName,
 	                                   @RequestParam("blockMd5") @NotBlank(message = "文件块特征码不能为空") String blockMd5,

@@ -239,20 +239,6 @@ public class RequestUtil {
 			return deleteUser;
 		}
 		String account = JsonUtil.getString(json, "account");
-		if (account != null) {
-			deleteUser.setAccount(account);
-			return deleteUser;
-		}
-		String email = JsonUtil.getString(json, "email");
-		if (email != null) {
-			deleteUser.setEmail(email);
-			return deleteUser;
-		}
-		String phone = JsonUtil.getString(json, "phone");
-		if (phone != null) {
-			deleteUser.setPhone(phone);
-			return deleteUser;
-		}
 		return null;
 	}
 
@@ -268,20 +254,6 @@ public class RequestUtil {
 			return deleteAdmin;
 		}
 		String account = JsonUtil.getString(json, "account");
-		if (account != null) {
-			deleteAdmin.setAccount(account);
-			return deleteAdmin;
-		}
-		String email = JsonUtil.getString(json, "email");
-		if (email != null) {
-			deleteAdmin.setEmail(email);
-			return deleteAdmin;
-		}
-		String phone = JsonUtil.getString(json, "phone");
-		if (phone != null) {
-			deleteAdmin.setPhone(phone);
-			return deleteAdmin;
-		}
 		return null;
 	}
 
