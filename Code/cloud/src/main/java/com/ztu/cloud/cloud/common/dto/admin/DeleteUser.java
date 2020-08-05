@@ -2,6 +2,8 @@ package com.ztu.cloud.cloud.common.dto.admin;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+
 /**
  * @author Jager
  * @description 删除用户数据
@@ -9,8 +11,6 @@ import lombok.Data;
  **/
 @Data
 public class DeleteUser {
-	private int id;
-	private String account;
-	private String email;
-	private String phone;
+    @NotNull(message = "用户ID不能为空")
+    private Integer id;
 }
