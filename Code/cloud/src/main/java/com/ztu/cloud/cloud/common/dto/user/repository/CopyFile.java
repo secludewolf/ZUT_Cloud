@@ -19,11 +19,4 @@ public class CopyFile {
 	private String oldPath;
 	@NotBlank(message = "新路径不能为空")
 	private String newPath;
-
-	public CopyFile(String repositoryId, String name, String oldPath, String newPath) {
-		this.repositoryId = repositoryId;
-		this.name = name;
-		this.oldPath = oldPath;
-		this.newPath = newPath;
-	}
 }

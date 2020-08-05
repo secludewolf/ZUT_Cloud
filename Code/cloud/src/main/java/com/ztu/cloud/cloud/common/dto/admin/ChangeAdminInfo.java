@@ -26,10 +26,4 @@ public class ChangeAdminInfo {
 	private String email;
 	@Size(min = 11, max = 11, message = "手机长度必须为11位")
 	private String phone;
-
-	public ChangeAdminInfo(int id, String account, String name) {
-		this.id = id;
-		this.account = account;
-		this.name = name;
-	}
 }

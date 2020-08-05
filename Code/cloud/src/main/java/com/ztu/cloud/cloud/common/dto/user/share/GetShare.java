@@ -14,8 +14,4 @@ public class GetShare {
 	@NotBlank(message = "分享ID不能为空")
 	private String shareId;
 	private String password;
-
-	public GetShare(String shareId) {
-		this.shareId = shareId;
-	}
 }

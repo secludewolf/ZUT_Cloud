@@ -8,6 +8,7 @@ import com.ztu.cloud.cloud.common.validation.Token;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.service.admin.AdminService;
 import com.ztu.cloud.cloud.util.TokenUtil;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -21,6 +22,7 @@ import javax.validation.constraints.NotNull;
  **/
 @RestController
 @RequestMapping("/admin")
+@Validated
 public class AdminController {
     AdminService adminService;
 

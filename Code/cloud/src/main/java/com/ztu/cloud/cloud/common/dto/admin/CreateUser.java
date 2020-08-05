@@ -25,10 +25,4 @@ public class CreateUser {
     @NotBlank(message = "昵称不能为空")
     @Size(min = 2, max = 16, message = "昵称长度必须在2~16位之间")
     private String name;
-
-    public CreateUser(String account, String password, String name) {
-        this.account = account;
-        this.password = password;
-        this.name = name;
-    }
 }

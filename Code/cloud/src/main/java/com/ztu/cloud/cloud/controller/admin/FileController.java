@@ -5,6 +5,7 @@ import com.ztu.cloud.cloud.common.validation.Token;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.service.admin.FileService;
 import com.ztu.cloud.cloud.util.TokenUtil;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletOutputStream;
@@ -24,6 +25,7 @@ import java.net.URLEncoder;
  **/
 @RestController
 @RequestMapping("/admin")
+@Validated
 public class FileController {
     FileService fileService;
 

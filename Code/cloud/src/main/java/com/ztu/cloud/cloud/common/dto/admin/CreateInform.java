@@ -1,5 +1,6 @@
 package com.ztu.cloud.cloud.common.dto.admin;
 
+import com.ztu.cloud.cloud.common.validation.ValidTime;
 import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
@@ -17,11 +18,6 @@ public class CreateInform {
     @NotBlank(message = "内容不能为空")
     private String content;
     @NotNull(message = "有效期不能为空")
+    @ValidTime(min = 86400000)
     private Long validTime;
-
-    public CreateInform(String header, String content, Long validTime) {
-        this.header = header;
-        this.content = content;
-        this.validTime = validTime;
-    }
 }

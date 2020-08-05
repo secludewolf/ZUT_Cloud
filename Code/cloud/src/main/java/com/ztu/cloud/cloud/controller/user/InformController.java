@@ -4,6 +4,7 @@ import com.ztu.cloud.cloud.common.validation.Token;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.service.user.InformService;
 import com.ztu.cloud.cloud.util.TokenUtil;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.constraints.NotBlank;
@@ -15,6 +16,7 @@ import javax.validation.constraints.NotNull;
  * @date 2020/06/28-16:48
  **/
 @RestController
+@Validated
 public class InformController {
 	InformService informService;
 

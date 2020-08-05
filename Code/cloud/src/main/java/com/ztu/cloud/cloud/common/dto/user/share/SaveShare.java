@@ -11,14 +11,9 @@ import javax.validation.constraints.NotBlank;
  **/
 @Data
 public class SaveShare {
-	@NotBlank(message = "分享ID不能为欧空")
-	private String shareId;
-	@NotBlank(message = "路径不能为空")
-	private String path;
-	private String password;
-
-	public SaveShare(String shareId, String path) {
-		this.shareId = shareId;
-		this.path = path;
-	}
+    @NotBlank(message = "分享ID不能为欧空")
+    private String shareId;
+    @NotBlank(message = "路径不能为空")
+    private String path;
+    private String password;
 }

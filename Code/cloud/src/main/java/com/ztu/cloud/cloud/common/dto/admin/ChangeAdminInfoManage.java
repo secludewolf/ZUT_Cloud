@@ -33,16 +33,4 @@ public class ChangeAdminInfoManage {
     private Integer status;
     @NotNull(message = "等级不能为空")
     private Integer level;
-
-    public ChangeAdminInfoManage(int id, String account, String password, String email, String phone, String name,
-        int status, int level) {
-        this.id = id;
-        this.account = account;
-        this.password = password;
-        this.email = email;
-        this.phone = phone;
-        this.name = name;
-        this.status = status;
-        this.level = level;
-    }
 }

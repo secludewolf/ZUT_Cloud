@@ -25,13 +25,4 @@ public class RegisterAdmin {
 	private String password;
 	@NotBlank(message = "权限验证码不能为空")
 	private String key;
-
-	public RegisterAdmin(String name, String account, String email, String phone, String password, String key) {
-		this.name = name;
-		this.account = account;
-		this.email = email;
-		this.phone = phone;
-		this.password = password;
-		this.key = key;
-	}
 }

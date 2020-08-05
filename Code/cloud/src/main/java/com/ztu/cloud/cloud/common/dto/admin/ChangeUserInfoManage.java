@@ -35,15 +35,4 @@ public class ChangeUserInfoManage {
     private Integer level;
     @NotNull(message = "仓库空间不能为空")
     private Long repoSize;
-
-    public ChangeUserInfoManage(int id, String account, String password, String name, int status, int level,
-        long repoSize) {
-        this.id = id;
-        this.account = account;
-        this.password = password;
-        this.name = name;
-        this.status = status;
-        this.level = level;
-        this.repoSize = repoSize;
-    }
 }

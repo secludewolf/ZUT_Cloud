@@ -19,11 +19,4 @@ public class MoveFolder {
 	private String oldPath;
 	@NotBlank(message = "新路径不能为空")
 	private String newPath;
-
-	public MoveFolder(String repositoryId, String name, String oldPath, String newPath) {
-		this.repositoryId = repositoryId;
-		this.name = name;
-		this.oldPath = oldPath;
-		this.newPath = newPath;
-	}
 }

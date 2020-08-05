@@ -18,10 +18,4 @@ public class RestoreFile {
 	private boolean isFile;
 	@NotBlank(message = "回收ID不能为空")
 	private String recycleId;
-
-	public RestoreFile(String repositoryId, boolean isFile, String recycleId) {
-		this.repositoryId = repositoryId;
-		this.isFile = isFile;
-		this.recycleId = recycleId;
-	}
 }

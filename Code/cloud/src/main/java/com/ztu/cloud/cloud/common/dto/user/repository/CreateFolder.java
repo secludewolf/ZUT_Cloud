@@ -17,10 +17,4 @@ public class CreateFolder {
 	private String name;
 	@NotBlank(message = "路径不能为空")
 	private String path;
-
-	public CreateFolder(String repositoryId, String name, String path) {
-		this.repositoryId = repositoryId;
-		this.name = name;
-		this.path = path;
-	}
 }

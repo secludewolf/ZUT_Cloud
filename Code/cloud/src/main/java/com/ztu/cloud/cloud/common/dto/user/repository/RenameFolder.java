@@ -19,13 +19,5 @@ public class RenameFolder {
 	private String newName;
 	@NotBlank(message = "路径不能为空")
 	private String path;
-
-
-	public RenameFolder(String repositoryId, String oldName, String newName, String path) {
-		this.repositoryId = repositoryId;
-		this.oldName = oldName;
-		this.newName = newName;
-		this.path = path;
-	}
 }
 

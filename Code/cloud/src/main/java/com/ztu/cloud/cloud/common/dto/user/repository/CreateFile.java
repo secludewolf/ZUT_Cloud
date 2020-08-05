@@ -19,11 +19,4 @@ public class CreateFile {
 	private String name;
 	@NotBlank(message = "路径不能为空")
 	private String path;
-
-	public CreateFile(String repositoryId, String fileId, String name, String path) {
-		this.repositoryId = repositoryId;
-		this.fileId = fileId;
-		this.name = name;
-		this.path = path;
-	}
 }

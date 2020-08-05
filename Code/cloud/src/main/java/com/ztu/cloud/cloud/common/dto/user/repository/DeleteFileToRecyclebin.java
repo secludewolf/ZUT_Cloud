@@ -20,11 +20,4 @@ public class DeleteFileToRecyclebin {
 	private String name;
 	@NotBlank(message = "路径不能为空")
 	private String path;
-
-	public DeleteFileToRecyclebin(String repositoryId, boolean isFile, String name, String path) {
-		this.repositoryId = repositoryId;
-		this.isFile = isFile;
-		this.name = name;
-		this.path = path;
-	}
 }

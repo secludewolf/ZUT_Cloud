@@ -6,6 +6,7 @@ import com.ztu.cloud.cloud.common.validation.Token;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.service.user.DownloadService;
 import com.ztu.cloud.cloud.util.TokenUtil;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletOutputStream;
@@ -23,6 +24,7 @@ import java.net.URLEncoder;
  * @date 2020/06/27-09:31
  **/
 @RestController
+@Validated
 public class DownloadController {
     DownloadService downloadService;
 

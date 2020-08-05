@@ -7,6 +7,7 @@ import com.ztu.cloud.cloud.common.validation.Token;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.service.user.ShareService;
 import com.ztu.cloud.cloud.util.TokenUtil;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -18,6 +19,7 @@ import javax.validation.constraints.NotBlank;
  * @date 2020/06/28-09:50
  **/
 @RestController
+@Validated
 public class ShareController {
 	ShareService shareService;
 

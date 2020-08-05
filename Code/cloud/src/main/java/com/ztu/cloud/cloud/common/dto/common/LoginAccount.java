@@ -19,10 +19,4 @@ public class LoginAccount {
     @Size(min = 6, max = 16, message = "密码长度必须在6~16位之间")
     private String password;
     private boolean rememberMe = false;
-
-    public LoginAccount(String account, String password, boolean rememberMe) {
-        this.account = account;
-        this.password = password;
-        this.rememberMe = rememberMe;
-    }
 }

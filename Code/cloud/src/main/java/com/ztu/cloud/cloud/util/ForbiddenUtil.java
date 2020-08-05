@@ -1,13 +1,11 @@
 package com.ztu.cloud.cloud.util;
 
-import com.sun.org.apache.regexp.internal.RE;
-import org.apache.hadoop.fs.Stat;
-import org.apache.hadoop.yarn.webapp.hamlet.Hamlet;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
-import javax.print.attribute.standard.MediaSize;
-import java.util.*;
+import java.util.Arrays;
+import java.util.HashSet;
+import java.util.Set;
 
 /**
  * @author Jager
@@ -16,7 +14,7 @@ import java.util.*;
  **/
 @Component
 public class ForbiddenUtil {
-	private static final String delimiter = ",";
+	private static final String DELIMITER = ",";
 	private static Set<String> fileNameWords;
 
 	/**
@@ -26,14 +24,16 @@ public class ForbiddenUtil {
 	 */
 	public static boolean isFileNameValid(String name) {
 		for (String item : fileNameWords) {
-			if (name.contains(item)) return false;
+			if (name.contains(item)) {
+				return false;
+			}
 		}
 		return true;
 	}
 
 	@Value("${forbidden.fileName}")
 	public void setBlackWords(String words) {
-		ForbiddenUtil.fileNameWords = new HashSet<>(Arrays.asList(words.split(delimiter)));
+		ForbiddenUtil.fileNameWords = new HashSet<>(Arrays.asList(words.split(DELIMITER)));
 	}
 
 }
