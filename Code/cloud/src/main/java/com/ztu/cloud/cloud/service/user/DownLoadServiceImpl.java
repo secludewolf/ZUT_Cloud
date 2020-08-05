@@ -15,7 +15,6 @@ import com.ztu.cloud.cloud.common.dao.mysql.UserMapper;
 import com.ztu.cloud.cloud.common.dao.redis.DownLoadDao;
 import com.ztu.cloud.cloud.common.dto.user.download.DownloadId;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
-import com.ztu.cloud.cloud.util.RequestUtil;
 import com.ztu.cloud.cloud.util.ResultUtil;
 import com.ztu.cloud.cloud.util.StoreUtil;
 import com.ztu.cloud.cloud.util.TokenUtil;
@@ -53,7 +52,7 @@ public class DownLoadServiceImpl implements DownloadService {
 	 * 获取下载ID
 	 *
 	 * @param token 用户Token
-	 * @param data  请求参数
+	 * @param parameter  请求参数
 	 *              shareId 分享ID
 	 *              repositoryId 仓库ID
 	 *              fileId 文件Id
@@ -62,16 +61,11 @@ public class DownLoadServiceImpl implements DownloadService {
 	 * @return 下载ID
 	 */
 	@Override
-	public ResultResponseEntity getDownloadId(String token, String data) {
+	public ResultResponseEntity getDownloadId(String token, DownloadId parameter) {
 		//TODO 创建缓存文件并使用缓存文件下载
 		//TODO 判断文件状态,敏感文件下载重定向
 		//TODO 防止重复创建链接
 		//TODO 更新下载次数
-
-		DownloadId downloadId = RequestUtil.getDownloadId(data);
-		if (downloadId == null) {
-			return ResultConstant.REQUEST_PARAMETER_ERROR;
-		}
 		if (!TokenUtil.isUser(token)) {
 			return ResultConstant.TOKEN_INVALID;
 		}
@@ -83,13 +77,13 @@ public class DownLoadServiceImpl implements DownloadService {
 		if (user.getStatus() != 1) {
 			return ResultConstant.USER_STATUS_ABNORMAL;
 		}
-		if (downloadId.getFolder() != null) {
+		if (parameter.getFolder() != null) {
 			//TODO 带结构多文件下载
 			return ResultConstant.SERVER_ERROR;
 		}
 		//仓库下载
-		if (downloadId.getRepositoryId() != null && downloadId.getUserFileId() != null) {
-			UserFile userFile = this.userFileDao.getUserFile(downloadId.getUserFileId());
+		if (parameter.getRepositoryId() != null && parameter.getUserFileId() != null) {
+			UserFile userFile = this.userFileDao.getUserFile(parameter.getUserFileId());
 			if (userFile == null) {
 				return ResultConstant.FILE_NOT_EXISTED;
 			}
@@ -98,7 +92,7 @@ public class DownLoadServiceImpl implements DownloadService {
 				String uuid = getUUID();
 				download.setId(uuid);
 				download.setFileId(userFile.getFileId());
-				download.setName(downloadId.getFileName());
+				download.setName(parameter.getFileName());
 				this.downloadDao.insert(download);
 				return ResultUtil.createResult("成功", new com.ztu.cloud.cloud.common.vo.user.DownloadId(uuid));
 			}
@@ -106,8 +100,8 @@ public class DownLoadServiceImpl implements DownloadService {
 		//分享下载
 		//TODO 密码验证
 		//TODO 漏洞:shareId不存在也能成功获取下载链接
-		if (downloadId.getShareId() != null && downloadId.getUserFileId() != null) {
-			Share share = this.shareDao.getShareById(downloadId.getShareId());
+		if (parameter.getShareId() != null && parameter.getUserFileId() != null) {
+			Share share = this.shareDao.getShareById(parameter.getShareId());
 			if (share == null) {
 				return ResultConstant.FILE_NOT_EXISTED;
 			}
@@ -117,14 +111,14 @@ public class DownLoadServiceImpl implements DownloadService {
 			if (share.getValidTime() < System.currentTimeMillis()) {
 				this.shareDao.updateShareStatus(share.getId(), -1);
 			}
-			ShareRepository shareRepository = this.shareRepositoryDao.getById(downloadId.getShareId());
+			ShareRepository shareRepository = this.shareRepositoryDao.getById(parameter.getShareId());
 			if (shareRepository == null) {
 				return ResultConstant.FILE_NOT_EXISTED;
 			}
-			if (!shareRepository.getUserFileIdList().contains(downloadId.getUserFileId())) {
+			if (!shareRepository.getUserFileIdList().contains(parameter.getUserFileId())) {
 				return ResultConstant.FILE_NOT_EXISTED;
 			}
-			UserFile userFile = this.userFileDao.getUserFile(downloadId.getUserFileId());
+			UserFile userFile = this.userFileDao.getUserFile(parameter.getUserFileId());
 			if (userFile == null) {
 				return ResultConstant.FILE_NOT_EXISTED;
 			}
@@ -133,8 +127,8 @@ public class DownLoadServiceImpl implements DownloadService {
 				String uuid = getUUID();
 				download.setId(uuid);
 				download.setFileId(userFile.getFileId());
-				download.setName(downloadId.getFileName());
-				download.setShareId(downloadId.getShareId());
+				download.setName(parameter.getFileName());
+				download.setShareId(parameter.getShareId());
 				this.downloadDao.insert(download);
 				return ResultUtil.createResult("成功", new com.ztu.cloud.cloud.common.vo.user.DownloadId(uuid));
 			}

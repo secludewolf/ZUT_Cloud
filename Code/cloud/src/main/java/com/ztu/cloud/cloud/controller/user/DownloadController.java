@@ -1,14 +1,15 @@
 package com.ztu.cloud.cloud.controller.user;
 
 import com.ztu.cloud.cloud.common.dto.user.download.Download;
+import com.ztu.cloud.cloud.common.dto.user.download.DownloadId;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.service.user.DownloadService;
 import com.ztu.cloud.cloud.util.TokenUtil;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletOutputStream;
-import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import javax.validation.constraints.NotBlank;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -40,19 +41,19 @@ public class DownloadController {
 	 * @return 下载ID
 	 */
 	@PostMapping("/download")
-	public ResultResponseEntity getDownloadId(@RequestHeader(TokenUtil.TOKEN_HEADER) String token, @RequestBody String data) {
-		return this.downloadService.getDownloadId(token, data);
+	public ResultResponseEntity getDownloadId(@RequestHeader(TokenUtil.TOKEN_HEADER) @NotBlank(message = "Token不能为空") String token,
+	                                          @RequestBody DownloadId parameter) {
+		return this.downloadService.getDownloadId(token, parameter);
 	}
 
 	/**
 	 * 下载文件
 	 *
-	 * @param request    request
 	 * @param response   response
 	 * @param downloadId 下载ID
 	 */
 	@GetMapping("/download/{downloadId}")
-	public void download(HttpServletRequest request, HttpServletResponse response, @PathVariable String downloadId) {
+	public void download(HttpServletResponse response, @PathVariable @NotBlank(message = "下载ID不能为空") String downloadId) {
 		Download download = this.downloadService.download(downloadId);
 		if (download == null) {
 			response.setCharacterEncoding("UTF-8");

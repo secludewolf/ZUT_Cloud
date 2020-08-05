@@ -1,6 +1,7 @@
 package com.ztu.cloud.cloud.service.user;
 
 import com.ztu.cloud.cloud.common.dto.user.download.Download;
+import com.ztu.cloud.cloud.common.dto.user.download.DownloadId;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 
 /**
@@ -12,16 +13,16 @@ public interface DownloadService {
 	/**
 	 * 获取下载ID
 	 *
-	 * @param token 用户Token
-	 * @param data  请求参数
-	 *              shareId 分享ID
-	 *              repositoryId 仓库ID
-	 *              fileId 文件Id
-	 *              fileName 文件名
-	 *              folder 文件夹
+	 * @param token     用户Token
+	 * @param parameter 请求参数
+	 *                  shareId 分享ID
+	 *                  repositoryId 仓库ID
+	 *                  fileId 文件Id
+	 *                  fileName 文件名
+	 *                  folder 文件夹
 	 * @return 下载ID
 	 */
-	ResultResponseEntity getDownloadId(String token, String data);
+	ResultResponseEntity getDownloadId(String token, DownloadId parameter);
 
 	/**
 	 * 下载文件
