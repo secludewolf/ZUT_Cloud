@@ -2,6 +2,9 @@ package com.ztu.cloud.cloud.common.dto.admin;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+import javax.validation.constraints.NotNull;
+
 /**
  * @author Jager
  * @description CreateInform
@@ -9,13 +12,16 @@ import lombok.Data;
  **/
 @Data
 public class CreateInform {
-	private String header;
-	private String content;
-	private Long validTime;
+    @NotBlank(message = "标题不能为空")
+    private String header;
+    @NotBlank(message = "内容不能为空")
+    private String content;
+    @NotNull(message = "有效期不能为空")
+    private Long validTime;
 
-	public CreateInform(String header, String content, Long validTime) {
-		this.header = header;
-		this.content = content;
-		this.validTime = validTime;
-	}
+    public CreateInform(String header, String content, Long validTime) {
+        this.header = header;
+        this.content = content;
+        this.validTime = validTime;
+    }
 }
