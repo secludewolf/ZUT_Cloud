@@ -38,7 +38,7 @@ public class ResultUtil {
 	public static ResultResponseEntity createResultWithToken(String message, Object data, String token) {
 		ResultBody resultBody = new ResultBody(1, message, data);
 		MultiValueMap<String, String> headers = new LinkedMultiValueMap<>();
-		headers.add(TokenUtil.TOKEN_HEADER, TokenUtil.TOKEN_PREFIX + token);
+		headers.add(TokenUtil.TOKEN_HEADER, token);
 		return new ResultResponseEntity(resultBody, headers, HttpStatus.OK);
 	}
 
