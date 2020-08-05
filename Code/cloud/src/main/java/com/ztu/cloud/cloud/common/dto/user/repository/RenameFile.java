@@ -2,6 +2,8 @@ package com.ztu.cloud.cloud.common.dto.user.repository;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * @author Jager
  * @description 移动文件
@@ -9,9 +11,13 @@ import lombok.Data;
  **/
 @Data
 public class RenameFile {
+	@NotBlank(message = "仓库ID不能为空")
 	private String repositoryId;
+	@NotBlank(message = "原始名称不能为空")
 	private String oldName;
+	@NotBlank(message = "新名称不能为空")
 	private String newName;
+	@NotBlank(message = "路径不能为空")
 	private String path;
 
 	public RenameFile(String repositoryId, String oldName, String newName, String path) {

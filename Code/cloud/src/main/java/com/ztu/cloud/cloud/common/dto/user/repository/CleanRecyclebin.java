@@ -2,6 +2,8 @@ package com.ztu.cloud.cloud.common.dto.user.repository;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * @author Jager
  * @description 清空回收站
@@ -9,6 +11,7 @@ import lombok.Data;
  **/
 @Data
 public class CleanRecyclebin {
+	@NotBlank(message = "仓库ID不能为空")
 	private String repositoryId;
 
 	public CleanRecyclebin(String repositoryId) {

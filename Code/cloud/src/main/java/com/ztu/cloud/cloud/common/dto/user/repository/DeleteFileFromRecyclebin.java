@@ -2,6 +2,9 @@ package com.ztu.cloud.cloud.common.dto.user.repository;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.NotBlank;
+
 /**
  * @author Jager
  * @description 恢复文件
@@ -9,8 +12,11 @@ import lombok.Data;
  **/
 @Data
 public class DeleteFileFromRecyclebin {
+	@NotBlank(message = "仓库ID不能为空")
 	private String repositoryId;
+	@NotNull(message = "文件类型不能为空")
 	private boolean isFile;
+	@NotBlank(message = "回收ID不能为空")
 	private String recycleId;
 
 	public DeleteFileFromRecyclebin(String repositoryId, boolean isFile, String recycleId) {

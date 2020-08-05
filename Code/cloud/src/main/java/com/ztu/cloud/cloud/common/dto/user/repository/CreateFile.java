@@ -2,6 +2,8 @@ package com.ztu.cloud.cloud.common.dto.user.repository;
 
 import lombok.Data;
 
+import javax.validation.constraints.NotBlank;
+
 /**
  * @author Jager
  * @description 创建文件
@@ -9,9 +11,13 @@ import lombok.Data;
  **/
 @Data
 public class CreateFile {
+	@NotBlank(message = "仓库ID不能为空")
 	private String repositoryId;
+	@NotBlank(message = "文件ID不能为空")
 	private String fileId;
+	@NotBlank(message = "文件名不能为空")
 	private String name;
+	@NotBlank(message = "路径不能为空")
 	private String path;
 
 	public CreateFile(String repositoryId, String fileId, String name, String path) {
