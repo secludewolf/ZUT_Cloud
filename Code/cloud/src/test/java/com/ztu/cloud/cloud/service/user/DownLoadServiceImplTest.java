@@ -79,6 +79,7 @@ class DownLoadServiceImplTest {
 				.toString();
 		MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(url)
 				.content(request)
+                .contentType(MediaType.APPLICATION_JSON)
 				.header(TokenUtil.TOKEN_HEADER, this.token)
 				.accept(MediaType.APPLICATION_JSON))
 				.andReturn();

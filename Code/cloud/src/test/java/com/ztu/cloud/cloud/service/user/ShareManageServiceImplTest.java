@@ -149,6 +149,7 @@ class ShareManageServiceImplTest {
 				.toString();
 		MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put(url)
 				.content(request)
+                .contentType(MediaType.APPLICATION_JSON)
 				.header(TokenUtil.TOKEN_HEADER, this.token)
 				.accept(MediaType.APPLICATION_JSON))
 				.andReturn();
@@ -218,6 +219,7 @@ class ShareManageServiceImplTest {
 		this.shareMapper.insertShare(new Share("test", this.user.getId(), shareRepository.getId(), "test", "123456", 1, System.currentTimeMillis(), System.currentTimeMillis()));
 		MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(url)
 				.content(request)
+                .contentType(MediaType.APPLICATION_JSON)
 				.header(TokenUtil.TOKEN_HEADER, this.token)
 				.accept(MediaType.APPLICATION_JSON))
 				.andReturn();
@@ -248,6 +250,7 @@ class ShareManageServiceImplTest {
 		this.shareMapper.insertShare(new Share("test", this.user.getId(), shareRepository.getId(), "test", "123456", 1, System.currentTimeMillis(), System.currentTimeMillis()));
 		MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(url)
 				.content(request)
+                .contentType(MediaType.APPLICATION_JSON)
 				.header(TokenUtil.TOKEN_HEADER, this.token)
 				.accept(MediaType.APPLICATION_JSON))
 				.andReturn();

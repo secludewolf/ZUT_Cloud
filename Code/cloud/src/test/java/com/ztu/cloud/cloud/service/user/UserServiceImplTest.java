@@ -37,7 +37,7 @@ class UserServiceImplTest {
 	void before() {
 		this.mockMvc = MockMvcBuilders.webAppContextSetup(context).build();
 		//创建测试账户
-		this.user = new User("lichen", "000000", "814878826@qq.com", "测试账号");
+		this.user = new User("lichen", "000000", "123456@qq.com", "测试账号");
 		this.userMapper.insertUser(user);
 		this.userRepository = new UserRepository(user.getId());
 		this.userRepositoryDao.insert(userRepository);
@@ -78,6 +78,7 @@ class UserServiceImplTest {
 				.toString();
 		MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(url)
 				.content(request)
+                .contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andReturn();
 		int status = mvcResult.getResponse().getStatus();
@@ -98,6 +99,7 @@ class UserServiceImplTest {
 				.toString();
 		MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(url)
 				.content(request)
+                .contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andReturn();
 		int status = mvcResult.getResponse().getStatus();
@@ -117,6 +119,7 @@ class UserServiceImplTest {
 				.toString();
 		MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.post(url)
 				.content(request)
+                .contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andReturn();
 		int status = mvcResult.getResponse().getStatus();
@@ -139,6 +142,7 @@ class UserServiceImplTest {
 				.toString();
 		MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put(url)
 				.content(request)
+                .contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andReturn();
 		int status = mvcResult.getResponse().getStatus();
@@ -163,6 +167,7 @@ class UserServiceImplTest {
 				.toString();
 		MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.put(url)
 				.content(request)
+                .contentType(MediaType.APPLICATION_JSON)
 				.accept(MediaType.APPLICATION_JSON))
 				.andReturn();
 		int status = mvcResult.getResponse().getStatus();
@@ -207,6 +212,7 @@ class UserServiceImplTest {
 				.toString();
 		MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.patch(url)
 				.content(request)
+                .contentType(MediaType.APPLICATION_JSON)
 				.header(TokenUtil.TOKEN_HEADER, token)
 				.accept(MediaType.APPLICATION_JSON))
 				.andReturn();
@@ -230,6 +236,7 @@ class UserServiceImplTest {
 				.toString();
 		MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.patch(url)
 				.content(request)
+                .contentType(MediaType.APPLICATION_JSON)
 				.header(TokenUtil.TOKEN_HEADER, token)
 				.accept(MediaType.APPLICATION_JSON))
 				.andReturn();
