@@ -47,13 +47,11 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public ResultResponseEntity loginByToken(String token) {
-        int id = TokenUtil.getId(token);
-        User user = this.userDao.getUserById(id);
-        if (user == null) {
-            return ResultConstant.USER_NOT_FOUND;
-        }
-        if (user.getStatus() != 1) {
-            return ResultConstant.USER_STATUS_ABNORMAL;
+        User user = getUser(token);
+        ResultResponseEntity result = userIsInvalid(user, null);
+        // 如果User状态异常
+        if (result != null) {
+            return result;
         }
         UserRepository repository = this.userRepositoryDao.getById(user.getRepoId());
         if (repository == null) {
@@ -72,21 +70,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResultResponseEntity loginByEmail(LoginEmail parameter) {
         User user = this.userDao.getUserByEmail(parameter.getEmail());
-        if (user == null) {
-            return ResultConstant.USER_NOT_FOUND;
-        }
-        if (user.getStatus() != 1) {
-            return ResultConstant.USER_STATUS_ABNORMAL;
-        }
-        if (!user.getPassword().equals(parameter.getPassword())) {
-            return ResultConstant.WRONG_PASSWORD;
-        }
-        UserRepository repository = this.userRepositoryDao.getById(user.getRepoId());
-        if (repository == null) {
-            return ResultConstant.REPOSITORY_NOT_FOUND;
-        }
-        return ResultUtil.createResultWithToken("登陆成功", new UserLogin(user, repository),
-            TokenUtil.createUserToken(user.getId(), parameter.isRememberMe()));
+        return login(parameter.getPassword(), user, parameter.isRememberMe());
     }
 
     /**
@@ -99,13 +83,17 @@ public class UserServiceImpl implements UserService {
     @Override
     public ResultResponseEntity loginByAccount(LoginAccount parameter) {
         User user = this.userDao.getUserByAccount(parameter.getAccount());
+        return login(parameter.getPassword(), user, parameter.isRememberMe());
+    }
+
+    private ResultResponseEntity login(String password, User user, boolean isRememberMe) {
         if (user == null) {
             return ResultConstant.USER_NOT_FOUND;
         }
         if (user.getStatus() != 1) {
             return ResultConstant.USER_STATUS_ABNORMAL;
         }
-        if (!user.getPassword().equals(parameter.getPassword())) {
+        if (!user.getPassword().equals(password)) {
             return ResultConstant.WRONG_PASSWORD;
         }
         UserRepository repository = this.userRepositoryDao.getById(user.getRepoId());
@@ -113,7 +101,7 @@ public class UserServiceImpl implements UserService {
             return ResultConstant.REPOSITORY_NOT_FOUND;
         }
         return ResultUtil.createResultWithToken("登陆成功", new UserLogin(user, repository),
-            TokenUtil.createUserToken(user.getId(), parameter.isRememberMe()));
+            TokenUtil.createUserToken(user.getId(), isRememberMe));
     }
 
     /**
@@ -132,10 +120,12 @@ public class UserServiceImpl implements UserService {
         if (user.getStatus() != 1) {
             return ResultConstant.USER_STATUS_ABNORMAL;
         }
+        // 生成随机密码
         String password = (System.currentTimeMillis() + "").substring(3);
         if (this.userDao.updateUserPassword(user.getId(), password) != 1) {
             return ResultConstant.SERVER_ERROR;
         }
+        // 发送重置密码邮件
         this.emailUtil.sendPasswordToEmail(user.getEmail(), password);
         return ResultConstant.SUCCESS;
     }
@@ -149,30 +139,25 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public ResultResponseEntity registerByEmail(RegisterEmail parameter) {
-        if (parameter.getPassword().length() < 6 || parameter.getPassword().length() > 15) {
-            return ResultConstant.PASSWORD_INVALID;
-        }
-        if (parameter.getName().length() < 2 || parameter.getName().length() > 16
-            || parameter.getName().replaceAll("[\u4e00-\u9fa5]*[a-z]*[A-Z]*\\d*-*_*\\s*", "").length() != 0) {
-            return ResultConstant.NAME_INVALID;
-        }
-        if (!parameter.getEmail()
-            .matches("^[a-z0-9A-Z]+[- | a-z0-9A-Z . _]+@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-z]{2,}$")) {
-            return ResultConstant.EMAIL_INVALID;
-        }
+        // 判断账号是否被使用
         if (this.userDao.getUserByAccount(parameter.getAccount()) != null) {
             return ResultConstant.ACCOUNT_EXISTED;
         }
+        // 判断邮箱是否被使用
         if (this.userDao.getUserByEmail(parameter.getEmail()) != null) {
             return ResultConstant.EMAIL_EXISTED;
         }
+        // 创建用户信息
         User user =
             new User(parameter.getAccount(), parameter.getPassword(), parameter.getEmail(), parameter.getName());
         this.userDao.insertUser(user);
+        // 创建仓库信息
         UserRepository userRepository = new UserRepository(user.getId());
         this.userRepositoryDao.insert(userRepository);
         user.setRepoId(userRepository.getId());
+        // 更新仓库信息
         this.userDao.updateUser(user);
+        // 发送注册邮件
         this.emailUtil.sendRegisterSuccess(user.getEmail(), user.getAccount());
         return ResultConstant.SUCCESS;
     }
@@ -186,21 +171,18 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public ResultResponseEntity registerByAccount(RegisterAccount parameter) {
-        if (parameter.getPassword().length() < 6 || parameter.getPassword().length() > 15) {
-            return ResultConstant.PASSWORD_INVALID;
-        }
-        if (parameter.getName().length() < 2 || parameter.getName().length() > 16
-            || parameter.getName().replaceAll("[\u4e00-\u9fa5]*[a-z]*[A-Z]*\\d*-*_*\\s*", "").length() != 0) {
-            return ResultConstant.NAME_INVALID;
-        }
+        // 判断账号是否被使用
         if (this.userDao.getUserByAccount(parameter.getAccount()) != null) {
             return ResultConstant.ACCOUNT_EXISTED;
         }
+        // 创建用户信息
         User user = new User(parameter.getAccount(), parameter.getPassword(), parameter.getName());
         this.userDao.insertUser(user);
+        // 创建仓库信息
         UserRepository userRepository = new UserRepository(user.getId());
         this.userRepositoryDao.insert(userRepository);
         user.setRepoId(userRepository.getId());
+        // 更新仓库信息
         this.userDao.updateUser(user);
         return ResultConstant.SUCCESS;
     }
@@ -216,13 +198,11 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public ResultResponseEntity getUserInfo(String token, int userId) {
-        int id = TokenUtil.getId(token);
-        User user = this.userDao.getUserById(id);
-        if (user == null) {
-            return ResultConstant.USER_NOT_FOUND;
-        }
-        if (user.getStatus() != 1) {
-            return ResultConstant.USER_STATUS_ABNORMAL;
+        User user = getUser(token);
+        ResultResponseEntity result = userIsInvalid(user, null);
+        // 如果User状态异常
+        if (result != null) {
+            return result;
         }
         user = this.userDao.getUserById(userId);
         if (user == null) {
@@ -236,40 +216,29 @@ public class UserServiceImpl implements UserService {
      *
      * @param token
      *            用户Token
-     * @param data
+     * @param parameter
      *            请求数据 id 用户ID account 账号 email 邮箱 phone 手机 name 昵称
      * @return 用户信息
      */
     @Override
     public ResultResponseEntity changeUserInfo(String token, ChangeUserInfo parameter) {
-        int id = TokenUtil.getId(token);
-        User user = this.userDao.getUserById(id);
-        if (user == null) {
-            return ResultConstant.USER_NOT_FOUND;
+        User user = getUser(token);
+        ResultResponseEntity result = userIsInvalid(user, parameter.getId());
+        // 如果User状态异常
+        if (result != null) {
+            return result;
         }
-        if (user.getId() != id) {
-            return ResultConstant.NO_ACCESS;
-        }
-        if (user.getStatus() != 1) {
-            return ResultConstant.USER_STATUS_ABNORMAL;
-        }
-        if (!user.getName().equals(parameter.getName())
-            && (parameter.getName().length() < 2 || parameter.getName().length() > 16
-                || parameter.getName().replaceAll("[\u4e00-\u9fa5]*[a-z]*[A-Z]*\\d*-*_*\\s*", "").length() != 0)) {
-            return ResultConstant.NAME_INVALID;
-        }
+        // 判断账号是否被使用
         if (!user.getAccount().equals(parameter.getAccount())
             && this.userDao.getUserByAccount(parameter.getAccount()) != null) {
             return ResultConstant.ACCOUNT_EXISTED;
         }
-        if (parameter.getEmail() != null && !parameter.getEmail().equals(user.getEmail()) && !parameter.getEmail()
-            .matches("^[a-z0-9A-Z]+[- | a-z0-9A-Z . _]+@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-z]{2,}$")) {
-            return ResultConstant.EMAIL_INVALID;
-        }
+        // 判断邮箱是否被使用
         if (parameter.getEmail() != null && !parameter.getEmail().equals(user.getEmail())
             && this.userDao.getUserByEmail(parameter.getEmail()) != null) {
             return ResultConstant.EMAIL_EXISTED;
         }
+        // 判断手机是否被使用
         if (parameter.getPhone() != null && !parameter.getPhone().equals(user.getPhone())
             && this.userDao.getUserByPhone(parameter.getPhone()) != null) {
             return ResultConstant.PHONE_EXISTED;
@@ -279,10 +248,10 @@ public class UserServiceImpl implements UserService {
         user.setEmail(parameter.getEmail());
         user.setPhone(parameter.getPhone());
         user.setChangeTime(System.currentTimeMillis());
+        // 更新用户信息并判断是否成功
         if (this.userDao.updateUser(user) != 1) {
             return ResultConstant.SERVER_ERROR;
         }
-        user = this.userDao.getUserById(user.getId());
         return ResultUtil.createResult(1, "修改成功", new UserInfo(user));
     }
 
@@ -297,26 +266,38 @@ public class UserServiceImpl implements UserService {
      */
     @Override
     public ResultResponseEntity changeUserPassword(String token, ChangePassword parameter) {
+        User user = getUser(token);
+        ResultResponseEntity result = userIsInvalid(user, parameter.getId());
+        // 如果User状态异常
+        if (result != null) {
+            return result;
+        }
+        // 判断原始密码是否正确
+        if (!user.getPassword().equals(parameter.getOldPassword())) {
+            return ResultConstant.WRONG_PASSWORD;
+        }
+        // 判断是否更新成功
+        if (this.userDao.updateUserPassword(user.getId(), parameter.getNewPassword()) != 1) {
+            return ResultConstant.SERVER_ERROR;
+        }
+        return ResultConstant.SUCCESS;
+    }
+
+    private User getUser(String token) {
         int id = TokenUtil.getId(token);
-        User user = this.userDao.getUserById(id);
+        return this.userDao.getUserById(id);
+    }
+
+    private ResultResponseEntity userIsInvalid(User user, Integer id) {
         if (user == null) {
             return ResultConstant.USER_NOT_FOUND;
         }
-        if (user.getId() != id) {
+        if (id != null && user.getId() != id) {
             return ResultConstant.NO_ACCESS;
         }
         if (user.getStatus() != 1) {
             return ResultConstant.USER_STATUS_ABNORMAL;
         }
-        if (!user.getPassword().equals(parameter.getOldPassword())) {
-            return ResultConstant.WRONG_PASSWORD;
-        }
-        if (parameter.getNewPassword().length() < 6 || parameter.getNewPassword().length() > 15) {
-            return ResultConstant.PASSWORD_INVALID;
-        }
-        if (this.userDao.updateUserPassword(user.getId(), parameter.getNewPassword()) != 1) {
-            return ResultConstant.SERVER_ERROR;
-        }
-        return ResultUtil.createResult(1, "修改成功");
+        return null;
     }
 }
