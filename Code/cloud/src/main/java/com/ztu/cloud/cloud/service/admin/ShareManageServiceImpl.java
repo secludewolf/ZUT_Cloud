@@ -43,7 +43,6 @@ public class ShareManageServiceImpl implements ShareManageService {
      */
     @Override
     public ResultResponseEntity getShareList(String token, int pageNumber) {
-
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
@@ -74,7 +73,6 @@ public class ShareManageServiceImpl implements ShareManageService {
      */
     @Override
     public ResultResponseEntity getShare(String token, String shareId) {
-
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
@@ -110,7 +108,6 @@ public class ShareManageServiceImpl implements ShareManageService {
      */
     @Override
     public ResultResponseEntity deleteShare(String token, String shareId) {
-
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
