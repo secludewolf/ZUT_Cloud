@@ -1,10 +1,5 @@
 package com.ztu.cloud.cloud.service.user;
 
-import java.util.HashMap;
-import java.util.List;
-
-import org.springframework.stereotype.Component;
-
 import com.ztu.cloud.cloud.common.bean.mongodb.CommonUserInform;
 import com.ztu.cloud.cloud.common.bean.mongodb.UserInform;
 import com.ztu.cloud.cloud.common.bean.mysql.User;
@@ -17,6 +12,10 @@ import com.ztu.cloud.cloud.common.vo.user.Inform;
 import com.ztu.cloud.cloud.common.vo.user.InformList;
 import com.ztu.cloud.cloud.util.ResultUtil;
 import com.ztu.cloud.cloud.util.TokenUtil;
+import org.springframework.stereotype.Component;
+
+import java.util.HashMap;
+import java.util.List;
 
 /**
  * @author Jager
@@ -44,19 +43,16 @@ public class InformServiceImpl implements InformService {
      */
     @Override
     public ResultResponseEntity getInformList(String token) {
-
-        int id = TokenUtil.getId(token);
-        User user = this.userDao.getUserById(id);
-        if (user == null) {
-            return ResultConstant.USER_NOT_FOUND;
-        }
-        if (user.getStatus() != 1) {
-            return ResultConstant.USER_STATUS_ABNORMAL;
+        User user = getUser(token);
+        ResultResponseEntity result = userIsInvalid(user);
+        // 如果User状态异常
+        if (result != null) {
+            return result;
         }
         List<CommonUserInform> validList = this.commonUserInformDao.getValidList();
-        UserInform userInform = this.userInformDao.getById(id);
+        UserInform userInform = this.userInformDao.getById(user.getId());
         if (userInform == null) {
-            userInform = new UserInform(id, new HashMap<>(10));
+            userInform = new UserInform(user.getId(), new HashMap<>(10));
             this.userInformDao.insert(userInform);
             for (CommonUserInform item : validList) {
                 item.setStatus(0);
@@ -84,20 +80,17 @@ public class InformServiceImpl implements InformService {
      */
     @Override
     public ResultResponseEntity getInform(String token, String informId) {
-
-        int id = TokenUtil.getId(token);
-        User user = this.userDao.getUserById(id);
-        if (user == null) {
-            return ResultConstant.USER_NOT_FOUND;
-        }
-        if (user.getStatus() != 1) {
-            return ResultConstant.USER_STATUS_ABNORMAL;
+        User user = getUser(token);
+        ResultResponseEntity result = userIsInvalid(user);
+        // 如果User状态异常
+        if (result != null) {
+            return result;
         }
         CommonUserInform inform = this.commonUserInformDao.getById(informId);
         if (inform == null) {
             return ResultConstant.TARGET_NOT_EXISTED;
         }
-        UserInform userInform = this.userInformDao.getById(id);
+        UserInform userInform = this.userInformDao.getById(user.getId());
         if (userInform == null) {
             inform.setStatus(0);
         } else {
@@ -123,26 +116,38 @@ public class InformServiceImpl implements InformService {
      */
     @Override
     public ResultResponseEntity changeInformStatus(String token, String informId, int status) {
+        User user = getUser(token);
+        ResultResponseEntity result = userIsInvalid(user);
+        // 如果User状态异常
+        if (result != null) {
+            return result;
+        }
+        CommonUserInform inform = this.commonUserInformDao.getById(informId);
+        if (inform == null) {
+            return ResultConstant.TARGET_NOT_EXISTED;
+        }
+        UserInform userInform = this.userInformDao.getById(user.getId());
+        if (userInform == null) {
+            userInform = new UserInform(user.getId(), new HashMap<>(1));
+            this.userInformDao.insert(userInform);
+        }
+        userInform.getStatus().put(informId, status);
+        this.userInformDao.updateStatusById(user.getId(), userInform.getStatus());
+        return ResultUtil.createResult(1, "成功");
+    }
 
+    private User getUser(String token) {
         int id = TokenUtil.getId(token);
-        User user = this.userDao.getUserById(id);
+        return this.userDao.getUserById(id);
+    }
+
+    private ResultResponseEntity userIsInvalid(User user) {
         if (user == null) {
             return ResultConstant.USER_NOT_FOUND;
         }
         if (user.getStatus() != 1) {
             return ResultConstant.USER_STATUS_ABNORMAL;
         }
-        CommonUserInform inform = this.commonUserInformDao.getById(informId);
-        if (inform == null) {
-            return ResultConstant.TARGET_NOT_EXISTED;
-        }
-        UserInform userInform = this.userInformDao.getById(id);
-        if (userInform == null) {
-            userInform = new UserInform(id, new HashMap<>(1));
-            this.userInformDao.insert(userInform);
-        }
-        userInform.getStatus().put(informId, status);
-        this.userInformDao.updateStatusById(id, userInform.getStatus());
-        return ResultUtil.createResult(1, "成功");
+        return null;
     }
 }
