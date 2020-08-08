@@ -18,7 +18,10 @@ import com.ztu.cloud.cloud.common.dao.mysql.UserFileMapper;
 import com.ztu.cloud.cloud.common.dto.user.repository.*;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.common.vo.user.RepositoryInfo;
-import com.ztu.cloud.cloud.util.*;
+import com.ztu.cloud.cloud.util.CommonUtil;
+import com.ztu.cloud.cloud.util.RepositoryUtil;
+import com.ztu.cloud.cloud.util.ResultUtil;
+import com.ztu.cloud.cloud.util.TokenUtil;
 
 /**
  * @author Jager
@@ -51,16 +54,11 @@ public class RepositoryServiceImpl implements RepositoryService {
      */
     @Override
     public ResultResponseEntity getRepository(String token, String repositoryId) {
-        int id = TokenUtil.getId(token);
-        UserRepository repository = this.userRepositoryDao.getByUserId(id);
-        if (repository == null) {
-            return ResultConstant.REPOSITORY_NOT_FOUND;
-        }
-        if (repository.getStatus() != 1) {
-            return ResultConstant.REPOSITORY_STATUS_ABNORMAL;
-        }
-        if (!repository.getId().equals(repositoryId)) {
-            return ResultConstant.NO_ACCESS;
+        UserRepository repository = getRepositoryByToken(token);
+        ResultResponseEntity result = repositoryIsInvalid(repository, repositoryId);
+        // 判断仓库状态是否正常
+        if (result != null) {
+            return result;
         }
         return ResultUtil.createResult("查询成功", new RepositoryInfo(repository));
     }
@@ -76,20 +74,12 @@ public class RepositoryServiceImpl implements RepositoryService {
      */
     @Override
     public ResultResponseEntity createFile(String token, CreateFile parameter) {
-
         int userId = TokenUtil.getId(token);
         UserRepository repository = this.userRepositoryDao.getByUserId(userId);
-        if (repository == null) {
-            return ResultConstant.REPOSITORY_NOT_FOUND;
-        }
-        if (repository.getStatus() != 1) {
-            return ResultConstant.REPOSITORY_STATUS_ABNORMAL;
-        }
-        if (!repository.getId().equals(parameter.getRepositoryId())) {
-            return ResultConstant.NO_ACCESS;
-        }
-        if (!ForbiddenUtil.isFileNameValid(parameter.getName())) {
-            return ResultConstant.NAME_INVALID;
+        ResultResponseEntity result = repositoryIsInvalid(repository, parameter.getRepositoryId());
+        // 判断仓库状态是否正常
+        if (result != null) {
+            return result;
         }
         String fileId = parameter.getFileId();
         com.ztu.cloud.cloud.common.bean.mysql.File file = this.fileDao.getFileById(fileId);
@@ -105,9 +95,6 @@ public class RepositoryServiceImpl implements RepositoryService {
         // 判断目标路径是否存在
         if (folder == null) {
             return ResultConstant.FOLDER_NOT_EXISTED;
-        }
-        if (folder.getFiles() == null) {
-            folder.setFiles(new HashMap<>(1));
         }
         // 判断文件名是否已被使用
         if (RepositoryUtil.nameIsExist(parameter.getName(), folder)) {
@@ -141,26 +128,16 @@ public class RepositoryServiceImpl implements RepositoryService {
      */
     @Override
     public ResultResponseEntity createFolder(String token, CreateFolder parameter) {
-
-        int userId = TokenUtil.getId(token);
-        UserRepository repository = this.userRepositoryDao.getByUserId(userId);
-        if (repository == null) {
-            return ResultConstant.REPOSITORY_NOT_FOUND;
-        }
-        if (repository.getStatus() != 1) {
-            return ResultConstant.REPOSITORY_STATUS_ABNORMAL;
-        }
-        if (!repository.getId().equals(parameter.getRepositoryId())) {
-            return ResultConstant.NO_ACCESS;
-        }
-        if (!ForbiddenUtil.isFileNameValid(parameter.getName())) {
-            return ResultConstant.NAME_INVALID;
+        UserRepository repository = getRepositoryByToken(token);
+        ResultResponseEntity result = repositoryIsInvalid(repository, parameter.getRepositoryId());
+        // 判断仓库状态是否正常
+        if (result != null) {
+            return result;
         }
         Folder folder = getFolder(repository, parameter.getPath());
         if (folder == null) {
             return ResultConstant.FOLDER_NOT_EXISTED;
         }
-        // TODO 配置文件
         // 判断是否超出最大深度
         if (folder.getDepth() >= 64) {
             return ResultConstant.FOLDER_DEPTH_TOO_BIG;
@@ -189,32 +166,26 @@ public class RepositoryServiceImpl implements RepositoryService {
      */
     @Override
     public ResultResponseEntity moveFile(String token, MoveFile parameter) {
-
-        int userId = TokenUtil.getId(token);
-        UserRepository repository = this.userRepositoryDao.getByUserId(userId);
-        if (repository == null) {
-            return ResultConstant.REPOSITORY_NOT_FOUND;
-        }
-        if (repository.getStatus() != 1) {
-            return ResultConstant.REPOSITORY_STATUS_ABNORMAL;
-        }
-        if (!repository.getId().equals(parameter.getRepositoryId())) {
-            return ResultConstant.NO_ACCESS;
+        UserRepository repository = getRepositoryByToken(token);
+        ResultResponseEntity result = repositoryIsInvalid(repository, parameter.getRepositoryId());
+        // 判断仓库状态是否正常
+        if (result != null) {
+            return result;
         }
         Folder oldFolder = getFolder(repository, parameter.getOldPath());
+        // 判断判断源文件是否存在
         if (oldFolder == null) {
             return ResultConstant.FILE_NOT_EXISTED;
         }
         File file = oldFolder.getFiles().get(parameter.getName());
+        // 判断源文件是否存在
         if (file == null) {
             return ResultConstant.FILE_NOT_EXISTED;
         }
         Folder newFolder = getFolder(repository, parameter.getNewPath());
+        // 判断目标文件夹是否存在
         if (newFolder == null) {
             return ResultConstant.FOLDER_NOT_EXISTED;
-        }
-        if (newFolder.getFiles() == null) {
-            newFolder.setFiles(new HashMap<>(1));
         }
         // 判断文件名是否被使用
         if (RepositoryUtil.nameIsExist(parameter.getName(), newFolder)) {
@@ -241,33 +212,22 @@ public class RepositoryServiceImpl implements RepositoryService {
      */
     @Override
     public ResultResponseEntity moveFolder(String token, MoveFolder parameter) {
-
-        int userId = TokenUtil.getId(token);
-        UserRepository repository = this.userRepositoryDao.getByUserId(userId);
-        if (repository == null) {
-            return ResultConstant.REPOSITORY_NOT_FOUND;
-        }
-        if (repository.getStatus() != 1) {
-            return ResultConstant.REPOSITORY_STATUS_ABNORMAL;
-        }
-        if (!repository.getId().equals(parameter.getRepositoryId())) {
-            return ResultConstant.NO_ACCESS;
+        UserRepository repository = getRepositoryByToken(token);
+        ResultResponseEntity result = repositoryIsInvalid(repository, parameter.getRepositoryId());
+        // 判断仓库状态是否正常
+        if (result != null) {
+            return result;
         }
         // 判断是否文件嵌套
-        if (parameter.getNewPath().length() >= (parameter.getOldPath() + "/" + parameter.getName()).length()
-            && (parameter.getOldPath() + "/" + parameter.getName()).equals(
-                parameter.getNewPath().substring(0, (parameter.getOldPath() + "/" + parameter.getName()).length()))) {
+        if (RepositoryUtil.pathIsNested(parameter.getOldPath() + "/" + parameter.getName(), parameter.getNewPath())) {
             return ResultConstant.PATH_INVALID;
         }
-        // 获取源文件父文件夹
+        // 获取源文件夹的父文件夹
         Folder oldFolder = getFolder(repository, parameter.getOldPath());
         if (oldFolder == null) {
             return ResultConstant.FOLDER_NOT_EXISTED;
         }
-        if (oldFolder.getFolders() == null) {
-            oldFolder.setFolders(new HashMap<>(1));
-        }
-        // 获取源文件
+        // 获取源文件夹
         Folder folder = oldFolder.getFolders().get(parameter.getName());
         if (folder == null) {
             return ResultConstant.FOLDER_NOT_EXISTED;
@@ -276,9 +236,6 @@ public class RepositoryServiceImpl implements RepositoryService {
         Folder newFolder = getFolder(repository, parameter.getNewPath());
         if (newFolder == null) {
             return ResultConstant.FOLDER_NOT_EXISTED;
-        }
-        if (newFolder.getFolders() == null) {
-            newFolder.setFolders(new HashMap<>(1));
         }
         // 判断文件名是否被使用
         if (RepositoryUtil.nameIsExist(folder.getName(), newFolder)) {
@@ -291,7 +248,6 @@ public class RepositoryServiceImpl implements RepositoryService {
         int depthDiffer = oldFolder.getDepth() - newFolder.getDepth();
         for (Folder temp : folders) {
             temp.setDepth(temp.getDepth() - depthDiffer);
-            // TODO 配置文件
             // 判断是否超出最大深度
             if (temp.getDepth() >= 64) {
                 return ResultConstant.FOLDER_DEPTH_TOO_BIG;
@@ -329,17 +285,12 @@ public class RepositoryServiceImpl implements RepositoryService {
      */
     @Override
     public ResultResponseEntity copyFile(String token, CopyFile parameter) {
-
         int userId = TokenUtil.getId(token);
         UserRepository repository = this.userRepositoryDao.getByUserId(userId);
-        if (repository == null) {
-            return ResultConstant.REPOSITORY_NOT_FOUND;
-        }
-        if (repository.getStatus() != 1) {
-            return ResultConstant.REPOSITORY_STATUS_ABNORMAL;
-        }
-        if (!repository.getId().equals(parameter.getRepositoryId())) {
-            return ResultConstant.NO_ACCESS;
+        ResultResponseEntity result = repositoryIsInvalid(repository, parameter.getRepositoryId());
+        // 判断仓库状态是否正常
+        if (result != null) {
+            return result;
         }
         Folder oldFolder = getFolder(repository, parameter.getOldPath());
         if (oldFolder == null) {
@@ -356,9 +307,6 @@ public class RepositoryServiceImpl implements RepositoryService {
         Folder newFolder = getFolder(repository, parameter.getNewPath());
         if (newFolder == null) {
             return ResultConstant.FOLDER_NOT_EXISTED;
-        }
-        if (newFolder.getFiles() == null) {
-            newFolder.setFiles(new HashMap<>(1));
         }
         // 判断文件名是否被使用
         if (RepositoryUtil.nameIsExist(parameter.getName(), newFolder)) {
@@ -396,30 +344,20 @@ public class RepositoryServiceImpl implements RepositoryService {
      */
     @Override
     public ResultResponseEntity copyFolder(String token, CopyFolder parameter) {
-
         int userId = TokenUtil.getId(token);
         UserRepository repository = this.userRepositoryDao.getByUserId(userId);
-        if (repository == null) {
-            return ResultConstant.REPOSITORY_NOT_FOUND;
-        }
-        if (repository.getStatus() != 1) {
-            return ResultConstant.REPOSITORY_STATUS_ABNORMAL;
-        }
-        if (!repository.getId().equals(parameter.getRepositoryId())) {
-            return ResultConstant.NO_ACCESS;
+        ResultResponseEntity result = repositoryIsInvalid(repository, parameter.getRepositoryId());
+        // 判断仓库状态是否正常
+        if (result != null) {
+            return result;
         }
         // 判断是否文件嵌套
-        if (parameter.getNewPath().length() >= (parameter.getOldPath() + "/" + parameter.getName()).length()
-            && (parameter.getOldPath() + "/" + parameter.getName()).equals(
-                parameter.getNewPath().substring(0, (parameter.getOldPath() + "/" + parameter.getName()).length()))) {
+        if (RepositoryUtil.pathIsNested(parameter.getOldPath() + "/" + parameter.getName(), parameter.getNewPath())) {
             return ResultConstant.PATH_INVALID;
         }
         Folder oldParent = getFolder(repository, parameter.getOldPath());
         if (oldParent == null) {
             return ResultConstant.FOLDER_NOT_EXISTED;
-        }
-        if (oldParent.getFolders() == null) {
-            oldParent.setFolders(new HashMap<>(1));
         }
         Folder folder = oldParent.getFolders().get(parameter.getName());
         if (folder == null) {
@@ -428,9 +366,6 @@ public class RepositoryServiceImpl implements RepositoryService {
         Folder newParent = getFolder(repository, parameter.getNewPath());
         if (newParent == null) {
             return ResultConstant.FOLDER_NOT_EXISTED;
-        }
-        if (newParent.getFolders() == null) {
-            newParent.setFolders(new HashMap<>());
         }
         // 判断文件名是否被使用
         if (RepositoryUtil.nameIsExist(folder.getName(), newParent)) {
@@ -445,7 +380,6 @@ public class RepositoryServiceImpl implements RepositoryService {
         int depthDiffer = oldParent.getDepth() - newParent.getDepth();
         for (Folder temp : folders) {
             temp.setDepth(temp.getDepth() - depthDiffer);
-            // TODO 配置文件
             // 判断是否超出最大深度
             if (temp.getDepth() >= 64) {
                 return ResultConstant.FOLDER_DEPTH_TOO_BIG;
@@ -487,26 +421,14 @@ public class RepositoryServiceImpl implements RepositoryService {
      */
     @Override
     public ResultResponseEntity renameFile(String token, RenameFile parameter) {
-
-        int userId = TokenUtil.getId(token);
-        UserRepository repository = this.userRepositoryDao.getByUserId(userId);
-        if (repository == null) {
-            return ResultConstant.REPOSITORY_NOT_FOUND;
-        }
-        if (repository.getStatus() != 1) {
-            return ResultConstant.REPOSITORY_STATUS_ABNORMAL;
-        }
-        if (!repository.getId().equals(parameter.getRepositoryId())) {
-            return ResultConstant.NO_ACCESS;
-        }
-        if (!ForbiddenUtil.isFileNameValid(parameter.getNewName())) {
-            return ResultConstant.NAME_INVALID;
+        UserRepository repository = getRepositoryByToken(token);
+        ResultResponseEntity result = repositoryIsInvalid(repository, parameter.getRepositoryId());
+        // 判断仓库状态是否正常
+        if (result != null) {
+            return result;
         }
         Folder folder = getFolder(repository, parameter.getPath());
         if (folder == null) {
-            return ResultConstant.FILE_NOT_EXISTED;
-        }
-        if (folder.getFiles() == null) {
             return ResultConstant.FILE_NOT_EXISTED;
         }
         // 判断文件名是否被使用
@@ -536,26 +458,14 @@ public class RepositoryServiceImpl implements RepositoryService {
      */
     @Override
     public ResultResponseEntity renameFolder(String token, RenameFolder parameter) {
-
-        int userId = TokenUtil.getId(token);
-        UserRepository repository = this.userRepositoryDao.getByUserId(userId);
-        if (repository == null) {
-            return ResultConstant.REPOSITORY_NOT_FOUND;
-        }
-        if (repository.getStatus() != 1) {
-            return ResultConstant.REPOSITORY_STATUS_ABNORMAL;
-        }
-        if (!repository.getId().equals(parameter.getRepositoryId())) {
-            return ResultConstant.NO_ACCESS;
-        }
-        if (!ForbiddenUtil.isFileNameValid(parameter.getNewName())) {
-            return ResultConstant.NAME_INVALID;
+        UserRepository repository = getRepositoryByToken(token);
+        ResultResponseEntity result = repositoryIsInvalid(repository, parameter.getRepositoryId());
+        // 判断仓库状态是否正常
+        if (result != null) {
+            return result;
         }
         Folder parent = getFolder(repository, parameter.getPath());
         if (parent == null) {
-            return ResultConstant.FOLDER_NOT_EXISTED;
-        }
-        if (parent.getFolders() == null) {
             return ResultConstant.FOLDER_NOT_EXISTED;
         }
         // 判断文件名是否已经被使用
@@ -598,17 +508,11 @@ public class RepositoryServiceImpl implements RepositoryService {
      */
     @Override
     public ResultResponseEntity deleteFromRepository(String token, DeleteFileToRecyclebin parameter) {
-
-        int userId = TokenUtil.getId(token);
-        UserRepository repository = this.userRepositoryDao.getByUserId(userId);
-        if (repository == null) {
-            return ResultConstant.REPOSITORY_NOT_FOUND;
-        }
-        if (repository.getStatus() != 1) {
-            return ResultConstant.REPOSITORY_STATUS_ABNORMAL;
-        }
-        if (!repository.getId().equals(parameter.getRepositoryId())) {
-            return ResultConstant.NO_ACCESS;
+        UserRepository repository = getRepositoryByToken(token);
+        ResultResponseEntity result = repositoryIsInvalid(repository, parameter.getRepositoryId());
+        // 判断仓库状态是否正常
+        if (result != null) {
+            return result;
         }
         Folder parent = getFolder(repository, parameter.getPath());
         if (parent == null) {
@@ -623,9 +527,6 @@ public class RepositoryServiceImpl implements RepositoryService {
                 return ResultConstant.TARGET_NOT_EXISTED;
             }
             String uuid = CommonUtil.getUuid();
-            if (repository.getRecycleBin().getFiles() == null) {
-                repository.getRecycleBin().setFiles(new HashMap<>(1));
-            }
             repository.getRecycleBin().getFiles().put(uuid, file);
             parent.getFiles().remove(file.getName());
         } else {
@@ -637,9 +538,6 @@ public class RepositoryServiceImpl implements RepositoryService {
                 return ResultConstant.TARGET_NOT_EXISTED;
             }
             String uuid = CommonUtil.getUuid();
-            if (repository.getRecycleBin().getFolders() == null) {
-                repository.getRecycleBin().setFolders(new HashMap<>(1));
-            }
             repository.getRecycleBin().getFolders().put(uuid, folder);
             parent.getFolders().remove(folder.getName());
         }
@@ -659,17 +557,11 @@ public class RepositoryServiceImpl implements RepositoryService {
      */
     @Override
     public ResultResponseEntity restoreFromRecycleBin(String token, RestoreFile parameter) {
-
-        int userId = TokenUtil.getId(token);
-        UserRepository repository = this.userRepositoryDao.getByUserId(userId);
-        if (repository == null) {
-            return ResultConstant.REPOSITORY_NOT_FOUND;
-        }
-        if (repository.getStatus() != 1) {
-            return ResultConstant.REPOSITORY_STATUS_ABNORMAL;
-        }
-        if (!repository.getId().equals(parameter.getRepositoryId())) {
-            return ResultConstant.NO_ACCESS;
+        UserRepository repository = getRepositoryByToken(token);
+        ResultResponseEntity result = repositoryIsInvalid(repository, parameter.getRepositoryId());
+        // 判断仓库状态是否正常
+        if (result != null) {
+            return result;
         }
         if (parameter.isFile()) {
             if (repository.getRecycleBin().getFiles() == null) {
@@ -682,9 +574,6 @@ public class RepositoryServiceImpl implements RepositoryService {
             Folder folder = getFolder(repository, file.getPath());
             if (folder == null) {
                 return ResultConstant.FOLDER_NOT_EXISTED;
-            }
-            if (folder.getFiles() == null) {
-                folder.setFiles(new HashMap<>(1));
             }
             if (RepositoryUtil.nameIsExist(file.getName(), folder)) {
                 return ResultConstant.FILE_EXISTED;
@@ -702,9 +591,6 @@ public class RepositoryServiceImpl implements RepositoryService {
             Folder parent = getFolder(repository, folder.getPath());
             if (parent == null) {
                 return ResultConstant.FOLDER_NOT_EXISTED;
-            }
-            if (parent.getFolders() == null) {
-                parent.setFolders(new HashMap<>(1));
             }
             if (RepositoryUtil.nameIsExist(folder.getName(), parent)) {
                 return ResultConstant.FOLDER_EXISTED;
@@ -728,17 +614,11 @@ public class RepositoryServiceImpl implements RepositoryService {
      */
     @Override
     public ResultResponseEntity deleteFromRecycleBin(String token, DeleteFileFromRecyclebin parameter) {
-
-        int userId = TokenUtil.getId(token);
-        UserRepository repository = this.userRepositoryDao.getByUserId(userId);
-        if (repository == null) {
-            return ResultConstant.REPOSITORY_NOT_FOUND;
-        }
-        if (repository.getStatus() != 1) {
-            return ResultConstant.REPOSITORY_STATUS_ABNORMAL;
-        }
-        if (!repository.getId().equals(parameter.getRepositoryId())) {
-            return ResultConstant.NO_ACCESS;
+        UserRepository repository = getRepositoryByToken(token);
+        ResultResponseEntity result = repositoryIsInvalid(repository, parameter.getRepositoryId());
+        // 判断仓库状态是否正常
+        if (result != null) {
+            return result;
         }
         if (parameter.isFile()) {
             if (repository.getRecycleBin().getFiles() == null) {
@@ -768,16 +648,7 @@ public class RepositoryServiceImpl implements RepositoryService {
             LinkedList<File> files = new LinkedList<>();
             getFileList(folder, files);
             long size = 0;
-            for (File file : files) {
-                size += file.getSize();
-                if (file.getShareIdList() != null) {
-                    for (String shareId : file.getShareIdList()) {
-                        this.shareDao.updateShareStatus(shareId, -1);
-                    }
-                }
-                this.userFileDao.deleteUserFile(file.getUserFileId());
-                this.fileDao.fileQuoteNumberSub(file.getId(), 1);
-            }
+            size = deleteFile(files, size);
             repository.setUseSize(repository.getUseSize() - size);
             repository.getRecycleBin().getFolders().remove(parameter.getRecycleId());
         }
@@ -798,31 +669,16 @@ public class RepositoryServiceImpl implements RepositoryService {
      */
     @Override
     public ResultResponseEntity cleanRecycleBin(String token, CleanRecyclebin parameter) {
-
-        int userId = TokenUtil.getId(token);
-        UserRepository repository = this.userRepositoryDao.getByUserId(userId);
-        if (repository == null) {
-            return ResultConstant.REPOSITORY_NOT_FOUND;
-        }
-        if (repository.getStatus() != 1) {
-            return ResultConstant.REPOSITORY_STATUS_ABNORMAL;
-        }
-        if (!repository.getId().equals(parameter.getRepositoryId())) {
-            return ResultConstant.NO_ACCESS;
+        UserRepository repository = getRepositoryByToken(token);
+        ResultResponseEntity result = repositoryIsInvalid(repository, parameter.getRepositoryId());
+        // 判断仓库状态是否正常
+        if (result != null) {
+            return result;
         }
         long size = 0;
         if (repository.getRecycleBin().getFiles() != null) {
             Collection<File> values = repository.getRecycleBin().getFiles().values();
-            for (File file : values) {
-                size += file.getSize();
-                if (file.getShareIdList() != null) {
-                    for (String shareId : file.getShareIdList()) {
-                        this.shareDao.updateShareStatus(shareId, -1);
-                    }
-                }
-                this.userFileDao.deleteUserFile(file.getUserFileId());
-                this.fileDao.fileQuoteNumberSub(file.getId(), 1);
-            }
+            size = deleteFile(values, size);
             repository.getRecycleBin().getFiles().clear();
         }
         if (repository.getRecycleBin().getFolders() != null) {
@@ -830,16 +686,7 @@ public class RepositoryServiceImpl implements RepositoryService {
             for (Folder folder : values) {
                 LinkedList<File> files = new LinkedList<>();
                 getFileList(folder, files);
-                for (File file : files) {
-                    size += file.getSize();
-                    if (file.getShareIdList() != null) {
-                        for (String shareId : file.getShareIdList()) {
-                            this.shareDao.updateShareStatus(shareId, -1);
-                        }
-                    }
-                    this.userFileDao.deleteUserFile(file.getUserFileId());
-                    this.fileDao.fileQuoteNumberSub(file.getId(), 1);
-                }
+                size = deleteFile(files, size);
             }
             repository.getRecycleBin().getFolders().clear();
         }
@@ -850,6 +697,38 @@ public class RepositoryServiceImpl implements RepositoryService {
         return ResultUtil.createResult("删除成功", new RepositoryInfo(repository));
     }
 
+    private long deleteFile(Collection<File> files, long size) {
+        for (File file : files) {
+            size += file.getSize();
+            if (file.getShareIdList() != null) {
+                for (String shareId : file.getShareIdList()) {
+                    this.shareDao.updateShareStatus(shareId, -1);
+                }
+            }
+            this.userFileDao.deleteUserFile(file.getUserFileId());
+            this.fileDao.fileQuoteNumberSub(file.getId(), 1);
+        }
+        return size;
+    }
+
+    private UserRepository getRepositoryByToken(String token) {
+        int userId = TokenUtil.getId(token);
+        return this.userRepositoryDao.getByUserId(userId);
+    }
+
+    private ResultResponseEntity repositoryIsInvalid(UserRepository repository, String id) {
+        if (repository == null) {
+            return ResultConstant.REPOSITORY_NOT_FOUND;
+        }
+        if (repository.getStatus() != 1) {
+            return ResultConstant.REPOSITORY_STATUS_ABNORMAL;
+        }
+        if (!repository.getId().equals(id)) {
+            return ResultConstant.NO_ACCESS;
+        }
+        return null;
+    }
+
     private Folder getFolder(UserRepository repository, String path) {
         String[] list = path.split("/");
         if (!"root".equals(list[1])) {
@@ -858,6 +737,12 @@ public class RepositoryServiceImpl implements RepositoryService {
         Folder folder = repository.getFolder();
         for (int i = 2; folder != null && i < list.length; i++) {
             folder = folder.getFolders().get(list[i]);
+        }
+        if (folder.getFiles() == null) {
+            folder.setFiles(new HashMap<>(1));
+        }
+        if (folder.getFolders() == null) {
+            folder.setFolders(new HashMap<>(1));
         }
         return folder;
     }

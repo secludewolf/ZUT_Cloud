@@ -2,6 +2,7 @@ package com.ztu.cloud.cloud.common.bean.mongodb.inside;
 
 import lombok.Data;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -11,11 +12,11 @@ import java.util.Map;
  **/
 @Data
 public class RecycleBin {
-	private Map<String, Folder> folders;
-	private Map<String, File> files;
+    private Map<String, Folder> folders;
+    private Map<String, File> files;
 
-	public RecycleBin() {
-		this.folders = null;
-		this.files = null;
-	}
+    public RecycleBin() {
+        this.folders = new HashMap<>();
+        this.files = new HashMap<>();
+    }
 }

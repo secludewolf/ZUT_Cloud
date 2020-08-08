@@ -34,8 +34,8 @@ public class Folder implements Cloneable {
 		this.createTime = System.currentTimeMillis();
 		this.changeTime = this.createTime;
 		this.status = 1;
-		this.folders = null;
-		this.files = null;
+		this.folders = new HashMap<>(0);
+		this.files = new HashMap<>(0);
 	}
 
 	public Folder(Folder folder) {

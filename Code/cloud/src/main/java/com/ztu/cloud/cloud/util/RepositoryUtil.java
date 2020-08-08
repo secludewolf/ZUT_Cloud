@@ -33,4 +33,8 @@ public class RepositoryUtil {
 		}
 		return false;
 	}
+
+	public static boolean pathIsNested(String source, String target) {
+		return target.length() >= source.length() && source.equals(source.substring(0, target.length()));
+	}
 }

@@ -12,6 +12,7 @@ import javax.validation.ConstraintValidatorContext;
  **/
 public class NameValidator implements ConstraintValidator<Name, Object> {
 
+    private static final String[] FILE_NAME_WORDS = {"/", "\\", ":", "*", "\"", "?", "<", ">", "|"};
     private String type;
 
     @Override
@@ -30,8 +31,12 @@ public class NameValidator implements ConstraintValidator<Name, Object> {
                 if (userTypeName.equals(type) || adminTypeName.equals(type)) {
                     return name.replaceAll("[\u4e00-\u9fa5]*[a-z]*[A-Z]*\\d*-*_*\\s*", "").length() == 0;
                 } else if (fileTypeName.equals(type)) {
-                    // TODO 文件名称验证
-                    return false;
+                    for (String item : FILE_NAME_WORDS) {
+                        if (name.contains(item)) {
+                            return false;
+                        }
+                    }
+                    return true;
                 } else {
                     return false;
                 }
