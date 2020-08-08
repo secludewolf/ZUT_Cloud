@@ -45,7 +45,6 @@ public class FileServiceImpl implements FileService {
      */
     @Override
     public Download download(String token, String fileId) {
-
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
