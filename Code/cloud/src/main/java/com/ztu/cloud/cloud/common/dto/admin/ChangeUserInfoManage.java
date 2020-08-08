@@ -1,5 +1,6 @@
 package com.ztu.cloud.cloud.common.dto.admin;
 
+import com.ztu.cloud.cloud.common.validation.Name;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
@@ -28,6 +29,7 @@ public class ChangeUserInfoManage {
     private String phone;
     @NotBlank(message = "昵称不能为空")
     @Size(min = 2, max = 16, message = "昵称程度必须在2~16位之间")
+    @Name(type = "user")
     private String name;
     @NotNull(message = "状态不能为空")
     private Integer status;

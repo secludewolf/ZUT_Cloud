@@ -51,7 +51,6 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public ResultResponseEntity loginByToken(String token) {
-
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
@@ -125,17 +124,6 @@ public class AdminServiceImpl implements AdminService {
         }
         // 通过授权码获取对应权限等级
         int level = 1;
-        if (parameter.getPassword().length() < 6 || parameter.getPassword().length() > 15) {
-            return ResultConstant.PASSWORD_INVALID;
-        }
-        if (parameter.getName().length() < 2 || parameter.getName().length() > 16
-            || parameter.getName().replaceAll("[\u4e00-\u9fa5]*[a-z]*[A-Z]*\\d*-*_*\\s*", "").length() != 0) {
-            return ResultConstant.NAME_INVALID;
-        }
-        if (!parameter.getEmail()
-            .matches("^[a-z0-9A-Z]+[- | a-z0-9A-Z . _]+@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-z]{2,3}$")) {
-            return ResultConstant.EMAIL_INVALID;
-        }
         if (this.adminDao.getAdminByAccount(parameter.getAccount()) != null) {
             return ResultConstant.ACCOUNT_EXISTED;
         }
@@ -163,7 +151,6 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public ResultResponseEntity getAdminInfo(String token, int adminId) {
-
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
@@ -190,7 +177,6 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public ResultResponseEntity changeAdminInfo(String token, ChangeAdminInfo parameter) {
-
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
@@ -202,18 +188,9 @@ public class AdminServiceImpl implements AdminService {
         if (admin.getStatus() != 1) {
             return ResultConstant.USER_STATUS_ABNORMAL;
         }
-        if (!admin.getName().equals(parameter.getName())
-            && (parameter.getName().length() < 2 || parameter.getName().length() > 16
-                || parameter.getName().replaceAll("[\u4e00-\u9fa5]*[a-z]*[A-Z]*\\d*-*_*\\s*", "").length() != 0)) {
-            return ResultConstant.NAME_INVALID;
-        }
         if (!admin.getAccount().equals(parameter.getAccount())
             && this.adminDao.getAdminByAccount(parameter.getAccount()) != null) {
             return ResultConstant.ACCOUNT_EXISTED;
-        }
-        if (parameter.getEmail() != null && !parameter.getEmail().equals(admin.getEmail()) && !parameter.getEmail()
-            .matches("^[a-z0-9A-Z]+[- | a-z0-9A-Z . _]+@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-z]{2,}$")) {
-            return ResultConstant.EMAIL_INVALID;
         }
         if (parameter.getEmail() != null && !parameter.getEmail().equals(admin.getEmail())
             && this.adminDao.getAdminByEmail(parameter.getEmail()) != null) {
@@ -246,7 +223,6 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public ResultResponseEntity changeAdminPassword(String token, ChangePassword parameter) {
-
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
@@ -281,18 +257,6 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public ResultResponseEntity createUserManage(String token, CreateUser parameter) {
-
-        if (parameter.getPassword().length() < 6 || parameter.getPassword().length() > 15) {
-            return ResultConstant.PASSWORD_INVALID;
-        }
-        if (parameter.getName().length() < 2 || parameter.getName().length() > 16
-            || parameter.getName().replaceAll("[\u4e00-\u9fa5]*[a-z]*[A-Z]*\\d*-*_*\\s*", "").length() != 0) {
-            return ResultConstant.NAME_INVALID;
-        }
-        if (parameter.getEmail() != null && !parameter.getEmail()
-            .matches("^[a-z0-9A-Z]+[- | a-z0-9A-Z . _]+@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-z]{2,}$")) {
-            return ResultConstant.EMAIL_INVALID;
-        }
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
@@ -338,18 +302,6 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public ResultResponseEntity createAdminManage(String token, CreateAdmin parameter) {
-
-        if (parameter.getPassword().length() < 6 || parameter.getPassword().length() > 15) {
-            return ResultConstant.PASSWORD_INVALID;
-        }
-        if (parameter.getName().length() < 2 || parameter.getName().length() > 16
-            || parameter.getName().replaceAll("[\u4e00-\u9fa5]*[a-z]*[A-Z]*\\d*-*_*\\s*", "").length() != 0) {
-            return ResultConstant.NAME_INVALID;
-        }
-        if (!parameter.getEmail()
-            .matches("^[a-z0-9A-Z]+[- | a-z0-9A-Z . _]+@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-z]{2,}$")) {
-            return ResultConstant.EMAIL_INVALID;
-        }
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
@@ -397,7 +349,6 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public ResultResponseEntity deleteUserManage(String token, DeleteUser parameter) {
-
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
@@ -413,8 +364,7 @@ public class AdminServiceImpl implements AdminService {
         if (admin.getLevel() <= 0) {
             return ResultConstant.NO_ACCESS;
         }
-        User user = null;
-        user = this.userDao.getUserById(parameter.getId());
+        User user = this.userDao.getUserById(parameter.getId());
         if (user == null) {
             return ResultConstant.TARGET_NOT_EXISTED;
         }
@@ -437,7 +387,6 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public ResultResponseEntity deleteAdminManage(String token, DeleteAdmin parameter) {
-
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
@@ -475,7 +424,6 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public ResultResponseEntity getUserListManage(String token, int pageNumber) {
-
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
@@ -507,7 +455,6 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public ResultResponseEntity getAdminListManage(String token, int pageNumber) {
-
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
@@ -538,7 +485,6 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public ResultResponseEntity getUserInfoManage(String token, int userId) {
-
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
@@ -579,7 +525,6 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public ResultResponseEntity changeUserInfoManage(String token, ChangeUserInfoManage parameter) {
-
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
@@ -599,22 +544,9 @@ public class AdminServiceImpl implements AdminService {
         if (user == null) {
             return ResultConstant.TARGET_NOT_EXISTED;
         }
-        if (!user.getPassword().equals(parameter.getPassword()) && parameter.getPassword().length() < 6
-            || parameter.getPassword().length() > 15) {
-            return ResultConstant.PASSWORD_INVALID;
-        }
-        if (!user.getName().equals(parameter.getName())
-            && (parameter.getName().length() < 2 || parameter.getName().length() > 16
-                || parameter.getName().replaceAll("[\u4e00-\u9fa5]*[a-z]*[A-Z]*\\d*-*_*\\s*", "").length() != 0)) {
-            return ResultConstant.NAME_INVALID;
-        }
         if (!user.getAccount().equals(parameter.getAccount())
             && this.adminDao.getAdminByAccount(parameter.getAccount()) != null) {
             return ResultConstant.ACCOUNT_EXISTED;
-        }
-        if (parameter.getEmail() != null && !parameter.getEmail().equals(user.getEmail()) && !parameter.getEmail()
-            .matches("^[a-z0-9A-Z]+[- | a-z0-9A-Z . _]+@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-z]{2,}$")) {
-            return ResultConstant.EMAIL_INVALID;
         }
         if (parameter.getEmail() != null && !parameter.getEmail().equals(user.getEmail())
             && this.adminDao.getAdminByEmail(parameter.getEmail()) != null) {
@@ -651,7 +583,6 @@ public class AdminServiceImpl implements AdminService {
      */
     @Override
     public ResultResponseEntity changeAdminInfoManage(String token, ChangeAdminInfoManage parameter) {
-
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
@@ -671,22 +602,9 @@ public class AdminServiceImpl implements AdminService {
         if (admin == null) {
             return ResultConstant.TARGET_NOT_EXISTED;
         }
-        if (!admin.getPassword().equals(parameter.getPassword()) && parameter.getPassword().length() < 6
-            || parameter.getPassword().length() > 15) {
-            return ResultConstant.PASSWORD_INVALID;
-        }
-        if (!admin.getName().equals(parameter.getName())
-            && (parameter.getName().length() < 2 || parameter.getName().length() > 16
-                || parameter.getName().replaceAll("[\u4e00-\u9fa5]*[a-z]*[A-Z]*\\d*-*_*\\s*", "").length() != 0)) {
-            return ResultConstant.NAME_INVALID;
-        }
         if (!admin.getAccount().equals(parameter.getAccount())
             && this.adminDao.getAdminByAccount(parameter.getAccount()) != null) {
             return ResultConstant.ACCOUNT_EXISTED;
-        }
-        if (!parameter.getEmail().equals(admin.getEmail()) && !parameter.getEmail()
-            .matches("^[a-z0-9A-Z]+[- | a-z0-9A-Z . _]+@([a-z0-9A-Z]+(-[a-z0-9A-Z]+)?\\.)+[a-z]{2,}$")) {
-            return ResultConstant.EMAIL_INVALID;
         }
         if (!parameter.getEmail().equals(admin.getEmail())
             && this.adminDao.getAdminByEmail(parameter.getEmail()) != null) {

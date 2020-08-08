@@ -1,5 +1,6 @@
 package com.ztu.cloud.cloud.common.dto.admin;
 
+import com.ztu.cloud.cloud.common.validation.Name;
 import lombok.Data;
 
 import javax.validation.constraints.Email;
@@ -27,6 +28,7 @@ public class CreateAdmin {
     private String phone;
     @NotBlank(message = "昵称不能为空")
     @Size(min = 2, max = 16, message = "昵称长度必须在2~16位之间")
+    @Name(type = "user")
     private String name;
     @NotBlank(message = "权限验证码不能为空")
     private String key;
