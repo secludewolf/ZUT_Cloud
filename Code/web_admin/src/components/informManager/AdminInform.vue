@@ -1,40 +1,58 @@
 <template>
-  <a-table :columns="columns" :data-source="data">
-    <a slot="action" slot-scope="text" href="javascript:;">Delete</a>
-    <p slot="expandedRowRender" slot-scope="record" style="margin: 0">
-      {{ record.description }}
-    </p>
+  <a-table :columns="columns" :data-source="data"
+           :loading="loading"
+           :pagination="pagination"
+           @change="handleTableChange">
+    <div slot="expandedRowRender" slot-scope="record" style="margin: 0">
+      <p>{{ record.content }}</p>
+    </div>
+    <div slot="action" slot-scope="text,record,index">
+      <a-button :disabled="record.status === -1" @click="deleteInform(record.id)">禁用</a-button>
+    </div>
   </a-table>
 </template>
 <script>
-  const columns = [
-    {title: 'Name', dataIndex: 'name', key: 'name'},
-    {title: 'Age', dataIndex: 'age', key: 'age'},
-    {title: 'Address', dataIndex: 'address', key: 'address'},
-    {title: 'Action', dataIndex: '', key: 'x', scopedSlots: {customRender: 'action'}},
-  ];
+  import {deleteAdminInform, getAdminInformList} from "../../api/inform";
+  import {message} from "../../util/message";
+  import {getFormatDate} from "../../util/util";
 
-  const data = [
+  const columns = [
     {
-      key: 1,
-      name: 'John Brown',
-      age: 32,
-      address: 'New York No. 1 Lake Park',
-      description: 'My name is John Brown, I am 32 years old, living in New York No. 1 Lake Park.',
+      title: '标题',
+      dataIndex: 'header',
+      key: 'header',
     },
     {
-      key: 2,
-      name: 'Jim Green',
-      age: 42,
-      address: 'London No. 1 Lake Park',
-      description: 'My name is Jim Green, I am 42 years old, living in London No. 1 Lake Park.',
+      title: '创建时间',
+      dataIndex: 'createTime',
+      key: 'createTime',
+      align: "center",
     },
     {
-      key: 3,
-      name: 'Joe Black',
-      age: 32,
-      address: 'Sidney No. 1 Lake Park',
-      description: 'My name is Joe Black, I am 32 years old, living in Sidney No. 1 Lake Park.',
+      title: '有效时间',
+      dataIndex: 'validTime',
+      key: 'validTime',
+      align: "center",
+    },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      key: 'status',
+      align: "center",
+
+    },
+    {
+      title: '管理员ID',
+      dataIndex: 'adminId',
+      key: 'adminId',
+      align: "center",
+    },
+    {
+      title: '操作',
+      dataIndex: 'action',
+      key: 'action',
+      scopedSlots: {customRender: 'action'},
+      align: "center",
     },
   ];
 
@@ -42,9 +60,62 @@
     name: "UserInform",
     data() {
       return {
-        data,
-        columns,
+        data: [],
+        columns: columns,
+        pagination: {},
+        loading: false,
       };
     },
+    mounted() {
+      this.request();
+    },
+    methods: {
+      handleTableChange(pagination, filters, sorter) {
+        console.log(pagination);
+        const pager = {...this.pagination};
+        pager.current = pagination.current;
+        this.pagination = pager;
+        this.request({
+          results: pagination.pageSize,
+          page: pagination.current,
+          sortField: sorter.field,
+          sortOrder: sorter.order,
+          ...filters,
+        });
+      }, request() {
+        this.loading = true;
+        const data = this.pagination.current != null ? this.pagination.current : 1;
+        const handler = (data) => {
+          const pagination = {...this.pagination};
+          pagination.pageSize = 20;
+          pagination.total = data.informList.length;
+          this.data = data.informList;
+          this.pagination = pagination;
+          this.loading = false;
+        };
+        const catcher = (code, content) => {
+          message(content, "warning")
+        };
+        getAdminInformList(data, handler, catcher);
+      },
+      deleteInform(id) {
+        const data = id;
+        const handler = () => {
+          message("禁用成功");
+          for (let i = 0; i < this.data.length; i++) {
+            if (this.data[i].id === id) {
+              this.data[i].status = -1;
+            }
+          }
+        };
+        const catcher = (code, content) => {
+          message(content, "warning");
+        };
+        deleteAdminInform(data, handler, catcher);
+      },
+      getFormatDate(date) {
+        return getFormatDate(date);
+      }
+    }
   };
 </script>

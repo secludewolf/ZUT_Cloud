@@ -63,4 +63,39 @@ public interface InformManageService {
      * @return 是否成功
      */
     ResultResponseEntity changeInformStatus(String token, String informId, int status);
+
+    /**
+     * 获取通知列表
+     *
+     * @param token
+     *            管理员Token
+     * @param pageNumber
+     *            第几页
+     * @return 文件列表
+     */
+    ResultResponseEntity getAdminInformList(String token, Integer pageNumber);
+
+    /**
+     * 获取通知列表
+     *
+     * @param token
+     *            管理员Token
+     * @param pageNumber
+     *            第几页
+     * @return 文件列表
+     */
+    ResultResponseEntity getUserInformList(String token, Integer pageNumber);
+
+    /**
+     * 删除通知
+     * 
+     * @param token
+     *            管理员token
+     * @param role
+     *            类型
+     * @param informId
+     *            通知id
+     * @return 删除结果
+     */
+    ResultResponseEntity deleteInform(String token, String role, String informId);
 }

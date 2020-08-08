@@ -73,4 +73,10 @@ public class ControllerExceptionHandler {
 		e.printStackTrace();
 		return ResultConstant.TOKEN_INVALID;
 	}
+
+	@ExceptionHandler(Exception.class)
+	public ResultResponseEntity unknownException(Exception e) {
+		e.printStackTrace();
+		return ResultConstant.TOKEN_INVALID;
+	}
 }

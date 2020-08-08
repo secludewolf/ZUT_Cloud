@@ -81,8 +81,7 @@ public class InformAdminController {
      * @return 通知信息
      */
     @GetMapping("/admin/inform/{informId}")
-    public ResultResponseEntity getInform(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
+    public ResultResponseEntity getInform(@RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
         @PathVariable @NotBlank(message = "通知ID不能为空") String informId) {
         return this.informManageService.getInform(token, informId);
     }
@@ -104,5 +103,53 @@ public class InformAdminController {
         @PathVariable @NotBlank(message = "通知ID不能为空") String informId,
         @PathVariable @NotNull(message = "状态不能为空") Integer status) {
         return this.informManageService.changeInformStatus(token, informId, status);
+    }
+
+    /**
+     * 获取通知列表
+     *
+     * @param token
+     *            管理员Token
+     * @param pageNumber
+     *            第几页
+     * @return 文件列表
+     */
+    @GetMapping("/admin/inform/admin/{pageNumber}")
+    public ResultResponseEntity getAdminInformList(
+        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
+        @PathVariable @NotNull(message = "分页数不能为空") Integer pageNumber) {
+        return this.informManageService.getAdminInformList(token, pageNumber);
+    }
+    /**
+     * 获取通知列表
+     *
+     * @param token
+     *            管理员Token
+     * @param pageNumber
+     *            第几页
+     * @return 文件列表
+     */
+    @GetMapping("/admin/inform/user/{pageNumber}")
+    public ResultResponseEntity getUserInformList(
+            @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
+            @PathVariable @NotNull(message = "分页数不能为空") Integer pageNumber) {
+        return this.informManageService.getUserInformList(token, pageNumber);
+    }
+
+    /**
+     * 
+     * @param token
+     *            管理员Token
+     * @param role
+     *            类型
+     * @param informId
+     *            通知ID
+     * @return 删除结果
+     */
+    @DeleteMapping("/admin/inform/{role}/{informId}")
+    public ResultResponseEntity deleteInform(@RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
+        @PathVariable @NotBlank(message = "类型不能为空") String role,
+        @PathVariable @NotBlank(message = "通知ID不能为空") String informId) {
+        return this.informManageService.deleteInform(token, role, informId);
     }
 }

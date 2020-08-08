@@ -1,25 +1,64 @@
 <template>
-  <a-table :columns="columns" :data-source="data"
+  <a-table :columns="columns"
+           :rowKey="record => record.id"
+           :data-source="data"
            :loading="loading"
            :pagination="pagination"
            @change="handleTableChange">
-    <a slot="action" v-if="record.status === 0" slot-scope="record" @click="deleteInform(record.key)">禁用</a>
-    <p slot="expandedRowRender" slot-scope="record" style="margin: 0">
-      {{ record.content }}
-    </p>
+    <div slot="expandedRowRender" slot-scope="record" style="margin: 0">
+      <p>{{ record.content }}</p>
+    </div>
+    <p slot="createTime" slot-scope="text,record,index">{{getFormatDate(text)}}</p>
+    <p slot="validTime" slot-scope="text,record,index">{{getFormatDate(text)}}</p>
+    <div slot="action" slot-scope="text,record,index">
+      <a-button :disabled="record.status === -1" @click="deleteInform(record.id)">禁用</a-button>
+    </div>
   </a-table>
 </template>
 <script>
-  import {changeUserInformStatus, getUserInformList} from "../../api/inform";
+  import {deleteUserInform, getUserInformList} from "../../api/inform";
   import {message} from "../../util/message";
+  import {getFormatDate} from "../../util/util";
 
   const columns = [
-    {title: '标题', dataIndex: 'header', key: 'header'},
-    {title: '创建时间', dataIndex: 'createTime', key: 'createTime'},
-    {title: '有效时间', dataIndex: 'validTime', key: 'validTime'},
-    {title: '状态', dataIndex: 'status', key: 'status'},
-    {title: '管理员ID', dataIndex: 'adminId', key: 'adminId'},
-    {title: 'Action', dataIndex: '', key: 'x', scopedSlots: {customRender: 'action'}},
+    {
+      title: '标题',
+      dataIndex: 'header',
+      key: 'header',
+    },
+    {
+      title: '创建时间',
+      dataIndex: 'createTime',
+      key: 'createTime',
+      scopedSlots: {customRender: 'createTime'},
+      align: "center",
+    },
+    {
+      title: '有效时间',
+      dataIndex: 'validTime',
+      key: 'validTime',
+      scopedSlots: {customRender: 'validTime'},
+      align: "center",
+    },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      key: 'status',
+      align: "center",
+    },
+    {
+      title: '管理员ID',
+      dataIndex: 'adminId',
+      key: 'adminId',
+      align: "center",
+    },
+    {
+      title: '操作',
+      dataIndex: 'action',
+      key: 'action',
+      scopedSlots: {customRender: 'action'},
+      align: "center",
+    },
   ];
 
   export default {
@@ -48,15 +87,14 @@
           sortOrder: sorter.order,
           ...filters,
         });
-      }, request(params = {}) {
+      },
+      request() {
         this.loading = true;
         const data = this.pagination.current != null ? this.pagination.current : 1;
         const handler = (data) => {
-          for (let i = 0; i < data.informList.length; i++) {
-            data.informList[i].key = data.informList[i].id;
-          }
           const pagination = {...this.pagination};
-          pagination.total = 20;
+          pagination.pageSize = 20;
+          pagination.total = data.informList.length;
           this.data = data.informList;
           this.pagination = pagination;
           this.loading = false;
@@ -66,21 +104,23 @@
         };
         getUserInformList(data, handler, catcher);
       },
-      deleteInform(key) {
-        console.log(key);
-        const data = key + "/1";
-        const handler = (data) => {
+      deleteInform(id) {
+        const data = id;
+        const handler = () => {
           message("禁用成功");
           for (let i = 0; i < this.data.length; i++) {
-            if (this.data[i].key === key) {
-              this.data[i].status = 1;
+            if (this.data[i].id === id) {
+              this.data[i].status = -1;
             }
           }
         };
         const catcher = (code, content) => {
           message(content, "warning");
         };
-        changeUserInformStatus(data, handler, catcher);
+        deleteUserInform(data, handler, catcher);
+      },
+      getFormatDate(date) {
+        return getFormatDate(date);
       }
     }
   };
