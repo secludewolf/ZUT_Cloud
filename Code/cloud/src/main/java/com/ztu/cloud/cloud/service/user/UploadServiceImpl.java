@@ -1,12 +1,5 @@
 package com.ztu.cloud.cloud.service.user;
 
-import java.io.IOException;
-
-import org.apache.tika.mime.MimeTypeException;
-import org.apache.tika.mime.MimeTypes;
-import org.springframework.stereotype.Component;
-import org.springframework.web.multipart.MultipartFile;
-
 import com.ztu.cloud.cloud.common.bean.mysql.File;
 import com.ztu.cloud.cloud.common.bean.mysql.User;
 import com.ztu.cloud.cloud.common.bean.redis.TempFile;
@@ -21,6 +14,12 @@ import com.ztu.cloud.cloud.util.Md5Util;
 import com.ztu.cloud.cloud.util.ResultUtil;
 import com.ztu.cloud.cloud.util.StoreUtil;
 import com.ztu.cloud.cloud.util.TokenUtil;
+import org.apache.tika.mime.MimeTypeException;
+import org.apache.tika.mime.MimeTypes;
+import org.springframework.stereotype.Component;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.IOException;
 
 /**
  * @author Jager
@@ -104,7 +103,6 @@ public class UploadServiceImpl implements UploadService {
                 }
                 return ResultConstant.SUCCESS;
             } else if (index > -1) {
-                // System.out.println("blockMd5:" + Md5Util.getMd5(block.getBytes()));
                 if (!Md5Util.getMd5(block.getBytes()).equals(blockMd5)) {
                     return ResultConstant.FILE_DAMAGE;
                 }
@@ -120,8 +118,8 @@ public class UploadServiceImpl implements UploadService {
                         return ResultConstant.SERVER_ERROR;
                     }
                     retryNumber++;
-                } while (lock != true && retryNumber < 20);
-                if (lock != true) {
+                } while (!lock && retryNumber < 20);
+                if (!lock) {
                     return ResultConstant.SERVER_ERROR;
                 }
                 TempFile tempFile = this.tempFileDao.get(fileMd5);
