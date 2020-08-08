@@ -5,10 +5,10 @@ const infoApi = {
   getInformList: "/admin/inform",
   getInform: "/admin/inform/",
   changeInformStatus: "/admin/inform/",
-  getUserInformList: "/admin/inform/user/list/",
-  getAdminInformList: "/admin/inform/admin/list/",
-  changeUserInformStatus: "/admin/inform/user/",
-  changeAdminInformStatus: "/admin/inform/admin/",
+  getUserInformList: "/admin/inform/user/",
+  getAdminInformList: "/admin/inform/admin/",
+  deleteUserInform: "/admin/inform/user/",
+  deleteAdminInform: "/admin/inform/admin/",
   createUserInform: "/admin/inform/user",
   createAdminInform: "/admin/inform/admin",
 };
@@ -37,12 +37,12 @@ export function getAdminInformList(data, handler, catcher = catcher) {
   get(infoApi.getAdminInformList + data, null, handler, catcher);
 }
 
-export function changeUserInformStatus(data, handler, catcher = catcher) {
-  patch(infoApi.changeUserInformStatus + data, null, handler, catcher);
+export function deleteUserInform(data, handler, catcher = catcher) {
+  delete_(infoApi.deleteUserInform + data, null, handler, catcher);
 }
 
-export function changeAdminInformStatus(data, handler, catcher = catcher) {
-  patch(infoApi.changeUserInformStatus + data, null, handler, catcher);
+export function deleteAdminInform(data, handler, catcher = catcher) {
+  delete_(infoApi.deleteAdminInform + data, null, handler, catcher);
 }
 
 export function createUserInform(data, handler, catcher = catcher) {
