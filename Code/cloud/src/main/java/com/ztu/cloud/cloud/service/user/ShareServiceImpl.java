@@ -1,12 +1,5 @@
 package com.ztu.cloud.cloud.service.user;
 
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-
-import org.springframework.stereotype.Component;
-
 import com.ztu.cloud.cloud.common.bean.mongodb.ShareRepository;
 import com.ztu.cloud.cloud.common.bean.mongodb.UserRepository;
 import com.ztu.cloud.cloud.common.bean.mongodb.inside.File;
@@ -26,8 +19,15 @@ import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.common.vo.user.ShareInfo;
 import com.ztu.cloud.cloud.common.vo.user.ShareList;
 import com.ztu.cloud.cloud.util.CommonUtil;
+import com.ztu.cloud.cloud.util.RepositoryUtil;
 import com.ztu.cloud.cloud.util.ResultUtil;
 import com.ztu.cloud.cloud.util.TokenUtil;
+import org.springframework.stereotype.Component;
+
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Jager
@@ -62,10 +62,6 @@ public class ShareServiceImpl implements ShareService {
      */
     @Override
     public ResultResponseEntity createShare(String token, CreateShare parameter) {
-
-        if (parameter.getName() == null || parameter.getName().length() == 0) {
-            return ResultConstant.NAME_INVALID;
-        }
         int userId = TokenUtil.getId(token);
         UserRepository repository = this.userRepositoryDao.getByUserId(userId);
         if (repository == null) {
@@ -77,7 +73,7 @@ public class ShareServiceImpl implements ShareService {
         if (!repository.getId().equals(parameter.getRepositoryId())) {
             return ResultConstant.NO_ACCESS;
         }
-        Folder source = getFolder(repository, parameter.getPath());
+        Folder source = RepositoryUtil.getFolder(repository, parameter.getPath());
         if (source == null) {
             return ResultConstant.FOLDER_NOT_EXISTED;
         }
@@ -86,29 +82,29 @@ public class ShareServiceImpl implements ShareService {
         ShareRepository shareRepository = new ShareRepository(shareId, userId, folder);
         LinkedList<File> files = new LinkedList<>();
         LinkedList<Folder> folders = new LinkedList<>();
-        getFileList(folder, files);
+        RepositoryUtil.getFileList(folder, files);
         getFolderList(folder, folders);
-        for (File temp : files) {
-            shareRepository.getFileIdList().add(temp.getId());
-            shareRepository.getUserFileIdList().add(temp.getUserFileId());
-            temp.setPath(temp.getPath().replaceFirst(source.getPath(), ""));
-            temp.setShareIdList(null);
+        for (File item : files) {
+            shareRepository.getFileIdList().add(item.getId());
+            shareRepository.getUserFileIdList().add(item.getUserFileId());
+            item.setPath(item.getPath().replaceFirst(source.getPath(), ""));
+            item.setShareIdList(new LinkedList<>());
         }
-        for (Folder temp : folders) {
-            temp.setPath(temp.getPath().replaceFirst(source.getPath(), ""));
-            temp.setDepth(temp.getDepth() - folder.getDepth());
+        for (Folder item : folders) {
+            item.setPath(item.getPath().replaceFirst(source.getPath(), ""));
+            item.setDepth(item.getDepth() - folder.getDepth());
         }
         folder.setPath("");
         folder.setDepth(0);
         files.clear();
-        getFileList(source, files);
+        RepositoryUtil.getFileList(source, files);
         LinkedList<String> shareIdList = new LinkedList<>();
         shareIdList.add(shareId);
-        for (File temp : files) {
-            if (temp.getShareIdList() == null) {
-                temp.setShareIdList(shareIdList);
+        for (File item : files) {
+            if (item.getShareIdList() == null) {
+                item.setShareIdList(shareIdList);
             } else {
-                temp.getShareIdList().add(shareId);
+                item.getShareIdList().add(shareId);
             }
         }
         this.shareRepositoryDao.insert(shareRepository);
@@ -128,7 +124,6 @@ public class ShareServiceImpl implements ShareService {
      */
     @Override
     public ResultResponseEntity getShareList(String token) {
-
         int userId = TokenUtil.getId(token);
         List<Share> shareList = this.shareDao.getShareByUserId(userId);
         return ResultUtil.createResult("成功", new ShareList(shareList));
@@ -145,7 +140,6 @@ public class ShareServiceImpl implements ShareService {
      */
     @Override
     public ResultResponseEntity deleteShare(String token, String shareId) {
-
         int userId = TokenUtil.getId(token);
         Share share = this.shareDao.getShareById(shareId);
         if (share == null) {
@@ -169,7 +163,6 @@ public class ShareServiceImpl implements ShareService {
      */
     @Override
     public ResultResponseEntity getShare(String token, GetShare parameter) {
-
         Share shareInfo = this.shareDao.getShareById(parameter.getShareId());
         if (shareInfo == null) {
             return ResultConstant.TARGET_NOT_EXISTED;
@@ -197,7 +190,6 @@ public class ShareServiceImpl implements ShareService {
      */
     @Override
     public ResultResponseEntity saveShare(String token, SaveShare parameter) {
-
         int userId = TokenUtil.getId(token);
         Share shareInfo = this.shareDao.getShareById(parameter.getShareId());
         if (shareInfo == null) {
@@ -213,7 +205,7 @@ public class ShareServiceImpl implements ShareService {
         if (userRepository.getStatus() != 1) {
             return ResultConstant.REPOSITORY_STATUS_ABNORMAL;
         }
-        Folder folder = getFolder(userRepository, parameter.getPath());
+        Folder folder = RepositoryUtil.getFolder(userRepository, parameter.getPath());
         if (folder == null) {
             return ResultConstant.FOLDER_NOT_EXISTED;
         }
@@ -224,19 +216,19 @@ public class ShareServiceImpl implements ShareService {
         }
         LinkedList<File> files = new LinkedList<>();
         LinkedList<Folder> folders = new LinkedList<>();
-        getFileList(source, files);
+        RepositoryUtil.getFileList(source, files);
         getFolderList(source, folders);
         long size = 0;
-        for (File temp : files) {
-            size += temp.getSize();
-            temp.setPath(folder.getPath() + "/" + folder.getName() + temp.getPath());
-            UserFile userFile = new UserFile(userId, temp.getId(), temp.getPath());
+        for (File item : files) {
+            size += item.getSize();
+            item.setPath(folder.getPath() + "/" + folder.getName() + item.getPath());
+            UserFile userFile = new UserFile(userId, item.getId(), item.getPath());
             this.userFileDao.insertUserFile(userFile);
-            temp.setUserFileId(userFile.getId());
+            item.setUserFileId(userFile.getId());
         }
-        for (Folder temp : folders) {
-            temp.setPath(folder.getPath() + "/" + folder.getName() + temp.getPath());
-            temp.setDepth(temp.getDepth() + folder.getDepth() + 1);
+        for (Folder item : folders) {
+            item.setPath(folder.getPath() + "/" + folder.getName() + item.getPath());
+            item.setDepth(item.getDepth() + folder.getDepth() + 1);
         }
         source.setDepth(folder.getDepth() + 1);
         source.setPath(folder.getPath() + "/" + folder.getName());
@@ -252,34 +244,10 @@ public class ShareServiceImpl implements ShareService {
         if (shareRepository.getSaveUserIdList() != null && shareRepository.getSaveUserIdList().get(userId) == null) {
             shareRepository.getSaveUserIdList().put(userId, new LinkedList<>());
         }
+        assert shareRepository.getSaveUserIdList() != null;
         shareRepository.getSaveUserIdList().get(userId).add(System.currentTimeMillis());
         this.shareRepositoryDao.updateSaveUserIdMapById(shareRepository.getId(), shareRepository.getSaveUserIdList());
         return ResultUtil.createResult(1, "成功");
-    }
-
-    private Folder getFolder(UserRepository repository, String path) {
-        String[] list = path.split("/");
-        if (!"root".equals(list[1])) {
-            return null;
-        }
-        Folder folder = repository.getFolder();
-        for (int i = 2; folder != null && i < list.length; i++) {
-            folder = folder.getFolders().get(list[i]);
-        }
-        return folder;
-    }
-
-    private void getFileList(Folder folder, Collection<File> files) {
-        if (folder.getFiles() != null) {
-            Collection<File> values = folder.getFiles().values();
-            files.addAll(values);
-        }
-        if (folder.getFolders() != null) {
-            Collection<Folder> values = folder.getFolders().values();
-            for (Folder temp : values) {
-                getFileList(temp, files);
-            }
-        }
     }
 
     private void getFolderList(Folder folder, Collection<Folder> folders) {

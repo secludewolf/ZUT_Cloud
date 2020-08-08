@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 /**
  * @author Jager
@@ -16,6 +17,7 @@ public class CreateShare {
     @NotBlank(message = "仓库ID不能为空")
     private String repositoryId;
     @NotBlank(message = "名称不能为空")
+    @Size(min = 2, max = 16, message = "名称长度必须在2~16位之间")
     private String name;
     @NotBlank(message = "路径不能为空")
     private String path;
