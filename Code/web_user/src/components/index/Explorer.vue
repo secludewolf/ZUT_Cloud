@@ -46,34 +46,21 @@
         @close="visible = false"
         width="450px"
       >
-        <div>
+        <div v-for="(value,index) in upload" :key="index">
           <div>
-            <span>文件1</span>
-            <span style="float:right;">5GB/10GB</span>
+            <span>{{ value.name }}</span>
+            <span v-if="value.status === 'normal'" style="float:right;">核对文件中...</span>
+            <span v-else style="float:right;">
+              {{ getFormatSize(value.finishSize) }}/{{ getFormatSize(value.fileSize) }}
+            </span>
           </div>
-          <a-progress :percent="50" status="active"/>
+          <a-progress :percent="Math.round((value.finishSize / value.fileSize) * 100)" :status="value.status"/>
         </div>
-        <div>
-          <div>
-            <span>文件2</span>
-            <span style="float:right;">7GB/10GB</span>
-          </div>
-          <a-progress :percent="70" status="active"/>
-        </div>
-        <div>
-          <div>
-            <span>文件3</span>
-            <span style="float:right;">9GB/10GB</span>
-          </div>
-          <a-progress :percent="90" status="exception"/>
-        </div>
-        <div>
-          <div>
-            <span>文件4</span>
-            <span style="float:right;">10GB/10GB</span>
-          </div>
-          <a-progress :percent="100"/>
-        </div>
+        <a-result v-if="Object.keys(upload).length === 0" title="暂未上传任何文件">
+          <template #icon>
+            <a-icon type="smile" theme="twoTone"/>
+          </template>
+        </a-result>
       </a-drawer>
       <div style="position: absolute;text-align:right;bottom: 30px;left:10px;width: 180px;height: 20px;">
         <a-progress :percent="percent" :show-info="false" size="small"/>
@@ -109,7 +96,7 @@
     created() {
     },
     mounted() {
-      this.refresh();
+      this.refreshRepository();
     },
     components: {
       BaseExplorer
@@ -126,7 +113,7 @@
       }
     },
     computed: {
-      ...mapState(["repository"]),
+      ...mapState(["repository", "upload"]),
       percent() {
         let percent = (this.repository.useSize / this.repository.repoSize) * 100;
         if (percent < 3) {
@@ -143,11 +130,11 @@
     },
     watch: {
       repository() {
-        this.refresh();
+        this.refreshRepository();
       }
     },
     methods: {
-      refresh() {
+      refreshRepository() {
         this.files = this.repository.folder.files === null ? {} : this.repository.folder.files;
         this.folders = this.repository.folder.folders === null ? {} : this.repository.folder.folders;
         this.root = this.repository.folder;
@@ -225,6 +212,9 @@
         }
         this.files = files;
         this.folders = {};
+      },
+      getFormatSize(size) {
+        return getFormatSize(size, 0);
       }
     },
   }

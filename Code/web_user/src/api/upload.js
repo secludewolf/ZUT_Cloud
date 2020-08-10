@@ -33,7 +33,6 @@ export function uploadSmallFile(file, fileName, md5, next) {
   })
 }
 
-//TODO 待完善
 export function uploadBigFile(block, fileName, blockMd5, fileMd5, index, length, next) {
   const data = new FormData();
   data.append("block", block);

@@ -41,7 +41,6 @@ export function getFormatSize(size, fractionDigits = 2) {
     return "0";
   }
   if (size == null || size === '') {
-    console.log(123);
     return " - ";
   }
   let unitArr = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];

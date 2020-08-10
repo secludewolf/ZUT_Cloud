@@ -38,6 +38,7 @@ export default new Vuex.Store({
       },
       "recycleBin": {"folders": null, "files": null}
     },
+    upload: {},
   },
   mutations: {
     updateUser(state, user) {
@@ -45,6 +46,9 @@ export default new Vuex.Store({
     },
     updateRepository(state, repository) {
       state.repository = repository;
+    },
+    updateUpload(state, upload) {
+      state.upload = upload;
     },
   },
   actions: {

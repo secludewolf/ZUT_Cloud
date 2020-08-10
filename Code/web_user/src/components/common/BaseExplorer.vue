@@ -22,7 +22,7 @@
                  @ok="createFolder">
           <a-form :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
             <a-form-item label="文件夹名称">
-              <a-input placeholder="请输入文件名" v-model="createFolderName"/>
+              <a-input placeholder="请输入文件名" v-model="createFolderName" @keyup.enter="createFolder"/>
             </a-form-item>
           </a-form>
         </a-modal>
@@ -130,6 +130,12 @@
                 <a-card-meta :description="value.name"
                              style="text-align: center;font-size: 12px;overflow: hidden;text-overflow:ellipsis;white-space: nowrap;"/>
               </a-card>
+              <a-result title="暂无文件"
+                        v-if="Object.keys(files).length === 0 && Object.keys(folders).length === 0">
+                <template #icon>
+                  <a-icon type="smile" theme="twoTone"/>
+                </template>
+              </a-result>
             </a-layout-content>
             <a-layout-content id="explorer-table" v-if="view !== 'appstore'" style="height: 100%;margin: 0;padding: 0">
               <a-table
@@ -643,13 +649,24 @@
         }
         return folder.path + "/" + folder.name;
       },
-      uploadFile(event) {
+      uploadFile: function (event) {
         const path = this.getCurrentPath();
         console.log("在" + path + "上传文件:" + event.target.value);
         const repositoryId = this.repository.id;
         const parent = this;
         //获取文件列表
         const files = event.target.files;
+        //创建上传进度列表
+        for (let i = 0; i < files.length; i++) {
+          const upload = this.$store.state.upload;
+          upload[files[i].name + files[i].size] = {
+            name: files[i].name,
+            status: "normal",
+            fileSize: files[i].size,
+            finishSize: 0
+          };
+          this.$store.commit("updateUpload", Object.assign({}, upload));
+        }
         for (let i = 0; i < files.length; i++) {
           //大文件上传
           if (files[i].size > 1024 * 1024 * 5) {
@@ -663,9 +680,14 @@
               };
               const handler = (data) => {
                 parent.$emit("changeRepository", data.repository);
+                const upload = parent.$store.state.upload;
+                upload[files[i].name + files[i].size].status = "success";
+                upload[files[i].name + files[i].size].finishSize = files[i].size;
+                this.$store.commit("updateUpload", Object.assign({}, upload));
                 parent.$message.success("秒传成功");
               };
               const catcher = (code, content) => {
+                //如果文件已存在
                 if (code === -19) {
                   parent.$message.warn(content);
                   return;
@@ -692,6 +714,10 @@
                       };
                       const handler = (data) => {
                         parent.$emit("changeRepository", data.repository);
+                        const upload = parent.$store.state.upload;
+                        upload[files[i].name + files[i].size].status = "success";
+                        upload[files[i].name + files[i].size].finishSize = files[i].size;
+                        parent.$store.commit("updateUpload", Object.assign({}, upload));
                         parent.$message.success("上传成功");
                       };
                       const catcher = (code, content) => {
@@ -699,11 +725,15 @@
                       };
                       createFile(data, handler, catcher);
                     }
+                    currentChunk += 1;
+                    if (currentChunk < chunks) {
+                      const upload = parent.$store.state.upload;
+                      upload[files[i].name + files[i].size].status = "active";
+                      upload[files[i].name + files[i].size].finishSize = end;
+                      parent.$store.commit("updateUpload", Object.assign({}, upload));
+                      loadNext();
+                    }
                   })
-                  currentChunk += 1;
-                  if (currentChunk < chunks) {
-                    loadNext();
-                  }
                 }
 
                 function loadNext() {
@@ -730,6 +760,10 @@
               };
               const handler = (data) => {
                 parent.$emit("changeRepository", data.repository);
+                const upload = parent.$store.state.upload;
+                upload[files[i].name + files[i].size].status = "success";
+                upload[files[i].name + files[i].size].finishSize = files[i].size;
+                parent.$store.commit("updateUpload", Object.assign({}, upload));
                 parent.$message.success("秒传成功");
               };
               const catcher = () => {
@@ -742,6 +776,10 @@
                   };
                   const handler = (data) => {
                     parent.$emit("changeRepository", data.repository);
+                    const upload = parent.$store.state.upload;
+                    upload[files[i].name + files[i].size].status = "success";
+                    upload[files[i].name + files[i].size].finishSize = files[i].size;
+                    parent.$store.commit("updateUpload", Object.assign({}, upload));
                     parent.$message.success("上传成功");
                   };
                   const catcher = (code, content) => {
