@@ -23,6 +23,17 @@
         </template>
       </div>
     </template>
+    <div slot="repoSize" slot-scope="text, record">
+      <a-input
+        v-if="record.editable"
+        style="margin: -5px 0"
+        :value="text"
+        @change="e => handleChange(e.target.value, record.key, 'repoSize')"
+      />
+      <template v-else>
+        {{ getFormatSize(record.repoSize) }}
+      </template>
+    </div>
     <div slot="status" slot-scope="text, record">
       <template>
         {{ text === 1 ? '正常' : '异常' }}
@@ -32,10 +43,9 @@
       <div class="editable-row-operations">
         <span v-if="record.editable">
           <a @click="() => cancel(record.key)">取消</a>
-          <a @click="() => save(record.key)">更新</a>
-          <!--          <a-popconfirm title="确定要修改吗?" @confirm="() => save(record.key)">-->
-          <!--            <a>更新</a>-->
-          <!--          </a-popconfirm>-->
+          <a-popconfirm title="确定要修改吗?" @confirm="() => save(record.key)">
+            <a>更新</a>
+          </a-popconfirm>
         </span>
         <div v-else>
           <a :disabled="editingKey !== ''" @click="() => edit(record.key)">编辑</a>
@@ -53,6 +63,7 @@
 <script>
   import {changeUserInfoManage, deleteUserManage, getUserListManage} from "../../api/admin";
   import {message} from "../../util/message";
+  import {getFormatSize} from "../../util/util";
 
   const columns = [
     {
@@ -83,6 +94,12 @@
       title: '密码',
       dataIndex: 'password',
       scopedSlots: {customRender: 'password'},
+      align: "center",
+    },
+    {
+      title: '仓库大小',
+      dataIndex: 'repoSize',
+      scopedSlots: {customRender: 'repoSize'},
       align: "center",
     },
     {
@@ -198,6 +215,7 @@
             email: target.email,
             name: target.name,
             password: target.password,
+            repoSize: target.repoSize,
             level: target.level,
             status: target.status
           };
@@ -226,6 +244,9 @@
           this.data = newData;
         }
       },
+      getFormatSize(size) {
+        return getFormatSize(size, 0);
+      }
     },
   };
 </script>
