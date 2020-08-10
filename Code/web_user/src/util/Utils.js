@@ -37,8 +37,12 @@ export function getTypeName(type) {
  * @returns {string} 格式化文件大小
  */
 export function getFormatSize(size, fractionDigits = 2) {
-  if (null == size || size === '') {
-    return "-";
+  if (size === 0){
+    return "0";
+  }
+  if (size == null || size === '') {
+    console.log(123);
+    return " - ";
   }
   let unitArr = ["Bytes", "KB", "MB", "GB", "TB", "PB", "EB", "ZB", "YB"];
   let index;

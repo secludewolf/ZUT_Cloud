@@ -77,7 +77,7 @@
       </a-drawer>
       <div style="position: absolute;text-align:right;bottom: 30px;left:10px;width: 180px;height: 20px;">
         <a-progress :percent="percent" :show-info="false" size="small"/>
-        <span>{{useSize}} / {{repoSize}}</span>
+        <span>{{ useSize }} / {{ repoSize }}</span>
       </div>
     </a-layout-sider>
     <a-layout-content style="height: 100%;">
@@ -142,7 +142,7 @@
       }
     },
     watch: {
-      repository(newValue, oldValue) {
+      repository() {
         this.refresh();
       }
     },

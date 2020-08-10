@@ -21,6 +21,9 @@ export function getFormatDate(date) {
  * @returns {string} 格式化文件大小
  */
 export function getFormatSize(size, fractionDigits = 2) {
+  if (size === 0){
+    return "0";
+  }
   if (null == size || size === '') {
     return "-";
   }
