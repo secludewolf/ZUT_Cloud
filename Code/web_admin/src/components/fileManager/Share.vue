@@ -62,8 +62,8 @@
           <!--          <a :disabled="editingKey !== ''" @click="() => edit(record.key)">编辑</a>-->
           <a-popconfirm
             title="确定要禁用此分享吗?"
-            @confirm="() => onDelete(record.key)">
-            <a href="javascript:">禁用</a>
+            @confirm="() => onDelete(record.id)">
+            <a-button :disabled="record.status !== 1" href="javascript:">禁用</a-button>
           </a-popconfirm>
         </div>
         <!--                <span v-if="record.editable">-->
@@ -177,12 +177,18 @@
           this.data = newData;
         }
       },
-      onDelete(key) {
-        const data = key;
-        const handler = (data) => {
-          const temp = [...this.data];
-          this.data = temp.filter(item => item.key !== key);
-          message("删除成功")
+      onDelete(id) {
+        const data = id;
+        const handler = () => {
+          // const temp = [...this.data];
+          // this.data = temp.filter(item => item.id !== id);
+          for (let i = 0; i < this.data.length; i++) {
+            if (this.data[i].id === id) {
+              this.data[i].status = -1;
+              break;
+            }
+          }
+          message("禁用成功")
         };
         const catcher = (code, content) => {
           message(content, "warning");

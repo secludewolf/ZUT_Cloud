@@ -15,7 +15,7 @@ public class RestoreFile {
 	@NotBlank(message = "仓库ID不能为空")
 	private String repositoryId;
 	@NotNull(message = "文件类型不能为空")
-	private boolean isFile;
+	private Boolean isFile;
 	@NotBlank(message = "回收ID不能为空")
 	private String recycleId;
 }

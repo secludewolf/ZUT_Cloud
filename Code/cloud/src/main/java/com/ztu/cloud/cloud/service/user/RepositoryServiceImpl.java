@@ -513,18 +513,23 @@ public class RepositoryServiceImpl implements RepositoryService {
         if (result != null) {
             return result;
         }
+        System.out.println(1);
         Folder parent = RepositoryUtil.getFolder(repository, parameter.getPath());
         if (parent == null) {
-            return ResultConstant.FOLDER_EXISTED;
+            return ResultConstant.FOLDER_NOT_EXISTED;
         }
-        if (parameter.isFile()) {
+        System.out.println(2);
+        if (parameter.getIsFile()) {
+            System.out.println(3);
             if (parent.getFiles() == null) {
                 return ResultConstant.FILE_NOT_EXISTED;
             }
+            System.out.println(4);
             File file = parent.getFiles().get(parameter.getName());
             if (file == null) {
                 return ResultConstant.TARGET_NOT_EXISTED;
             }
+            System.out.println(5);
             String uuid = CommonUtil.getUuid();
             repository.getRecycleBin().getFiles().put(uuid, file);
             parent.getFiles().remove(file.getName());
@@ -540,6 +545,7 @@ public class RepositoryServiceImpl implements RepositoryService {
             repository.getRecycleBin().getFolders().put(uuid, folder);
             parent.getFolders().remove(folder.getName());
         }
+        System.out.println(10);
         this.userRepositoryDao.updateFolderById(repository.getId(), repository.getFolder());
         this.userRepositoryDao.updateRecycleBinById(repository.getId(), repository.getRecycleBin());
         return ResultUtil.createResult("删除成功", new RepositoryInfo(repository));
@@ -562,7 +568,7 @@ public class RepositoryServiceImpl implements RepositoryService {
         if (result != null) {
             return result;
         }
-        if (parameter.isFile()) {
+        if (parameter.getIsFile()) {
             if (repository.getRecycleBin().getFiles() == null) {
                 return ResultConstant.TARGET_NOT_EXISTED;
             }
@@ -619,7 +625,7 @@ public class RepositoryServiceImpl implements RepositoryService {
         if (result != null) {
             return result;
         }
-        if (parameter.isFile()) {
+        if (parameter.getIsFile()) {
             if (repository.getRecycleBin().getFiles() == null) {
                 return ResultConstant.TARGET_NOT_EXISTED;
             }

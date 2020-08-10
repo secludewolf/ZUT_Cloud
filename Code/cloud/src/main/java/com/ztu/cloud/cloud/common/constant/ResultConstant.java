@@ -39,6 +39,7 @@ public class ResultConstant {
 	public final static ResultResponseEntity FILE_DAMAGE = ResultUtil.createResult(-23, "文件损坏");
 	public final static ResultResponseEntity SHARE_INVALID = ResultUtil.createResult(-24, "分享失效");
 	public final static ResultResponseEntity FOLDER_DEPTH_TOO_BIG = ResultUtil.createResult(-25, "文件深度过大");
+	public final static ResultResponseEntity FILE_INVALID = ResultUtil.createResult(-26, "文件状态异常");
 	/* 用户操作类返回体 */
 	/* 仓库操作类返回体 */
 	/* 分享操作类返回体 */

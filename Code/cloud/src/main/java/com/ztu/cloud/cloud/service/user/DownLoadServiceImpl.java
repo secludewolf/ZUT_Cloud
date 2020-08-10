@@ -1,5 +1,10 @@
 package com.ztu.cloud.cloud.service.user;
 
+import java.io.InputStream;
+import java.util.UUID;
+
+import org.springframework.stereotype.Component;
+
 import com.ztu.cloud.cloud.common.bean.mongodb.ShareRepository;
 import com.ztu.cloud.cloud.common.bean.mysql.File;
 import com.ztu.cloud.cloud.common.bean.mysql.Share;
@@ -18,10 +23,6 @@ import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.util.ResultUtil;
 import com.ztu.cloud.cloud.util.StoreUtil;
 import com.ztu.cloud.cloud.util.TokenUtil;
-import org.springframework.stereotype.Component;
-
-import java.io.InputStream;
-import java.util.UUID;
 
 /**
  * @author Jager
@@ -84,6 +85,13 @@ public class DownLoadServiceImpl implements DownloadService {
                 return ResultConstant.FILE_NOT_EXISTED;
             }
             if (userFile.getUserId() == id) {
+                File file = this.fileDao.getFileById(userFile.getFileId());
+                if (file == null) {
+                    return ResultConstant.FILE_NOT_EXISTED;
+                }
+                if (file.getStatus() != 1) {
+                    return ResultConstant.FILE_INVALID;
+                }
                 Download download = new Download();
                 String uuid = getUUID();
                 download.setId(uuid);
@@ -119,6 +127,13 @@ public class DownLoadServiceImpl implements DownloadService {
                 return ResultConstant.FILE_NOT_EXISTED;
             }
             if (userFile.getUserId() == id) {
+                File file = this.fileDao.getFileById(userFile.getFileId());
+                if (file == null) {
+                    return ResultConstant.FILE_NOT_EXISTED;
+                }
+                if (file.getStatus() != 1) {
+                    return ResultConstant.FILE_INVALID;
+                }
                 Download download = new Download();
                 String uuid = getUUID();
                 download.setId(uuid);

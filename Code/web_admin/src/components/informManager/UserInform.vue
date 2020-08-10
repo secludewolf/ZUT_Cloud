@@ -111,6 +111,7 @@
           for (let i = 0; i < this.data.length; i++) {
             if (this.data[i].id === id) {
               this.data[i].status = -1;
+              break;
             }
           }
         };

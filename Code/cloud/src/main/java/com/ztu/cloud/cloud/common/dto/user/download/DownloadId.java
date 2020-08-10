@@ -1,11 +1,10 @@
 package com.ztu.cloud.cloud.common.dto.user.download;
 
+import com.ztu.cloud.cloud.common.bean.mongodb.inside.Folder;
+import lombok.Data;
+
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-
-import com.ztu.cloud.cloud.common.bean.mongodb.inside.Folder;
-
-import lombok.Data;
 
 /**
  * @author Jager
@@ -14,9 +13,7 @@ import lombok.Data;
  **/
 @Data
 public class DownloadId {
-    @NotBlank(message = "仓库ID不能为空")
     private String repositoryId;
-    @NotBlank(message = "分享ID不能为空")
     private String shareId;
     @NotNull(message = "用户文件关系ID不能为空")
     private Long userFileId;
