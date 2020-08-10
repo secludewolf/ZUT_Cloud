@@ -29,8 +29,12 @@ export function request(url, data, method, handler, catcher) {
     } else {
       //判断是否是Token错误
       if (code === 0) {
-        for (let index in data.errors) {
-          message.warn(data.errors[index]);
+        if (data.errors != null) {
+          for (let index in data.errors) {
+            message.warn(data.errors[index]);
+          }
+        } else {
+          message.warn(content);
         }
       } else if (code === -2) {
         localStorage.setItem("token", "");
@@ -42,7 +46,6 @@ export function request(url, data, method, handler, catcher) {
     }
   }).catch(error => {
     message.warn("网络异常!");
-    console.log(error);
     if (url === "/login/token") {
       localStorage.setItem("token", "");
       self.location.href = "/login";

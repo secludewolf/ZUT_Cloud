@@ -970,9 +970,9 @@
           password: null,
           folder: null,//暂不支持多文件下载
         };
-        if (this.isRepository) {
+        if (!this.isShare) {
           data.repositoryId = this.$store.getters.getRepositoryId
-        } else if (this.isShare) {
+        } else {
           data.shareId = this.$route.query.id;
           data.password = this.password;
         }
