@@ -12,17 +12,16 @@ import java.util.List;
  **/
 @Data
 public class UserList {
-	List<User> userList;
-	long userCount;
+    List<User> userList;
+    long userCount;
 
-	public UserList() {
-	}
+    public UserList() {}
 
-	public UserList(long userCount, List<com.ztu.cloud.cloud.common.bean.mysql.User> userList) {
-		this.userCount = userCount;
-		this.userList = new LinkedList<User>();
-		for (com.ztu.cloud.cloud.common.bean.mysql.User user : userList) {
-			this.userList.add(new User(user));
-		}
-	}
+    public UserList(long userCount, List<com.ztu.cloud.cloud.common.bean.mysql.User> userList, List<Long> useSizeList) {
+        this.userCount = userCount;
+        this.userList = new LinkedList<User>();
+        for (int i = 0; i < userCount; i++) {
+            this.userList.add(new User(userList.get(i), useSizeList.get(i)));
+        }
+    }
 }

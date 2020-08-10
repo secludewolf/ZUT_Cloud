@@ -1,9 +1,5 @@
 package com.ztu.cloud.cloud.service.admin;
 
-import java.util.List;
-
-import org.springframework.stereotype.Component;
-
 import com.ztu.cloud.cloud.common.bean.mongodb.UserRepository;
 import com.ztu.cloud.cloud.common.bean.mysql.Admin;
 import com.ztu.cloud.cloud.common.bean.mysql.User;
@@ -20,6 +16,10 @@ import com.ztu.cloud.cloud.common.vo.admin.*;
 import com.ztu.cloud.cloud.util.EmailUtil;
 import com.ztu.cloud.cloud.util.ResultUtil;
 import com.ztu.cloud.cloud.util.TokenUtil;
+import org.springframework.stereotype.Component;
+
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * @author Jager
@@ -441,7 +441,15 @@ public class AdminServiceImpl implements AdminService {
         }
         // TODO 获取仓库大小
         List<User> userList = this.userDao.getUser((pageNumber - 1) * 20, pageNumber * 20);
-        return ResultUtil.createResult("", new UserList(this.userDao.getUserCount(), userList));
+        List<Long> repoSizeList = new LinkedList<>();
+        for (User user : userList) {
+            Long repoSize = this.userRepositoryDao.getRepoSizeById(user.getRepoId());
+            if (repoSize == null) {
+                repoSize = 0L;
+            }
+            repoSizeList.add(repoSize);
+        }
+        return ResultUtil.createResult("", new UserList(this.userDao.getUserCount(), userList, repoSizeList));
     }
 
     /**

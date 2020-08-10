@@ -20,6 +20,7 @@ public class User {
 	private int level;
 	private long createTime;
 	private long changeTime;
+	private long repoSize;
 
 	public User() {
 	}
@@ -36,5 +37,20 @@ public class User {
 		this.level = user.getLevel();
 		this.createTime = user.getCreateTime();
 		this.changeTime = user.getChangeTime();
+	}
+
+	public User(com.ztu.cloud.cloud.common.bean.mysql.User user,long repoSize) {
+		this.id = user.getId();
+		this.repoId = user.getRepoId();
+		this.account = user.getAccount();
+		this.email = user.getEmail();
+		this.phone = user.getPhone();
+		this.name = user.getName();
+		this.password = user.getPassword();
+		this.status = user.getStatus();
+		this.level = user.getLevel();
+		this.createTime = user.getCreateTime();
+		this.changeTime = user.getChangeTime();
+		this.repoSize = repoSize;
 	}
 }
