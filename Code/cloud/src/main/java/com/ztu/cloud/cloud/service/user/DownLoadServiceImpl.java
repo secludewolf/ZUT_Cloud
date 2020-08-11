@@ -1,10 +1,5 @@
 package com.ztu.cloud.cloud.service.user;
 
-import java.io.InputStream;
-import java.util.UUID;
-
-import org.springframework.stereotype.Component;
-
 import com.ztu.cloud.cloud.common.bean.mongodb.ShareRepository;
 import com.ztu.cloud.cloud.common.bean.mysql.File;
 import com.ztu.cloud.cloud.common.bean.mysql.Share;
@@ -23,6 +18,10 @@ import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.util.ResultUtil;
 import com.ztu.cloud.cloud.util.StoreUtil;
 import com.ztu.cloud.cloud.util.TokenUtil;
+import org.springframework.stereotype.Component;
+
+import java.io.InputStream;
+import java.util.UUID;
 
 /**
  * @author Jager
@@ -115,7 +114,7 @@ public class DownLoadServiceImpl implements DownloadService {
             if (share.getValidTime() < System.currentTimeMillis()) {
                 this.shareDao.updateShareStatus(share.getId(), -1);
             }
-            ShareRepository shareRepository = this.shareRepositoryDao.getById(parameter.getShareId());
+            ShareRepository shareRepository = this.shareRepositoryDao.getByShareId(parameter.getShareId());
             if (shareRepository == null) {
                 return ResultConstant.FILE_NOT_EXISTED;
             }

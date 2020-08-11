@@ -27,6 +27,7 @@ public class ControllerExceptionHandler {
 
     @ExceptionHandler(value = {BindException.class, ValidationException.class, MethodArgumentNotValidException.class})
     public ResultResponseEntity requestParameterException(Exception e) {
+        e.printStackTrace();
         List<String> errors = new LinkedList<>();
         /// BindException
         if (e instanceof BindException) {
@@ -60,7 +61,7 @@ public class ControllerExceptionHandler {
             errors.add("处理参数时异常");
         }
         for (String error : errors) {
-            if ("Token异常".equals(error)) {
+            if (error.toLowerCase().contains("token")) {
                 return ResultConstant.TOKEN_INVALID;
             }
         }

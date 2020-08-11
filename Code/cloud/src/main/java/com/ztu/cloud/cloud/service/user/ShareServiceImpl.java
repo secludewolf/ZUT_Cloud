@@ -236,6 +236,7 @@ public class ShareServiceImpl implements ShareService {
             return ResultConstant.REPOSITORY_FULL;
         }
         folder.getFolders().put(source.getName(), source);
+        this.userRepositoryDao.updateUseSizeById(userRepository.getId(), userRepository.getUseSize() + size);
         this.userRepositoryDao.updateFolderById(userRepository.getId(), userRepository.getFolder());
         if (shareRepository.getSaveUserIdList() == null) {
             shareRepository.setSaveUserIdList(new HashMap<>(1));
