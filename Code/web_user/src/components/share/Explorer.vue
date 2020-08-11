@@ -60,19 +60,6 @@
     created() {
       //模拟加载数据
       this.loadData();
-      // if (this.$route.query["id"] == null) {
-      //   this.resultTitle = "分享不存在";
-      //   this.resultVisible = true;
-      // } else if (this.$route.query["id"] === "1") {
-      //   this.resultTitle = "分享已删除";
-      //   this.resultVisible = true;
-      // } else if (this.$route.query["id"] === "2") {
-      //   this.resultTitle = "分享已禁用";
-      //   this.resultVisible = true;
-      // } else {
-      //   this.resultVisible = false;
-      //   this.passwordVisible = true;
-      // }
     },
     mounted() {
     },

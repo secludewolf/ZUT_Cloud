@@ -81,6 +81,9 @@ export default new Vuex.Store({
     },
     getRepositoryUseSize(state) {
       return state.repository.useSize;
+    },
+    getRoot(state) {
+      return state.repository.folder;
     }
   },
 })

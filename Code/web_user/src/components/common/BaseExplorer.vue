@@ -18,7 +18,7 @@
                  okText="确认"
                  cancelText="取消"
                  :confirm-loading="createFolderLoading"
-                 @cancel="()=>{this.createFolderVisible = false;this.createFolderName = '';}"
+                 @cancel="()=>{this.createFolderVisible = false;this.createFolderName = '';this.createFolderLoading=false}"
                  @ok="createFolder">
           <a-form :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
             <a-form-item label="文件夹名称">
@@ -159,18 +159,16 @@
                       slot-scope="text, record">{{ getTypeName(record.depth == null ? record.type : 'folder') }}</span>
                 <span slot="changeTime" slot-scope="text">{{ getFormatDate(text) }}</span>
                 <span slot="action" slot-scope="text, record, index">
-                <a @click="download(index)">
-                  <a-icon type="download" style="padding-right:5px;"/>下载
-                </a>
-                <a-divider type="vertical"/>
-                <a @click="restore(index)"
-                   v-if="isRecycleBin">
+                <span>
+                  <a v-if="!isRecycleBin" @click="download(index)">
+                  <a-icon type="download" style="padding-right:5px;"/>下载</a>
+                </span>
+                <a v-if="isRecycleBin" @click="restore(index)">
                   <a-icon type="rest" style="padding-right:5px;"/>恢复
                 </a>
-                <a-divider type="vertical" v-if="isRecycleBin"/>
-                <a @click="delete_(index)">
-                  <a-icon type="delete" style="padding-right:5px;"/>删除
-                </a>
+                <a v-if="!isShare" @click="delete_(index)">
+                  <a-divider type="vertical"/>
+                  <a-icon type="delete" style="padding-right:5px;"/>删除</a>
               </span>
               </a-table>
             </a-layout-content>
@@ -229,7 +227,7 @@
                  okText="确认"
                  cancelText="取消"
                  :confirm-loading="renameLoading"
-                 @cancel="()=>{this.renameVisible = false;this.renameName = '';}"
+                 @cancel="()=>{this.renameVisible = false;this.renameName = '';this.renameLoading=false}"
                  @ok="rename">
           <a-form :label-col="{ span: 3 }" :wrapper-col="{ span: 21 }">
             <a-form-item label="新名称">
@@ -243,7 +241,7 @@
                  cancelText="取消"
                  :maskClosable="false"
                  :confirm-loading="shareLoading"
-                 @cancel="()=>{this.shareVisible = false;this.shareName = '';this.sharePassword = '';this.shareTime = null;}"
+                 @cancel="()=>{this.shareVisible = false;this.shareName = '';this.sharePassword = '';this.shareTime = null;this.shareLoading = false}"
                  @ok="share">
           <a-form :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
             <a-form-item label="分享名称">
@@ -327,6 +325,7 @@
   import {createShare, saveShare} from "../../api/share";
   import {uploadBigFile, uploadSmallFile} from "../../api/upload";
   import {getDownloadId} from "../../api/download";
+  import merge from "webpack-merge";
 
   const columns = [
     {
@@ -463,8 +462,12 @@
     watch: {
       //触发排序操作排序
       repository() {
-        this.path = ["全部文件"]
         this.sortFile();
+        if (this.isRepository && this.$route.query.path != null) {
+          let path = this.$route.query.path.split("/");
+          this.updatePath(path);
+          this.selectParent(path.length - 1)
+        }
       },
       isRepository() {
         this.sorted = false;
@@ -474,12 +477,17 @@
       },
       isSearch(newValue) {
         this.sorted = false;
+        console.log(1, newValue);
         if (newValue) {
-          this.path = ["全部文件"];
+          console.log(2);
+          this.updatePath(["全部文件"]);
         }
       },
-      isRecycleBin() {
+      isRecycleBin(newValue) {
         this.sorted = false;
+        if (newValue) {
+          this.updatePath(["全部文件"]);
+        }
       },
       files() {
         if (!this.sorted) {
@@ -490,6 +498,9 @@
         if (!this.sorted) {
           this.sortFile();
         }
+      },
+      path(newValue) {
+
       },
     },
     methods: {
@@ -528,7 +539,7 @@
         }
         this.sorted = false;
         this.$emit("changeIsSearch", true);
-        this.path = ["全部文件"];
+        this.updatePath(["全部文件"]);
         let allFiles = {};
         let allFolders = {};
         getAllFile(this.root, allFiles);
@@ -566,6 +577,15 @@
           },
         }
       },
+      updatePath(newPath) {
+        let path = "";
+        for (let i = 0; i < newPath.length; i++) {
+          path = path + newPath[i] + "/";
+        }
+        path = path.substring(0, path.length - 1);
+        this.$router.push({query: merge(this.$route.query, {'path': path})})
+        this.path = newPath;
+      },
       openFile(type, name) {
         if (type === "folder") {
           if (!this.isRepository && !this.isShare) {
@@ -576,6 +596,7 @@
           this.$emit("changeFiles", this.folders[name].files == null ? {} : this.folders[name].files);
           this.$emit("changeFolders", this.folders[name].folders == null ? {} : this.folders[name].folders);
           this.path.push(name);
+          this.updatePath(this.path);
         } else {
           this.$message.warn("暂不支持文件预览!");
         }
@@ -591,17 +612,24 @@
           this.$emit("changeFolders", this.root.folders);
           return;
         }
-        let folders = this.root.folders;
-        let files = this.root.files;
+        let folders = this.$store.getters.getRoot.folders;
+        let files = this.$store.getters.getRoot.files;
         let path = ["全部文件"];
         for (let i = 1; i <= index; i++) {
+          if (folders[this.path[i]] == null) {
+            this.$emit("changeIsRepository", true);
+            this.$emit("changeFiles", this.root.files);
+            this.$emit("changeFolders", this.root.folders);
+            this.updatePath(["全部文件"]);
+            return;
+          }
           files = folders[this.path[i]].files;
           folders = folders[this.path[i]].folders;
           path.push(this.path[i]);
         }
         this.$emit("changeFiles", files == null ? {} : files);
         this.$emit("changeFolders", folders == null ? {} : folders);
-        this.path = path;
+        this.updatePath(path);
       },
       changeSort() {
         if (this.sort === "sort-ascending") {
@@ -1047,7 +1075,7 @@
         this.saveShareLoading = true;
         const repository = this.repository;
         const root = repository.folder;
-        this.createTreeData(null, root);
+        this.createTreeData(null, this.$store.getters.getRoot);
         this.saveShareLoading = false;
         this.saveShareVisible = true;
       },

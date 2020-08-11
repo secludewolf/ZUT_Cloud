@@ -1,6 +1,7 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+import VueRouter from 'vue-router'
 import store from './store/'
 import Antd from 'ant-design-vue'
 import 'ant-design-vue/dist/antd.css'
@@ -15,6 +16,11 @@ router.beforeEach((to, from, next) => {
   next()
 })
 
+const originalPush = VueRouter.prototype.push
+VueRouter.prototype.push = function push(location) {
+  return originalPush.call(this, location).catch(err => err)
+}
+
 //Mock测试
 // import "./mock/mock";
 
@@ -27,4 +33,3 @@ new Vue({
   components: {App},
   template: '<App/>'
 })
-

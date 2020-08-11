@@ -3,6 +3,7 @@
     <a-table :columns="columns"
              :data-source="data"
              :pagination="false"
+             :loading="loading"
              :rowKey="record => record.id"
     >
       <router-link :to="'/share?id=' + record.id" target="_blank" slot="name" slot-scope="text,record">
@@ -83,6 +84,7 @@
     data() {
       return {
         columns: columns,
+        loading: true,
         data: [],
       }
     },
@@ -94,9 +96,11 @@
         const parent = this;
         const handler = function (data) {
           parent.data = data.shareList;
+          parent.loading = false;
         };
         const catcher = function (code, content) {
           parent.$message.warn(content);
+          parent.loading = false;
         };
         getShareList(handler, catcher);
       },

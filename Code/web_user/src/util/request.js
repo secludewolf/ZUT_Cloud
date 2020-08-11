@@ -28,27 +28,35 @@ export function request(url, data, method, handler, catcher) {
       handler(data);
     } else {
       //判断是否是Token错误
-      if (code === 0) {
-        if (data.errors != null) {
-          for (let index in data.errors) {
-            message.warn(data.errors[index]);
-          }
-        } else {
-          message.warn(content);
-        }
-      } else if (code === -2) {
+      if (code === -2) {
         localStorage.setItem("token", "");
         self.location.href = "/login";
         message.warn("状态异常!");
       } else {
+        if (code === 0) {
+          if (data.errors != null) {
+            for (let index in data.errors) {
+              message.warn(data.errors[index]);
+            }
+          } else {
+            message.warn(content);
+          }
+        }
         catcher(code, content);
       }
     }
   }).catch(error => {
-    message.warn("网络异常!");
+    const code = error.response.data.code;
+    const content = error.response.data.message;
     if (url === "/login/token") {
       localStorage.setItem("token", "");
       self.location.href = "/login";
+    }
+    console.log(content);
+    if (content != null) {
+      message.warn(content);
+    } else {
+      message.warn("未知错误");
     }
   })
 }

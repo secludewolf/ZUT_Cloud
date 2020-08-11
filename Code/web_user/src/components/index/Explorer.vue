@@ -90,6 +90,7 @@
   import {getAllFile, getFormatSize} from "../../util/Utils";
   import {FileType} from "../../util/Const";
   import {mapState} from 'vuex';
+  import merge from "webpack-merge";
 
   export default {
     name: "Explorer",
@@ -97,6 +98,11 @@
     },
     mounted() {
       this.refreshRepository();
+      if (this.$route.query.menu == null) {
+        this.$router.push({query: merge(this.$route.query, {'menu': 'all'})})
+      } else {
+        this.handleClick({key: this.$route.query.menu});
+      }
     },
     components: {
       BaseExplorer
@@ -131,6 +137,7 @@
     watch: {
       repository() {
         this.refreshRepository();
+        this.handleClick({key: this.$route.query.menu});
       }
     },
     methods: {
@@ -158,6 +165,7 @@
       changeRepository(repository) {
         this.$store.commit("updateRepository", repository);
         this.key = ["all"];
+        this.$router.push({query: merge(this.$route.query, {'menu': 'all'})})
         this.isRepository = true;
         this.isSearch = false;
         this.isRecycleBin = false;
@@ -171,27 +179,37 @@
       handleClick(e) {
         let types;
         if (e.key === "all") {
+          if (this.key[0] === "all") {
+            return;
+          }
           this.changeIsRepository(true);
           this.files = this.repository.folder.files === null ? {} : this.repository.folder.files;
           this.folders = this.repository.folder.folders === null ? {} : this.repository.folder.folders;
+          this.$router.push({query: merge(this.$route.query, {'menu': 'all'})})
           return;
         } else if (e.key === "document") {
           //TODO 搜说结果之间切换没有办法初始化排序
+          this.$router.push({query: merge(this.$route.query, {'menu': 'document'})})
           this.changeIsSearch(true);
           types = FileType.document;
         } else if (e.key === "photo") {
+          this.$router.push({query: merge(this.$route.query, {'menu': 'photo'})})
           this.changeIsSearch(true);
           types = FileType.photo;
         } else if (e.key === "video") {
+          this.$router.push({query: merge(this.$route.query, {'menu': 'video'})})
           this.changeIsSearch(true);
           types = FileType.video;
         } else if (e.key === "bt") {
+          this.$router.push({query: merge(this.$route.query, {'menu': 'bt'})})
           this.changeIsSearch(true);
           types = FileType.torrent;
         } else if (e.key === "audio") {
+          this.$router.push({query: merge(this.$route.query, {'menu': 'audio'})})
           this.changeIsSearch(true);
           types = FileType.audio;
         } else if (e.key === "recycleBin") {
+          this.$router.push({query: merge(this.$route.query, {'menu': 'recycleBin'})})
           this.changeIsRecycleBin(true);
           this.files = this.repository.recycleBin.files === null ? {} : this.repository.recycleBin.files;
           this.folders = this.repository.recycleBin.folders === null ? {} : this.repository.recycleBin.folders;
@@ -199,6 +217,12 @@
           return;
         } else if (e.key === "upload") {
           this.visible = true;
+          return;
+        } else {
+          this.$router.push({query: merge(this.$route.query, {'menu': 'all'})})
+          this.changeIsRepository(true);
+          this.files = this.repository.folder.files === null ? {} : this.repository.folder.files;
+          this.folders = this.repository.folder.folders === null ? {} : this.repository.folder.folders;
           return;
         }
         this.key = [e.key];
