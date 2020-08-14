@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -86,7 +85,7 @@ public class AdminController {
 	@GetMapping("/info/{adminId}")
 	public ResultResponseEntity getAdminInfo(
 			@RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
-			@PathVariable("adminId") @NotBlank(message = "管理员ID不能为空") int adminId) {
+			@PathVariable("adminId") Integer adminId) {
 		return this.adminService.getAdminInfo(token, adminId);
 	}
 
