@@ -7,8 +7,8 @@ import com.ztu.cloud.cloud.util.TokenUtil;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
 
 /**
  * @author Jager
@@ -27,17 +27,20 @@ public class ShareAdminController {
     /**
      * 获取分享列表
      *
-     * @param token
-     *            管理员Token
-     * @param pageNumber
-     *            页数
+     * @param pageNumber 页数
+     * @param pageSize   分页大小
+     * @param sortKey    排序主键
+     * @param sortType   排序类型
      * @return 分享列表
      */
     @GetMapping("/admin/share/list/{pageNumber}")
     public ResultResponseEntity getShareList(
         @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
-        @PathVariable @NotNull(message = "分页数不能为空") Integer pageNumber) {
-        return this.shareService.getShareList(token, pageNumber);
+        @PathVariable @Min(1) Integer pageNumber,
+        @RequestParam(name = "pageSize", defaultValue = "20", required = false) @Min(1) Integer pageSize,
+        @RequestParam(name = "sortKey", defaultValue = "id", required = false) String sortKey,
+        @RequestParam(value = "sortType", defaultValue = "asc", required = false) String sortType) {
+        return this.shareService.getShareList(token, pageNumber, pageSize, sortKey, sortType);
     }
 
     /**

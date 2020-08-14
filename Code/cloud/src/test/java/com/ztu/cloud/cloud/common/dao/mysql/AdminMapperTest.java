@@ -48,10 +48,10 @@ class AdminMapperTest {
 
 	@Test
 	public void getAdmin() {
-		this.adminMapper.insertAdmin(new Admin("test4", "test1", "test1", "test1", "test1", 1, 1, System.currentTimeMillis(), System.currentTimeMillis()));
-		Admin admin = this.adminMapper.getAdminByAccount("test4");
-		System.out.println(this.adminMapper.getAdmin(0, 2));
-		this.adminMapper.deleteAdminById(admin.getId());
+		// this.adminMapper.insertAdmin(new Admin("test4", "test1", "test1", "test1", "test1", 1, 1, System.currentTimeMillis(), System.currentTimeMillis()));
+		// Admin admin = this.adminMapper.getAdminByAccount("test4");
+		// System.out.println(this.adminMapper.getAdmin(0, 2));
+		// this.adminMapper.deleteAdminById(admin.getId());
 	}
 
 	@Test

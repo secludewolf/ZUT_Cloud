@@ -9,47 +9,42 @@ import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
  * @date 2020/06/28-08:44
  **/
 public interface FileService {
-    /**
-     * 下载文件
-     *
-     * @param token
-     *            管理员Token
-     * @param fileId
-     *            文件id
-     * @return 文件数据
-     */
-    Download download(String token, String fileId);
+	/**
+	 * 下载文件
+	 *
+	 * @param token  管理员Token
+	 * @param fileId 文件id
+	 * @return 文件数据
+	 */
+	Download download(String token, String fileId);
 
-    /**
-     * 获取文件列表
-     *
-     * @param token
-     *            管理员Token
-     * @param pageNumber
-     *            第几页
-     * @return 文件列表
-     */
-    ResultResponseEntity getFileList(String token, int pageNumber);
+	/**
+	 * 获取文件列表
+	 *
+	 * @param token      管理员Token
+	 * @param pageNumber 页数
+	 * @param pageSize   分页大小
+	 * @param sortKey    排序主键
+	 * @param sortType   排序类型
+	 * @return 文件列表
+	 */
+	ResultResponseEntity getFileList(String token, Integer pageNumber, Integer pageSize, String sortKey, String sortType);
 
-    /**
-     * 获取文件信息
-     *
-     * @param token
-     *            管理员Token
-     * @param fileId
-     *            文件ID
-     * @return 文件信息
-     */
-    ResultResponseEntity getFileInfo(String token, String fileId);
+	/**
+	 * 获取文件信息
+	 *
+	 * @param token  管理员Token
+	 * @param fileId 文件ID
+	 * @return 文件信息
+	 */
+	ResultResponseEntity getFileInfo(String token, String fileId);
 
-    /**
-     * 删除文件
-     *
-     * @param token
-     *            管理员Token
-     * @param fileId
-     *            文件ID
-     * @return 是否成功
-     */
-    ResultResponseEntity deleteFile(String token, String fileId);
+	/**
+	 * 删除文件
+	 *
+	 * @param token  管理员Token
+	 * @param fileId 文件ID
+	 * @return 是否成功
+	 */
+	ResultResponseEntity deleteFile(String token, String fileId);
 }

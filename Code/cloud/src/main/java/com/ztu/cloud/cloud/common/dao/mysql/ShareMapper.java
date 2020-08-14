@@ -34,11 +34,9 @@ public interface ShareMapper {
 	/**
 	 * 获取分享列表
 	 *
-	 * @param start 开始
-	 * @param end   结束
 	 * @return 分享列表
 	 */
-	List<Share> getShare(int start, int end);
+	List<Share> getShares();
 
 	/**
 	 * 获取分享数量

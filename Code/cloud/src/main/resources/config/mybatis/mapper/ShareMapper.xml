@@ -15,10 +15,9 @@
         select * from share where userId=#{userId}
     </select>
     <!--    根据分页文件列表-->
-    <select id="getShare"
-            parameterType="int"
+    <select id="getShares"
             resultType="com.ztu.cloud.cloud.common.bean.mysql.Share">
-        select * from share limit #{start},#{end}
+        select * from share
     </select>
     <!--    获取分享数量-->
     <select id="getShareCount"

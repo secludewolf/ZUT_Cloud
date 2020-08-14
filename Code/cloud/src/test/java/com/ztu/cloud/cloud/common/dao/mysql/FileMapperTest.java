@@ -40,10 +40,10 @@ class FileMapperTest {
 
 	@Test
 	public void getFile() {
-		File file = new File("test3", "test1", "test1", 1, 1, "test1", 1, System.currentTimeMillis(), System.currentTimeMillis());
-		this.fileMapper.insertFile(file);
-		System.out.println(this.fileMapper.getFile(0, 2));
-		this.fileMapper.deleteFileById(file.getId());
+		// File file = new File("test3", "test1", "test1", 1, 1, "test1", 1, System.currentTimeMillis(), System.currentTimeMillis());
+		// this.fileMapper.insertFile(file);
+		// System.out.println(this.fileMapper.getFile(0, 2));
+		// this.fileMapper.deleteFileById(file.getId());
 	}
 
 	@Test

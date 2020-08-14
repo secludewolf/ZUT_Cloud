@@ -1,11 +1,15 @@
 <template>
-  <a-table :columns="columns" :data-source="data"
+  <a-table :columns="columns"
+           :rowKey="record => record.id"
+           :data-source="data"
            :loading="loading"
            :pagination="pagination"
            @change="handleTableChange">
     <div slot="expandedRowRender" slot-scope="record" style="margin: 0">
       <p>{{ record.content }}</p>
     </div>
+    <p slot="createTime" slot-scope="text,record,index">{{getFormatDate(text)}}</p>
+    <p slot="validTime" slot-scope="text,record,index">{{getFormatDate(text)}}</p>
     <div slot="action" slot-scope="text,record,index">
       <a-button :disabled="record.status === -1" @click="deleteInform(record.id)">禁用</a-button>
     </div>
@@ -20,37 +24,37 @@
     {
       title: '标题',
       dataIndex: 'header',
-      key: 'header',
+      sorter: true,
     },
     {
       title: '创建时间',
       dataIndex: 'createTime',
-      key: 'createTime',
+      sorter: true,
+      scopedSlots: {customRender: 'createTime'},
       align: "center",
     },
     {
       title: '有效时间',
       dataIndex: 'validTime',
-      key: 'validTime',
+      sorter: true,
+      scopedSlots: {customRender: 'validTime'},
       align: "center",
     },
     {
       title: '状态',
       dataIndex: 'status',
-      key: 'status',
+      sorter: true,
       align: "center",
-
     },
     {
       title: '管理员ID',
       dataIndex: 'adminId',
-      key: 'adminId',
+      sorter: true,
       align: "center",
     },
     {
       title: '操作',
       dataIndex: 'action',
-      key: 'action',
       scopedSlots: {customRender: 'action'},
       align: "center",
     },
@@ -62,12 +66,20 @@
       return {
         data: [],
         columns: columns,
-        pagination: {},
+        pagination: {
+          showSizeChanger: true,
+          showQuickJumper: true,
+          showTotal: () => `共${this.pagination.total}条`,
+          total: 0,
+          current: 1,
+          pageSize: 20,
+          pageSizeOptions: ["10", "20", "30", "40", "50"],
+        },
         loading: false,
       };
     },
     mounted() {
-      this.request();
+      this.request(this.pagination);
     },
     methods: {
       handleTableChange(pagination, filters, sorter) {
@@ -76,25 +88,38 @@
         pager.current = pagination.current;
         this.pagination = pager;
         this.request({
-          results: pagination.pageSize,
-          page: pagination.current,
-          sortField: sorter.field,
-          sortOrder: sorter.order,
+          pageSize: pagination.pageSize,
+          current: pagination.current,
+          sortKey: sorter.field,
+          sortType: sorter.order,
           ...filters,
         });
-      }, request() {
+      }, request(pagination) {
         this.loading = true;
-        const data = this.pagination.current != null ? this.pagination.current : 1;
+        let data = pagination.current + "?pageSize=" + pagination.pageSize;
+        if (pagination.sortKey != null) {
+          data = data + "&sortKey=" + pagination.sortKey;
+        }
+        if (pagination.sortType != null) {
+          if (pagination.sortType === "ascend") {
+            data = data + "&sortType=asc";
+          } else {
+            data = data + "&sortType=desc";
+          }
+        }
         const handler = (data) => {
+          console.log(data);
           const pagination = {...this.pagination};
-          pagination.pageSize = 20;
-          pagination.total = data.informList.length;
-          this.data = data.informList;
+          pagination.pageSize = data.pageSize;
+          pagination.total = data.total;
+          this.data = data.result;
+          this.cacheData = data.result.map(item => ({...item}));
           this.pagination = pagination;
           this.loading = false;
         };
         const catcher = (code, content) => {
           message(content, "warning")
+          this.loading = false;
         };
         getAdminInformList(data, handler, catcher);
       },

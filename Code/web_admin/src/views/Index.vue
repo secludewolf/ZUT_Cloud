@@ -96,7 +96,6 @@
       unReadInformNumber() {
         let count = 0;
         for (let i = 0; i < this.informList.length; i++) {
-          console.log(this.informList[i].status);
           if (this.informList[i].status === 0) {
             count++;
           }
@@ -106,7 +105,6 @@
     },
     methods: {
       changeInformStatus(index) {
-        console.log(index);
         const data = this.informList[index].id + "/1";
         const handler = (data) => {
           this.informList[index].status = 1;

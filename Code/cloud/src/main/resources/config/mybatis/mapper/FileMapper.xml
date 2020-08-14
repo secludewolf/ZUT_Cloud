@@ -54,11 +54,10 @@
             resultType="com.ztu.cloud.cloud.common.bean.mysql.File">
         select * from file where ID=#{id}
     </select>
-    <!--    根据分页文件列表-->
-    <select id="getFile"
-            parameterType="int"
+    <!--    根据文件列表-->
+    <select id="getFiles"
             resultType="com.ztu.cloud.cloud.common.bean.mysql.File">
-        select * from file limit #{start},#{end}
+        select * from file
     </select>
     <!--    获取文件数量-->
     <select id="getFileCount"

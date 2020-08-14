@@ -45,6 +45,11 @@
         {{ text === 1 ? '正常' : '失效' }}
       </template>
     </div>
+    <div slot="createTime" slot-scope="text, record,col">
+      <template>
+        {{ getFormatDate(text) }}
+      </template>
+    </div>
     <div slot="validTime" slot-scope="text, record,col">
       <a-input
         v-if="record.editable"
@@ -86,12 +91,14 @@
     {
       title: '名称',
       dataIndex: 'name',
+      sorter: true,
       scopedSlots: {customRender: 'name'},
       align: "center",
     },
     {
       title: '用户ID',
       dataIndex: 'userId',
+      sorter: true,
       scopedSlots: {customRender: 'userId'},
       align: "center",
     },
@@ -104,12 +111,21 @@
     {
       title: '状态',
       dataIndex: 'status',
+      sorter: true,
       scopedSlots: {customRender: 'status'},
+      align: "center",
+    },
+    {
+      title: '创建日期',
+      dataIndex: 'createTime',
+      sorter: true,
+      scopedSlots: {customRender: 'createTime'},
       align: "center",
     },
     {
       title: '截止日期',
       dataIndex: 'validTime',
+      sorter: true,
       scopedSlots: {customRender: 'validTime'},
       align: "center",
     },
@@ -125,7 +141,7 @@
   export default {
     name: "Share",
     mounted() {
-      this.request();
+      this.request(this.pagination);
     },
     data() {
       return {
@@ -133,7 +149,15 @@
         data: [],
         cacheData: {},
         editingKey: '',
-        pagination: {},
+        pagination: {
+          showSizeChanger: true,
+          showQuickJumper: true,
+          showTotal: () => `共${this.pagination.total}条`,
+          total: 0,
+          current: 1,
+          pageSize: 20,
+          pageSizeOptions: ["10", "20", "30", "40", "50"],
+        },
         loading: false,
       };
     },
@@ -144,28 +168,39 @@
         pager.current = pagination.current;
         this.pagination = pager;
         this.request({
-          results: pagination.pageSize,
-          page: pagination.current,
-          sortField: sorter.field,
-          sortOrder: sorter.order,
+          pageSize: pagination.pageSize,
+          current: pagination.current,
+          sortKey: sorter.field,
+          sortType: sorter.order,
           ...filters,
         });
       },
-      request() {
+      request(pagination) {
         this.loading = true;
-        const data = this.pagination.current != null ? this.pagination.current : 1;
+        let data = pagination.current + "?pageSize=" + pagination.pageSize;
+        if (pagination.sortKey != null) {
+          data = data + "&sortKey=" + pagination.sortKey;
+        }
+        if (pagination.sortType != null) {
+          if (pagination.sortType === "ascend") {
+            data = data + "&sortType=asc";
+          } else {
+            data = data + "&sortType=desc";
+          }
+        }
         const handler = (data) => {
           console.log(data);
           const pagination = {...this.pagination};
-          pagination.pageSize = 20;
-          pagination.total = data.shareCount;
-          this.data = data.shareList;
-          this.cacheData = data.shareList.map(item => ({...item}));
+          pagination.pageSize = data.pageSize;
+          pagination.total = data.total;
+          this.data = data.result;
+          this.cacheData = data.result.map(item => ({...item}));
           this.pagination = pagination;
           this.loading = false;
         };
         const catcher = (code, content) => {
           message(content, "warning")
+          this.loading = false;
         };
         getShareList(data, handler, catcher);
       },

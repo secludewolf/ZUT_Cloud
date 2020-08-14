@@ -26,9 +26,14 @@ import java.util.List;
 @RestControllerAdvice
 public class ControllerExceptionHandler {
 
-	@ExceptionHandler(value = {BindException.class, ValidationException.class, MethodArgumentNotValidException.class, HttpMessageNotReadableException.class})
+	@ExceptionHandler(value = {
+			BindException.class,
+			ValidationException.class,
+			MethodArgumentNotValidException.class,
+			HttpMessageNotReadableException.class,
+			RequestParameterException.class
+	})
 	public ResultResponseEntity requestParameterException(Exception e) {
-		e.printStackTrace();
 		List<String> errors = new LinkedList<>();
 		/// BindException
 		if (e instanceof BindException) {
@@ -73,12 +78,6 @@ public class ControllerExceptionHandler {
 	public ResultResponseEntity tokenIllegal(Exception e) {
 		e.printStackTrace();
 		return ResultConstant.TOKEN_INVALID;
-	}
-
-	@ExceptionHandler(RequestParameterException.class)
-	public ResultResponseEntity missingRequestHeaderException(Exception e) {
-		e.printStackTrace();
-		return ResultConstant.REQUEST_PARAMETER_ERROR;
 	}
 
 	@ExceptionHandler(Exception.class)

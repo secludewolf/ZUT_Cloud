@@ -48,13 +48,11 @@ public interface AdminMapper {
 	Admin getAdminByPhone(String phone);
 
 	/**
-	 * 获取分页用户列表
+	 * 获取管理员列表
 	 *
-	 * @param start 开始位置
-	 * @param end   结束位置
-	 * @return 用户列表
+	 * @return 管理员列表
 	 */
-	List<Admin> getAdmin(int start, int end);
+	List<Admin> getAdmins();
 
 	/**
 	 * 获取管理员数量

@@ -49,13 +49,10 @@ public interface UserMapper {
 	User getUserByPhone(String phone);
 
 	/**
-	 * 获取分页用户列表
-	 *
-	 * @param start 开始位置
-	 * @param end   结束位置
+	 * 获取用户列表
 	 * @return 用户列表
 	 */
-	List<User> getUser(int start, int end);
+	List<User> getUsers();
 
 	/**
 	 * 获取用户数量

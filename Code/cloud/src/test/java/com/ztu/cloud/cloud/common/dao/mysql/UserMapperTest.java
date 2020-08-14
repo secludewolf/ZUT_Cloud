@@ -54,10 +54,10 @@ public class UserMapperTest {
 
 	@Test
 	public void getUser() {
-		this.userMapper.insertUser(new User("test", "test4", "test1", "test1", "test1", "test1", 1, 1, System.currentTimeMillis(), System.currentTimeMillis()));
-		User user = this.userMapper.getUserByAccount("test4");
-		System.out.println(this.userMapper.getUser(0, 2));
-		this.userMapper.deleteUserById(user.getId());
+		// this.userMapper.insertUser(new User("test", "test4", "test1", "test1", "test1", "test1", 1, 1, System.currentTimeMillis(), System.currentTimeMillis()));
+		// User user = this.userMapper.getUserByAccount("test4");
+		// System.out.println(this.userMapper.getUser(0, 2));
+		// this.userMapper.deleteUserById(user.getId());
 	}
 
 	@Test

@@ -28,9 +28,9 @@ class ShareMapperTest {
 
 	@Test
 	void getShare() {
-		this.shareMapper.insertShare(new Share("test", 1, "test", "test", null, 1, System.currentTimeMillis(), System.currentTimeMillis()));
-		System.out.println(this.shareMapper.getShare(0, 2));
-		this.shareMapper.deleteShareById("test");
+		// this.shareMapper.insertShare(new Share("test", 1, "test", "test", null, 1, System.currentTimeMillis(), System.currentTimeMillis()));
+		// System.out.println(this.shareMapper.getShare(0, 2));
+		// this.shareMapper.deleteShareById("test");
 	}
 
 	@Test

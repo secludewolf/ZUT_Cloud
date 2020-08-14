@@ -47,13 +47,11 @@ public interface FileMapper {
 	File getFileById(String id);
 
 	/**
-	 * 获取分页文件列表
+	 * 获取文件列表
 	 *
-	 * @param start 开始位置
-	 * @param end   结束位置
-	 * @return 用户列表
+	 * @return 文件列表
 	 */
-	List<File> getFile(int start, int end);
+	List<File> getFiles();
 
 	/**
 	 * 获取文件数量

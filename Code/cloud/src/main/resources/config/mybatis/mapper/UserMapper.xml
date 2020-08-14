@@ -27,12 +27,9 @@
             resultType="com.ztu.cloud.cloud.common.bean.mysql.User">
         select * from user where Phone=#{phone}
     </select>
-
-    <!--    根据分页用户列表-->
-    <select id="getUser"
-            parameterType="int"
-            resultType="com.ztu.cloud.cloud.common.bean.mysql.User">
-        select * from user limit #{start},#{end}
+    <!--    获取所有用户信息-->
+    <select id="getUsers" resultType="com.ztu.cloud.cloud.common.bean.mysql.User">
+        select * from user
     </select>
     <!--    获取用户数量-->
     <select id="getUserCount"

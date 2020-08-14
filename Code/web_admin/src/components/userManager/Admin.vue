@@ -56,31 +56,36 @@
   </a-table>
 </template>
 <script>
-  import {changeAdminInfoManage, changeUserInfoManage, deleteAdminManage, getAdminListManage} from "../../api/admin";
+  import {changeAdminInfoManage, deleteAdminManage, getAdminListManage} from "../../api/admin";
   import {message} from "../../util/message";
 
   const columns = [
     {
       title: '账号',
       dataIndex: 'account',
+      sorter: true,
+      defaultSortOrder: 'ascend',
       scopedSlots: {customRender: 'account'},
       align: "center",
     },
     {
       title: '邮箱',
       dataIndex: 'email',
+      sorter: true,
       scopedSlots: {customRender: 'email'},
       align: "center",
     },
     {
       title: '手机',
       dataIndex: 'phone',
+      sorter: true,
       scopedSlots: {customRender: 'phone'},
       align: "center",
     },
     {
       title: '昵称',
       dataIndex: 'name',
+      sorter: true,
       scopedSlots: {customRender: 'name'},
       align: "center",
     },
@@ -93,12 +98,14 @@
     {
       title: '等级',
       dataIndex: 'level',
+      sorter: true,
       scopedSlots: {customRender: 'level'},
       align: "center",
     },
     {
       title: '状态',
       dataIndex: 'status',
+      sorter: true,
       scopedSlots: {customRender: 'status'},
       align: "center",
     },
@@ -114,7 +121,7 @@
   export default {
     name: "Admin",
     mounted() {
-      this.request();
+      this.request(this.pagination);
     },
     data() {
       return {
@@ -122,39 +129,57 @@
         data: [],
         cacheData: {},
         editingKey: '',
-        pagination: {},
+        pagination: {
+          showSizeChanger: true,
+          showQuickJumper: true,
+          showTotal: () => `共${this.pagination.total}条`,
+          total: 0,
+          current: 1,
+          pageSize: 20,
+          pageSizeOptions: ["10", "20", "30", "40", "50"],
+        },
         loading: false,
       };
     },
     methods: {
       handleTableChange(pagination, filters, sorter) {
-        console.log(pagination);
         const pager = {...this.pagination};
         pager.current = pagination.current;
         this.pagination = pager;
         this.request({
-          results: pagination.pageSize,
-          page: pagination.current,
-          sortField: sorter.field,
-          sortOrder: sorter.order,
+          pageSize: pagination.pageSize,
+          current: pagination.current,
+          sortKey: sorter.field,
+          sortType: sorter.order,
           ...filters,
         });
       },
-      request() {
+      request(pagination) {
         this.loading = true;
-        const data = this.pagination.current != null ? this.pagination.current : 1;
+        let data = pagination.current + "?pageSize=" + pagination.pageSize;
+        if (pagination.sortKey != null) {
+          data = data + "&sortKey=" + pagination.sortKey;
+        }
+        if (pagination.sortType != null) {
+          if (pagination.sortType === "ascend") {
+            data = data + "&sortType=asc";
+          } else {
+            data = data + "&sortType=desc";
+          }
+        }
         const handler = (data) => {
           console.log(data);
-          this.loading = false;
           const pagination = {...this.pagination};
-          pagination.pageSize = 20;
-          pagination.total = data.adminCount;
-          this.data = data.adminList;
-          this.cacheData = data.adminList.map(item => ({...item}));
+          pagination.pageSize = data.pageSize;
+          pagination.total = data.total;
+          this.data = data.result;
+          this.cacheData = data.result.map(item => ({...item}));
           this.pagination = pagination;
+          this.loading = false;
         };
         const catcher = (code, content) => {
           message(content, "warning")
+          this.loading = false;
         };
         getAdminListManage(data, handler, catcher);
       },
@@ -170,7 +195,7 @@
         const data = {
           id: key,
         };
-        const handler = (data) => {
+        const handler = () => {
           const temp = [...this.data];
           this.data = temp.filter(item => item.key !== key);
           message("删除成功")

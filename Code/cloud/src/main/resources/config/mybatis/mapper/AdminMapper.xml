@@ -27,11 +27,10 @@
             resultType="com.ztu.cloud.cloud.common.bean.mysql.Admin">
         select * from admin where Phone=#{phone}
     </select>
-    <!--    根据分页用户列表-->
-    <select id="getAdmin"
-            parameterType="int"
+    <!--    根据管理员列表-->
+    <select id="getAdmins"
             resultType="com.ztu.cloud.cloud.common.bean.mysql.Admin">
-        select * from admin limit #{start},#{end}
+        select * from admin
     </select>
     <!--    获取管理员数量-->
     <select id="getAdminCount"
