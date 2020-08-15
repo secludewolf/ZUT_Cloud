@@ -16,10 +16,9 @@
   export default {
     name: "Index",
     created() {
-      if (this.$store.state.user.id === 0 && localStorage.getItem("token") !== "" && localStorage.getItem("token") !== null) {
+      if (this.$store.state.user.id === 0 && (localStorage.getItem("token") !== "" || localStorage.getItem("token") !== null)) {
         this.$store.dispatch("loginByToken");
       }
-      console.log(this.$route.path);
     },
     components: {
       Header,
