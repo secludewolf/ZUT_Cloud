@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ztu.cloud.chat.common.dao.mysql.UserMapper">
+    <!--    根据用户id获得用户信息-->
+    <select id="getUserById"
+            parameterType="int"
+            resultType="com.ztu.cloud.chat.common.bean.mysql.User">
+        select * from user where ID=#{id}
+    </select>
+    <!--    根据用户账号获取用户信息-->
+    <select id="getUserByAccount"
+            parameterType="string"
+            resultType="com.ztu.cloud.chat.common.bean.mysql.User">
+        select * from user where Account=#{account}
+    </select>
+    <!--    根据用户邮箱获取用户信息-->
+    <select id="getUserByEmail"
+            parameterType="string"
+            resultType="com.ztu.cloud.chat.common.bean.mysql.User">
+        select * from user where Email=#{email}
+    </select>
+    <!--    根据用户手机号获取用户信息-->
+    <select id="getUserByPhone"
+            parameterType="string"
+            resultType="com.ztu.cloud.chat.common.bean.mysql.User">
+        select * from user where Phone=#{phone}
+    </select>
+
+    <!--    根据分页用户列表-->
+    <select id="getUser"
+            parameterType="int"
+            resultType="com.ztu.cloud.chat.common.bean.mysql.User">
+        select * from user limit #{start},#{end}
+    </select>
+    <!--    获取用户数量-->
+    <select id="getUserCount"
+            resultType="long">
+        select count(*) from user
+    </select>
+    <!--    通过用户信息实体类修改用户信息-->
+    <update id="updateUser"
+            parameterType="com.ztu.cloud.chat.common.bean.mysql.User">
+        update user
+        set
+        <if test="account != null">
+            account = #{account}
+        </if>
+        <if test="password != null">
+            ,password = #{password}
+        </if>
+        <if test="repoId != null">
+            ,repoId = #{repoId}
+        </if>
+        <if test="status != 0">
+            ,status = #{status}
+        </if>
+        <if test="name != null">
+            ,name = #{name}
+        </if>
+        <if test="email != null">
+            ,email = #{email}
+        </if>
+        <if test="phone != null">
+            ,phone = #{phone}
+        </if>
+        <if test="level != 0">
+            ,level = #{level}
+        </if>
+        <if test="changeTime != 0">
+            ,changeTime = #{changeTime}
+        </if>
+        <choose>
+            <when test="id != 0">
+                where id = #{id}
+            </when>
+            <otherwise>
+                where id = -1
+            </otherwise>
+        </choose>
+    </update>
+    <!--    根据用户信息实体类插入一个用户-->
+    <insert id="insertUser"
+            parameterType="com.ztu.cloud.chat.common.bean.mysql.User"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert into user (repoId,account,password,email,phone,name,status,level,createTime,changeTime)
+        values (#{repoId},#{account},#{password},#{email},#{phone},#{name},#{status},#{level},#{createTime},#{changeTime})
+    </insert>
+    <!--    根据用户信息实体类插入多个用户-->
+    <insert id="insertUsers"
+            parameterType="com.ztu.cloud.chat.common.bean.mysql.User"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert into user (repoId,account,password,email,phone,name,status,level,createTime,changeTime)
+        values
+        <foreach item="user" collection="collection" separator=",">
+            (#{user.repoId},#{user.account},#{user.password},#{user.email},#{user.phone},#{user.name},#{user.status},#{user.level},#{user.createTime},#{user.changeTime})
+        </foreach>
+    </insert>
+    <delete id="deleteUserById"
+            parameterType="int">
+        delete from user where id=#{id}
+    </delete>
+    <delete id="deleteUsersById"
+            parameterType="java.util.List">
+        delete from user where id in
+        <foreach collection="list" item="item" open="(" separator="," close=")">
+            #{item}
+        </foreach>
+    </delete>
+    <!--    修改用户密码-->
+    <update id="updateUserPassword">
+        update user
+        set password = #{password}
+        where id = #{id}
+    </update>
+</mapper>
