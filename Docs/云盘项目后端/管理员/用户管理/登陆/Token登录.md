@@ -19,7 +19,7 @@
   ```json
   {
       code:状态码(int) {1 成功，0 状态异常，-1 失败}
-      message:状态说明(string) {成功，账号状态异常，失败}
+      message:状态说明(string) {登陆成功，账号状态异常，登陆失败}
   	data:{用户信息
           user:{
               id = 用户ID(int)
