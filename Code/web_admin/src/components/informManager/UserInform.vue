@@ -1,19 +1,60 @@
 <template>
-  <a-table :columns="columns"
-           :rowKey="record => record.id"
-           :data-source="data"
-           :loading="loading"
-           :pagination="pagination"
-           @change="handleTableChange">
-    <div slot="expandedRowRender" slot-scope="record" style="margin: 0">
-      <p>{{ record.content }}</p>
+  <div style="height: 100%;width: 100%">
+    <div style="margin-bottom: 20px;">
+      <a-form :form="form" layout="inline" @submit="handleSubmit">
+        <a-form-model-item label="状态">
+          <a-select v-decorator="['status']" placeholder="账号状态" style="width: 150px;">
+            <a-select-option value="1">
+              正常
+            </a-select-option>
+            <a-select-option value="-1">
+              停用
+            </a-select-option>
+          </a-select>
+        </a-form-model-item>
+        <a-form-item label="时间范围">
+          <a-range-picker v-decorator="['range-picker']"/>
+        </a-form-item>
+        <a-form-item
+          label="手机号">
+          <a-input placeholder="手机号"
+                   v-decorator="['phone']"/>
+        </a-form-item>
+        <a-form-item
+          label="邮箱">
+          <a-input placeholder="邮箱"
+                   v-decorator="['email']"/>
+        </a-form-item>
+        <a-form-item
+          label="账号">
+          <a-input placeholder="账号"
+                   v-decorator="['phone']"/>
+        </a-form-item>
+        <a-button type="default" style="margin-left:10px;float: right">
+          增加
+        </a-button>
+        <a-button type="primary" html-type="submit" style="float: right">
+          筛选
+          <a-icon type="search"/>
+        </a-button>
+      </a-form>
     </div>
-    <p slot="createTime" slot-scope="text,record,index">{{getFormatDate(text)}}</p>
-    <p slot="validTime" slot-scope="text,record,index">{{getFormatDate(text)}}</p>
-    <div slot="action" slot-scope="text,record,index">
-      <a-button :disabled="record.status === -1" @click="deleteInform(record.id)">禁用</a-button>
-    </div>
-  </a-table>
+    <a-table :columns="columns"
+             :rowKey="record => record.id"
+             :data-source="data"
+             :loading="loading"
+             :pagination="pagination"
+             @change="handleTableChange">
+      <div slot="expandedRowRender" slot-scope="record" style="margin: 0">
+        <p>{{ record.content }}</p>
+      </div>
+      <p slot="createTime" slot-scope="text,record,index">{{getFormatDate(text)}}</p>
+      <p slot="validTime" slot-scope="text,record,index">{{getFormatDate(text)}}</p>
+      <div slot="action" slot-scope="text,record,index">
+        <a-button :disabled="record.status === -1" @click="deleteInform(record.id)">禁用</a-button>
+      </div>
+    </a-table>
+  </div>
 </template>
 <script>
   import {deleteUserInform, getUserInformList} from "../../api/inform";
@@ -64,6 +105,7 @@
     name: "UserInform",
     data() {
       return {
+        form: this.$form.createForm(this, {name: 'user_filter'}),
         data: [],
         columns: columns,
         pagination: {
@@ -82,6 +124,14 @@
       this.request(this.pagination);
     },
     methods: {
+      handleSubmit(e) {
+        e.preventDefault();
+        this.form.validateFields((err, values) => {
+          if (!err) {
+            console.log('Received values of form: ', values);
+          }
+        });
+      },
       handleTableChange(pagination, filters, sorter) {
         console.log(pagination);
         const pager = {...this.pagination};

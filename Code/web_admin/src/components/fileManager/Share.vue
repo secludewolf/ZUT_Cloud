@@ -1,86 +1,127 @@
 <template>
-  <a-table bordered
-           :columns="columns"
-           :data-source="data"
-           :loading="loading"
-           :pagination="pagination"
-           :rowKey="record => record.id"
-           @change="handleTableChange">
-    <template
-      v-for="col in ['name', 'userId']"
-      :slot="col"
-      slot-scope="text, record, index"
-    >
-      <div :key="col">
+  <div style="height: 100%;width: 100%">
+    <div style="margin-bottom: 20px;">
+      <a-form :form="form" layout="inline" @submit="handleSubmit">
+        <a-form-model-item label="状态">
+          <a-select v-decorator="['status']" placeholder="账号状态" style="width: 150px;">
+            <a-select-option value="1">
+              正常
+            </a-select-option>
+            <a-select-option value="-1">
+              停用
+            </a-select-option>
+          </a-select>
+        </a-form-model-item>
+        <a-form-item label="时间范围">
+          <a-range-picker v-decorator="['range-picker']"/>
+        </a-form-item>
+        <a-form-item
+          label="手机号">
+          <a-input placeholder="手机号"
+                   v-decorator="['phone']"/>
+        </a-form-item>
+        <a-form-item
+          label="邮箱">
+          <a-input placeholder="邮箱"
+                   v-decorator="['email']"/>
+        </a-form-item>
+        <a-form-item
+          label="账号">
+          <a-input placeholder="账号"
+                   v-decorator="['phone']"/>
+        </a-form-item>
+        <a-button type="default" style="margin-left:10px;float: right">
+          增加
+        </a-button>
+        <a-button type="primary" html-type="submit" style="float: right">
+          筛选
+          <a-icon type="search"/>
+        </a-button>
+      </a-form>
+    </div>
+    <a-table bordered
+             :columns="columns"
+             :data-source="data"
+             :loading="loading"
+             :pagination="pagination"
+             :rowKey="record => record.id"
+             @change="handleTableChange">
+      <template
+        v-for="col in ['name', 'userId']"
+        :slot="col"
+        slot-scope="text, record, index"
+      >
+        <div :key="col">
+          <a-input
+            v-if="record.editable"
+            style="margin: -5px 0"
+            :value="text"
+            @change="e => handleChange(e.target.value, record.key, col)"
+          />
+          <template v-else>
+            {{ text }}
+          </template>
+        </div>
+      </template>
+      <div slot="password" slot-scope="text, record,col">
         <a-input
           v-if="record.editable"
           style="margin: -5px 0"
           :value="text"
-          @change="e => handleChange(e.target.value, record.key, col)"
+          @change="e => handleChange(e.target.value, record.key, 'password')"
         />
         <template v-else>
-          {{ text }}
+          {{ (text === '') ? '无密码' : text }}
         </template>
       </div>
-    </template>
-    <div slot="password" slot-scope="text, record,col">
-      <a-input
-        v-if="record.editable"
-        style="margin: -5px 0"
-        :value="text"
-        @change="e => handleChange(e.target.value, record.key, 'password')"
-      />
-      <template v-else>
-        {{ (text === '') ? '无密码' : text }}
-      </template>
-    </div>
-    <div slot="status" slot-scope="text, record,col">
-      <a-input
-        v-if="record.editable"
-        style="margin: -5px 0"
-        :value="text"
-        @change="e => handleChange(e.target.value, record.key, 'status')"
-      />
-      <template v-else>
-        {{ text === 1 ? '正常' : '失效' }}
-      </template>
-    </div>
-    <div slot="createTime" slot-scope="text, record,col">
-      <template>
-        {{ getFormatDate(text) }}
-      </template>
-    </div>
-    <div slot="validTime" slot-scope="text, record,col">
-      <a-input
-        v-if="record.editable"
-        style="margin: -5px 0"
-        :value="text"
-        @change="e => handleChange(e.target.value, record.key, 'validTime')"
-      />
-      <template v-else>
-        {{ getFormatDate(text) }}
-      </template>
-    </div>
-    <template slot="operation" slot-scope="text, record, index">
-      <div class="editable-row-operations">
-        <div>
-          <!--          <a :disabled="editingKey !== ''" @click="() => edit(record.key)">编辑</a>-->
-          <a-popconfirm
-            title="确定要禁用此分享吗?"
-            @confirm="() => onDelete(record.id)">
-            <a-button :disabled="record.status !== 1" href="javascript:">禁用</a-button>
-          </a-popconfirm>
-        </div>
-        <!--                <span v-if="record.editable">-->
-        <!--                  <a @click="() => cancel(record.key)">取消</a>-->
-        <!--                  <a @click="() => save(record.key)">更新</a>-->
-        <!--                  &lt;!&ndash;          <a-popconfirm title="确定要修改吗?" @confirm="() => save(record.key)">&ndash;&gt;-->
-        <!--                  &lt;!&ndash;            <a>更新</a>&ndash;&gt;-->
-        <!--                  &lt;!&ndash;          </a-popconfirm>&ndash;&gt;-->
-        <!--                </span>-->
+      <div slot="status" slot-scope="text, record,col">
+        <a-input
+          v-if="record.editable"
+          style="margin: -5px 0"
+          :value="text"
+          @change="e => handleChange(e.target.value, record.key, 'status')"
+        />
+        <template v-else>
+          {{ text === 1 ? '正常' : '失效' }}
+        </template>
       </div>
-    </template>
-  </a-table>
+      <div slot="createTime" slot-scope="text, record,col">
+        <template>
+          {{ getFormatDate(text) }}
+        </template>
+      </div>
+      <div slot="validTime" slot-scope="text, record,col">
+        <a-input
+          v-if="record.editable"
+          style="margin: -5px 0"
+          :value="text"
+          @change="e => handleChange(e.target.value, record.key, 'validTime')"
+        />
+        <template v-else>
+          {{ getFormatDate(text) }}
+        </template>
+      </div>
+      <template slot="operation" slot-scope="text, record, index">
+        <div class="editable-row-operations">
+          <div>
+            <!--          <a :disabled="editingKey !== ''" @click="() => edit(record.key)">编辑</a>-->
+            <a-popconfirm
+              title="确定要禁用此分享吗?"
+              @confirm="() => onDelete(record.id)">
+              <a-button :disabled="record.status !== 1" href="javascript:">禁用</a-button>
+            </a-popconfirm>
+          </div>
+          <!--                <span v-if="record.editable">-->
+          <!--                  <a @click="() => cancel(record.key)">取消</a>-->
+          <!--                  <a @click="() => save(record.key)">更新</a>-->
+          <!--                  &lt;!&ndash;          <a-popconfirm title="确定要修改吗?" @confirm="() => save(record.key)">&ndash;&gt;-->
+          <!--                  &lt;!&ndash;            <a>更新</a>&ndash;&gt;-->
+          <!--                  &lt;!&ndash;          </a-popconfirm>&ndash;&gt;-->
+          <!--                </span>-->
+        </div>
+      </template>
+    </a-table>
+  </div>
 </template>
 <script>
   import {deleteShare, getShareList} from "../../api/share";
@@ -145,6 +186,7 @@
     },
     data() {
       return {
+        form: this.$form.createForm(this, {name: 'user_filter'}),
         columns,
         data: [],
         cacheData: {},
@@ -162,6 +204,14 @@
       };
     },
     methods: {
+      handleSubmit(e) {
+        e.preventDefault();
+        this.form.validateFields((err, values) => {
+          if (!err) {
+            console.log('Received values of form: ', values);
+          }
+        });
+      },
       handleTableChange(pagination, filters, sorter) {
         console.log(pagination);
         const pager = {...this.pagination};
