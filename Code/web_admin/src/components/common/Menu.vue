@@ -12,28 +12,28 @@
       style="position:absolute;width: 100%"
     >
       <a-sub-menu key="sub1">
-        <span slot="title"><a-icon type="user"/><span>用户管理</span></span>
+        <span slot="title"><a-icon type="user"/><span>账号管理</span></span>
         <a-menu-item key="1">
           <router-link to="/userManager">
-            用户信息
+            用户
           </router-link>
         </a-menu-item>
         <a-menu-item key="2">
           <router-link to="/adminManager">
-            管理员信息
+            管理员
           </router-link>
         </a-menu-item>
       </a-sub-menu>
       <a-sub-menu key="sub2">
-        <span slot="title"><a-icon type="file"/><span>文件管理</span></span>
+        <span slot="title"><a-icon type="file"/><span>数据管理</span></span>
         <a-menu-item key="3">
           <router-link to="/fileManager">
-            文件信息
+            文件
           </router-link>
         </a-menu-item>
         <a-menu-item key="4">
           <router-link to="/shareManager">
-            分享信息
+            分享
           </router-link>
         </a-menu-item>
       </a-sub-menu>
@@ -41,17 +41,17 @@
         <span slot="title"><a-icon type="notification"/><span>通知管理</span></span>
         <a-menu-item key="5">
           <router-link to="/userInform">
-            用户通知
+            用户
           </router-link>
         </a-menu-item>
         <a-menu-item key="6">
           <router-link to="/adminInform">
-            管理员通知
+            管理员
           </router-link>
         </a-menu-item>
         <a-menu-item key="7">
           <router-link to="/createInform">
-            新建通知
+            新建
           </router-link>
         </a-menu-item>
       </a-sub-menu>
@@ -95,7 +95,6 @@
 <style scoped>
   .logo {
     height: 32px;
-    background: white;
     margin: 16px;
   }
 </style>

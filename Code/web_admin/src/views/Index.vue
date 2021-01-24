@@ -5,12 +5,8 @@
     </a-layout-sider>
     <a-layout style="height: 100%;">
       <a-layout-header style="background: #fff; padding: 0">
-        <a-icon
-          class="trigger"
-          :type="collapsed ? 'menu-unfold' : 'menu-fold'"
-          @click="() => (this.collapsed = !this.collapsed)"
-        />
-        <span>{{ this.$route.meta.title }}</span>
+        <span
+          style="margin: 0 20px;font-size: 14px;font-weight: bold;">{{ this.$route.meta.parent}} / {{ this.$route.meta.title }}</span>
         <div style="float: right;height: 64px;padding:0 30px;background: white;line-height: 64px;">
           <a-dropdown style="padding: 3px;">
             <a class="ant-dropdown-link" @click="e => e.preventDefault()">

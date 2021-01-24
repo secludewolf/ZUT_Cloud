@@ -72,49 +72,56 @@ const router = new Router({
           name: "userManager",
           component: User,
           meta: {
-            title: '用户管理',
+            parent: '账号管理',
+            title: '用户',
           },
         }, {
           path: "/adminManager",
           name: "adminManager",
           component: Admin,
           meta: {
-            title: '管理员管理',
+            parent: '账号管理',
+            title: '管理员',
           },
         }, {
           path: "/fileManager",
           name: "fileManager",
           component: File,
           meta: {
-            title: '文件管理',
+            parent: '数据管理',
+            title: '文件',
           },
         }, {
           path: "/shareManager",
           name: "shareManager",
           component: Share,
           meta: {
-            title: '分享管理',
+            parent: '数据管理',
+            title: '分享',
           },
         }, {
           path: "/userInform",
           name: "userInform",
           component: UserInform,
           meta: {
-            title: '用户通知管理',
+            parent: '通知管理',
+            title: '用户',
           },
         }, {
           path: "/adminInform",
           name: "adminInform",
           component: AdminInform,
           meta: {
-            title: '管理员通知管理',
+            parent: '通知管理',
+            title: '管理员',
           },
         }, {
           path: "/createInform",
           name: "createInform",
           component: CreateInform,
           meta: {
-            title: '创建通知',
+            parent: '通知管理',
+            title: '创建',
           },
         },
       ],
