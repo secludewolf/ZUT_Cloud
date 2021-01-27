@@ -28,7 +28,7 @@
         <a-form-item
           label="账号">
           <a-input placeholder="账号"
-                   v-decorator="['phone']"/>
+                   v-decorator="['account']"/>
         </a-form-item>
         <a-button type="default" style="margin-left:10px;float: right">
           增加

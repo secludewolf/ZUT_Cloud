@@ -7,35 +7,66 @@
     <select id="getAdminById"
             parameterType="int"
             resultType="com.ztu.cloud.cloud.common.bean.mysql.Admin">
-        select * from admin where ID=#{id}
+        select *
+        from admin
+        where ID = #{id}
     </select>
     <!--    根据用户账号获取用户信息-->
     <select id="getAdminByAccount"
             parameterType="string"
             resultType="com.ztu.cloud.cloud.common.bean.mysql.Admin">
-        select * from admin where Account=#{account}
+        select *
+        from admin
+        where Account = #{account}
     </select>
     <!--    根据用户邮箱获取用户信息-->
     <select id="getAdminByEmail"
             parameterType="string"
             resultType="com.ztu.cloud.cloud.common.bean.mysql.Admin">
-        select * from admin where Email=#{email}
+        select *
+        from admin
+        where Email = #{email}
     </select>
     <!--    根据用户手机号获取用户信息-->
     <select id="getAdminByPhone"
             parameterType="string"
             resultType="com.ztu.cloud.cloud.common.bean.mysql.Admin">
-        select * from admin where Phone=#{phone}
+        select *
+        from admin
+        where Phone = #{phone}
     </select>
     <!--    根据管理员列表-->
     <select id="getAdmins"
+            parameterType="com.ztu.cloud.cloud.common.dto.condition.Admin"
             resultType="com.ztu.cloud.cloud.common.bean.mysql.Admin">
-        select * from admin
+        select *
+        from admin
+        where 1=1
+        <if test="account != null">
+            and account like concat('%',#{account},'%')
+        </if>
+        <if test="phone != null">
+            and phone like concat('%',#{phone},'%')
+        </if>
+        <if test="email != null">
+            and email like concat('%',#{email},'%')
+        </if>
+        <if test="status != null">
+            and status = #{status}
+        </if>
+        <if test="startTime != null">
+            and createTime &gt;= #{startTime}
+        </if>
+        <if test="endTime != null">
+            and createTime &lt;= #{endTime}
+        </if>
     </select>
     <!--    获取管理员数量-->
     <select id="getAdminCount"
+            parameterType="com.ztu.cloud.cloud.common.bean.mysql.Admin"
             resultType="long">
-        select count(*) from admin
+        select count(*)
+        from admin
     </select>
     <!--    通过用户信息实体类修改用户信息-->
     <update id="updateAdmin"
@@ -80,8 +111,8 @@
             parameterType="com.ztu.cloud.cloud.common.bean.mysql.Admin"
             useGeneratedKeys="true"
             keyProperty="id">
-        insert into admin (account,password,email,phone,name,status,level,createTime,changeTime)
-        values (#{account},#{password},#{email},#{phone},#{name},#{status},#{level},#{createTime},#{changeTime})
+        insert into admin (account, password, email, phone, name, status, level, createTime, changeTime)
+        values (#{account}, #{password}, #{email}, #{phone}, #{name}, #{status}, #{level}, #{createTime}, #{changeTime})
     </insert>
     <!--    根据用户信息实体类插入多个用户-->
     <insert id="insertAdmins"
@@ -96,7 +127,9 @@
     </insert>
     <delete id="deleteAdminById"
             parameterType="int">
-        delete from admin where id=#{id}
+        delete
+        from admin
+        where id = #{id}
     </delete>
     <delete id="deleteAdminsById"
             parameterType="java.util.List">
