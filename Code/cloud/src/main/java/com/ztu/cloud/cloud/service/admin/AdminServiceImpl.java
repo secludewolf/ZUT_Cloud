@@ -406,10 +406,16 @@ public class AdminServiceImpl implements AdminService {
      * @param pageSize   分页大小
      * @param sortKey    排序Key
      * @param sortType   排序类型
+     * @param status     状态
+     * @param startTime  起始时间
+     * @param endTime    终止时间
+     * @param phone      手机
+     * @param email      邮箱
+     * @param account    账号
      * @return 用户列表
      */
     @Override
-    public ResultResponseEntity getUserListManage(String token, Integer pageNumber, Integer pageSize, String sortKey, String sortType) {
+    public ResultResponseEntity getUserListManage(String token, Integer pageNumber, Integer pageSize, String sortKey, String sortType, Integer status, Long startTime, Long endTime, String phone, String email, String account) {
         int id = TokenUtil.getId(token);
         Admin admin = this.adminDao.getAdminById(id);
         if (admin == null) {
@@ -428,8 +434,9 @@ public class AdminServiceImpl implements AdminService {
         String orderBy = sortKey + " " + sortType;
         PageHelper.startPage(pageNumber, pageSize, orderBy);
         List<User> result;
+        com.ztu.cloud.cloud.common.dto.condition.User conditionBean = new com.ztu.cloud.cloud.common.dto.condition.User(account, email, phone, status, startTime, endTime);
         try {
-            result = this.userDao.getUsers();
+            result = this.userDao.getUsers(conditionBean);
         } catch (Exception e) {
             e.printStackTrace();
             result = new LinkedList<>();
@@ -453,12 +460,12 @@ public class AdminServiceImpl implements AdminService {
      * @param pageSize   分页大小
      * @param sortKey    排序Key
      * @param sortType   排序类型
-     * @param status     排序类型
-     * @param startTime  排序类型
-     * @param endTime    排序类型
-     * @param phone      排序类型
-     * @param email      排序类型
-     * @param account    排序类型
+     * @param status     状态
+     * @param startTime  起始时间
+     * @param endTime    终止时间
+     * @param phone      手机
+     * @param email      邮箱
+     * @param account    账号
      * @return 管理员列表
      */
     @Override

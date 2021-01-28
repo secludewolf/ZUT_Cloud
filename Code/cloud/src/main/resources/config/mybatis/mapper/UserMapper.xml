@@ -7,34 +7,65 @@
     <select id="getUserById"
             parameterType="int"
             resultType="com.ztu.cloud.cloud.common.bean.mysql.User">
-        select * from user where ID=#{id}
+        select *
+        from user
+        where ID = #{id}
     </select>
     <!--    根据用户账号获取用户信息-->
     <select id="getUserByAccount"
             parameterType="string"
             resultType="com.ztu.cloud.cloud.common.bean.mysql.User">
-        select * from user where Account=#{account}
+        select *
+        from user
+        where Account = #{account}
     </select>
     <!--    根据用户邮箱获取用户信息-->
     <select id="getUserByEmail"
             parameterType="string"
             resultType="com.ztu.cloud.cloud.common.bean.mysql.User">
-        select * from user where Email=#{email}
+        select *
+        from user
+        where Email = #{email}
     </select>
     <!--    根据用户手机号获取用户信息-->
     <select id="getUserByPhone"
             parameterType="string"
             resultType="com.ztu.cloud.cloud.common.bean.mysql.User">
-        select * from user where Phone=#{phone}
+        select *
+        from user
+        where Phone = #{phone}
     </select>
     <!--    获取所有用户信息-->
-    <select id="getUsers" resultType="com.ztu.cloud.cloud.common.bean.mysql.User">
-        select * from user
+    <select id="getUsers"
+            parameterType="com.ztu.cloud.cloud.common.dto.condition.User"
+            resultType="com.ztu.cloud.cloud.common.bean.mysql.User">
+        select *
+        from user
+        where 1=1
+        <if test="account != null">
+            and account like concat('%',#{account},'%')
+        </if>
+        <if test="phone != null">
+            and phone like concat('%',#{phone},'%')
+        </if>
+        <if test="email != null">
+            and email like concat('%',#{email},'%')
+        </if>
+        <if test="status != null">
+            and status = #{status}
+        </if>
+        <if test="startTime != null">
+            and createTime &gt;= #{startTime}
+        </if>
+        <if test="endTime != null">
+            and createTime &lt;= #{endTime}
+        </if>
     </select>
     <!--    获取用户数量-->
     <select id="getUserCount"
             resultType="long">
-        select count(*) from user
+        select count(*)
+        from user
     </select>
     <!--    通过用户信息实体类修改用户信息-->
     <update id="updateUser"
@@ -82,8 +113,9 @@
             parameterType="com.ztu.cloud.cloud.common.bean.mysql.User"
             useGeneratedKeys="true"
             keyProperty="id">
-        insert into user (repoId,account,password,email,phone,name,status,level,createTime,changeTime)
-        values (#{repoId},#{account},#{password},#{email},#{phone},#{name},#{status},#{level},#{createTime},#{changeTime})
+        insert into user (repoId, account, password, email, phone, name, status, level, createTime, changeTime)
+        values (#{repoId}, #{account}, #{password}, #{email}, #{phone}, #{name}, #{status}, #{level}, #{createTime},
+                #{changeTime})
     </insert>
     <!--    根据用户信息实体类插入多个用户-->
     <insert id="insertUsers"
@@ -98,7 +130,9 @@
     </insert>
     <delete id="deleteUserById"
             parameterType="int">
-        delete from user where id=#{id}
+        delete
+        from user
+        where id = #{id}
     </delete>
     <delete id="deleteUsersById"
             parameterType="java.util.List">

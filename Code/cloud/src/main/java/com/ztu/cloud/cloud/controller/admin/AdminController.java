@@ -183,6 +183,12 @@ public class AdminController {
      * @param pageSize   分页大小
      * @param sortKey    排序Key
      * @param sortType   排序类型
+     * @param status     状态
+     * @param startTime  起始时间
+     * @param endTime    终止时间
+     * @param phone      手机
+     * @param email      邮箱
+     * @param account    账号
      * @return 用户列表
      */
     @GetMapping("/user/list/{pageNumber}")
@@ -191,8 +197,14 @@ public class AdminController {
             @PathVariable("pageNumber") @Min(1) Integer pageNumber,
             @RequestParam(name = "pageSize", defaultValue = "20", required = false) @Min(1) Integer pageSize,
             @RequestParam(name = "sortKey", defaultValue = "id", required = false) String sortKey,
-            @RequestParam(value = "sortType", defaultValue = "asc", required = false) String sortType) {
-        return this.adminService.getUserListManage(token, pageNumber, pageSize, sortKey, sortType);
+            @RequestParam(value = "sortType", defaultValue = "asc", required = false) String sortType,
+            @RequestParam(value = "status", required = false) Integer status,
+            @RequestParam(value = "startTime", required = false) Long startTime,
+            @RequestParam(value = "endTime", required = false) Long endTime,
+            @RequestParam(value = "phone", required = false) String phone,
+            @RequestParam(value = "email", required = false) String email,
+            @RequestParam(value = "account", required = false) String account) {
+        return this.adminService.getUserListManage(token, pageNumber, pageSize, sortKey, sortType, status, startTime, endTime, phone, email, account);
     }
 
     /**
@@ -203,12 +215,12 @@ public class AdminController {
      * @param pageSize   分页大小
      * @param sortKey    排序Key
      * @param sortType   排序类型
-     * @param status     排序类型
-     * @param startTime  排序类型
-     * @param endTime    排序类型
-     * @param phone      排序类型
-     * @param email      排序类型
-     * @param account    排序类型
+     * @param status     状态
+     * @param startTime  起始时间
+     * @param endTime    终止时间
+     * @param phone      手机
+     * @param email      邮箱
+     * @param account    账号
      * @return 管理员列表
      */
     @GetMapping("/admin/list/{pageNumber}")

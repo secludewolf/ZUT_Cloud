@@ -115,9 +115,15 @@ public interface AdminService {
      * @param pageSize   分页大小
      * @param sortKey    排序Key
      * @param sortType   排序类型
+     * @param status     状态
+     * @param startTime  起始时间
+     * @param endTime    终止时间
+     * @param phone      手机
+     * @param email      邮箱
+     * @param account    账号
      * @return 用户列表
      */
-    ResultResponseEntity getUserListManage(String token, Integer pageNumber, Integer pageSize, String sortKey, String sortType);
+    ResultResponseEntity getUserListManage(String token, Integer pageNumber, Integer pageSize, String sortKey, String sortType, Integer status, Long startTime, Long endTime, String phone, String email, String account);
 
     /**
      * 获取管理员列表
@@ -127,12 +133,12 @@ public interface AdminService {
      * @param pageSize   分页大小
      * @param sortKey    排序Key
      * @param sortType   排序类型
-     * @param status     排序类型
-     * @param startTime  排序类型
-     * @param endTime    排序类型
-     * @param phone      排序类型
-     * @param email      排序类型
-     * @param account    排序类型
+     * @param status     状态
+     * @param startTime  起始时间
+     * @param endTime    终止时间
+     * @param phone      手机
+     * @param email      邮箱
+     * @param account    账号
      * @return 管理员列表
      */
     ResultResponseEntity getAdminListManage(String token, Integer pageNumber, Integer pageSize, String sortKey, String sortType, Integer status, Long startTime, Long endTime, String phone, String email, String account);
