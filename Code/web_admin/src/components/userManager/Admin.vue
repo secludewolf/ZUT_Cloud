@@ -10,6 +10,9 @@
             <a-select-option value="-1">
               停用
             </a-select-option>
+            <a-select-option value="0">
+              无限制
+            </a-select-option>
           </a-select>
         </a-form-model-item>
         <a-form-item label="时间范围">
@@ -97,220 +100,244 @@
   </div>
 </template>
 <script>
-  import {changeAdminInfoManage, deleteAdminManage, getAdminListManage} from "../../api/admin";
-  import {message} from "../../util/message";
+import {changeAdminInfoManage, deleteAdminManage, getAdminListManage} from "../../api/admin";
+import {message} from "../../util/message";
 
-  const columns = [
-    {
-      title: '账号',
-      dataIndex: 'account',
-      sorter: true,
-      defaultSortOrder: 'ascend',
-      scopedSlots: {customRender: 'account'},
-      align: "center",
-    },
-    {
-      title: '邮箱',
-      dataIndex: 'email',
-      sorter: true,
-      scopedSlots: {customRender: 'email'},
-      align: "center",
-    },
-    {
-      title: '手机',
-      dataIndex: 'phone',
-      sorter: true,
-      scopedSlots: {customRender: 'phone'},
-      align: "center",
-    },
-    {
-      title: '昵称',
-      dataIndex: 'name',
-      sorter: true,
-      scopedSlots: {customRender: 'name'},
-      align: "center",
-    },
-    {
-      title: '密码',
-      dataIndex: 'password',
-      scopedSlots: {customRender: 'password'},
-      align: "center",
-    },
-    {
-      title: '等级',
-      dataIndex: 'level',
-      sorter: true,
-      scopedSlots: {customRender: 'level'},
-      align: "center",
-    },
-    {
-      title: '状态',
-      dataIndex: 'status',
-      sorter: true,
-      scopedSlots: {customRender: 'status'},
-      align: "center",
-    },
-    {
-      title: '操作',
-      dataIndex: 'operation',
-      width: '150px',
-      scopedSlots: {customRender: 'operation'},
-      align: "center",
-    },
-  ];
+const columns = [
+  {
+    title: '账号',
+    dataIndex: 'account',
+    sorter: true,
+    defaultSortOrder: 'ascend',
+    scopedSlots: {customRender: 'account'},
+    align: "center",
+  },
+  {
+    title: '邮箱',
+    dataIndex: 'email',
+    sorter: true,
+    scopedSlots: {customRender: 'email'},
+    align: "center",
+  },
+  {
+    title: '手机',
+    dataIndex: 'phone',
+    sorter: true,
+    scopedSlots: {customRender: 'phone'},
+    align: "center",
+  },
+  {
+    title: '昵称',
+    dataIndex: 'name',
+    sorter: true,
+    scopedSlots: {customRender: 'name'},
+    align: "center",
+  },
+  {
+    title: '密码',
+    dataIndex: 'password',
+    scopedSlots: {customRender: 'password'},
+    align: "center",
+  },
+  {
+    title: '等级',
+    dataIndex: 'level',
+    sorter: true,
+    scopedSlots: {customRender: 'level'},
+    align: "center",
+  },
+  {
+    title: '状态',
+    dataIndex: 'status',
+    sorter: true,
+    scopedSlots: {customRender: 'status'},
+    align: "center",
+  },
+  {
+    title: '操作',
+    dataIndex: 'operation',
+    width: '150px',
+    scopedSlots: {customRender: 'operation'},
+    align: "center",
+  },
+];
 
-  export default {
-    name: "Admin",
-    mounted() {
-      this.request(this.pagination);
+export default {
+  name: "Admin",
+  mounted() {
+    this.request(this.pagination);
+  },
+  data() {
+    return {
+      form: this.$form.createForm(this, {name: 'admin_filter'}),
+      columns,
+      data: [],
+      cacheData: {},
+      editingKey: '',
+      pagination: {
+        showSizeChanger: true,
+        showQuickJumper: true,
+        showTotal: () => `共${this.pagination.total}条`,
+        total: 0,
+        current: 1,
+        pageSize: 20,
+        pageSizeOptions: ["10", "20", "30", "40", "50"],
+      },
+      loading: false,
+    };
+  },
+  methods: {
+    handleSubmit(e) {
+      e.preventDefault();
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          this.request(this.pagination);
+        }
+      });
     },
-    data() {
-      return {
-        form: this.$form.createForm(this, {name: 'admin_filter'}),
-        columns,
-        data: [],
-        cacheData: {},
-        editingKey: '',
-        pagination: {
-          showSizeChanger: true,
-          showQuickJumper: true,
-          showTotal: () => `共${this.pagination.total}条`,
-          total: 0,
-          current: 1,
-          pageSize: 20,
-          pageSizeOptions: ["10", "20", "30", "40", "50"],
-        },
-        loading: false,
+    handleTableChange(pagination, filters, sorter) {
+      const pager = {...this.pagination};
+      pager.current = pagination.current;
+      this.pagination = pager;
+      this.request({
+        pageSize: pagination.pageSize,
+        current: pagination.current,
+        sortKey: sorter.field,
+        sortType: sorter.order,
+        ...filters,
+      });
+    },
+    request(pagination) {
+      this.loading = true;
+      let data = pagination.current + "?pageSize=" + pagination.pageSize;
+      if (pagination.sortKey != null) {
+        data = data + "&sortKey=" + pagination.sortKey;
+      }
+      if (pagination.sortType != null) {
+        if (pagination.sortType === "ascend") {
+          data = data + "&sortType=asc";
+        } else {
+          data = data + "&sortType=desc";
+        }
+      }
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          console.log('Received values of form: ', values);
+          if (values != null) {
+            if (values.account != null) {
+              data += "&account=" + values.account;
+            }
+            if (values.phone != null) {
+              data += "&phone=" + values.phone;
+            }
+            if (values.email != null) {
+              data += "&email=" + values.email;
+            }
+            if (values.status != null && values.status !== 0) {
+              data += "&status=" + values.status;
+            }
+            if (values['range-picker'] != null) {
+              data += "&startTime=" + values['range-picker'][0].valueOf();
+              data += "&endTime=" + values['range-picker'][1].valueOf();
+
+            }
+          }
+        }
+      });
+      const handler = (data) => {
+        console.log(data);
+        const pagination = {...this.pagination};
+        pagination.pageSize = data.pageSize;
+        pagination.total = data.total;
+        this.data = data.result;
+        this.cacheData = data.result.map(item => ({...item}));
+        this.pagination = pagination;
+        this.loading = false;
       };
+      const catcher = (code, content) => {
+        message(content, "warning")
+        this.loading = false;
+      };
+      getAdminListManage(data, handler, catcher);
     },
-    methods: {
-      handleSubmit(e) {
-        e.preventDefault();
-        this.form.validateFields((err, values) => {
-          if (!err) {
-            console.log('Received values of form: ', values);
-          }
-        });
-      },
-      handleTableChange(pagination, filters, sorter) {
-        const pager = {...this.pagination};
-        pager.current = pagination.current;
-        this.pagination = pager;
-        this.request({
-          pageSize: pagination.pageSize,
-          current: pagination.current,
-          sortKey: sorter.field,
-          sortType: sorter.order,
-          ...filters,
-        });
-      },
-      request(pagination) {
-        this.loading = true;
-        let data = pagination.current + "?pageSize=" + pagination.pageSize;
-        if (pagination.sortKey != null) {
-          data = data + "&sortKey=" + pagination.sortKey;
-        }
-        if (pagination.sortType != null) {
-          if (pagination.sortType === "ascend") {
-            data = data + "&sortType=asc";
-          } else {
-            data = data + "&sortType=desc";
-          }
-        }
+    handleChange(value, key, column) {
+      const newData = [...this.data];
+      const target = newData.filter(item => key === item.key)[0];
+      if (target) {
+        target[column] = value;
+        this.data = newData;
+      }
+    },
+    onDelete(key) {
+      const data = {
+        id: key,
+      };
+      const handler = () => {
+        const temp = [...this.data];
+        this.data = temp.filter(item => item.key !== key);
+        message("删除成功")
+      };
+      const catcher = (code, content) => {
+        message(content, "warning");
+      };
+      deleteAdminManage(data, handler, catcher);
+    },
+    edit(key) {
+      const newData = [...this.data];
+      const target = newData.filter(item => key === item.key)[0];
+      this.editingKey = key;
+      if (target) {
+        target.editable = true;
+        this.data = newData;
+      }
+      console.log(this.data);
+    },
+    save(key) {
+      const newData = [...this.data];
+      const newCacheData = [...this.cacheData];
+      const target = newData.filter(item => key === item.key)[0];
+      const targetCache = newCacheData.filter(item => key === item.key)[0];
+      if (target && targetCache) {
+        const data = {
+          id: target.id,
+          account: target.account,
+          phone: target.phone,
+          email: target.email,
+          name: target.name,
+          password: target.password,
+          level: target.level,
+          status: target.status
+        };
         const handler = (data) => {
           console.log(data);
-          const pagination = {...this.pagination};
-          pagination.pageSize = data.pageSize;
-          pagination.total = data.total;
-          this.data = data.result;
-          this.cacheData = data.result.map(item => ({...item}));
-          this.pagination = pagination;
-          this.loading = false;
-        };
-        const catcher = (code, content) => {
-          message(content, "warning")
-          this.loading = false;
-        };
-        getAdminListManage(data, handler, catcher);
-      },
-      handleChange(value, key, column) {
-        const newData = [...this.data];
-        const target = newData.filter(item => key === item.key)[0];
-        if (target) {
-          target[column] = value;
+          delete target.editable;
           this.data = newData;
-        }
-      },
-      onDelete(key) {
-        const data = {
-          id: key,
-        };
-        const handler = () => {
-          const temp = [...this.data];
-          this.data = temp.filter(item => item.key !== key);
-          message("删除成功")
+          Object.assign(targetCache, target);
+          this.cacheData = newCacheData;
+          message("修改成功")
         };
         const catcher = (code, content) => {
           message(content, "warning");
         };
-        deleteAdminManage(data, handler, catcher);
-      },
-      edit(key) {
-        const newData = [...this.data];
-        const target = newData.filter(item => key === item.key)[0];
-        this.editingKey = key;
-        if (target) {
-          target.editable = true;
-          this.data = newData;
-        }
-        console.log(this.data);
-      },
-      save(key) {
-        const newData = [...this.data];
-        const newCacheData = [...this.cacheData];
-        const target = newData.filter(item => key === item.key)[0];
-        const targetCache = newCacheData.filter(item => key === item.key)[0];
-        if (target && targetCache) {
-          const data = {
-            id: target.id,
-            account: target.account,
-            phone: target.phone,
-            email: target.email,
-            name: target.name,
-            password: target.password,
-            level: target.level,
-            status: target.status
-          };
-          const handler = (data) => {
-            console.log(data);
-            delete target.editable;
-            this.data = newData;
-            Object.assign(targetCache, target);
-            this.cacheData = newCacheData;
-            message("修改成功")
-          };
-          const catcher = (code, content) => {
-            message(content, "warning");
-          };
-          changeAdminInfoManage(data, handler, catcher);
-        }
-        this.editingKey = '';
-      },
-      cancel(key) {
-        const newData = [...this.data];
-        const target = newData.filter(item => key === item.key)[0];
-        this.editingKey = '';
-        if (target) {
-          Object.assign(target, this.cacheData.filter(item => key === item.key)[0]);
-          delete target.editable;
-          this.data = newData;
-        }
-      },
+        changeAdminInfoManage(data, handler, catcher);
+      }
+      this.editingKey = '';
     },
-  };
+    cancel(key) {
+      const newData = [...this.data];
+      const target = newData.filter(item => key === item.key)[0];
+      this.editingKey = '';
+      if (target) {
+        Object.assign(target, this.cacheData.filter(item => key === item.key)[0]);
+        delete target.editable;
+        this.data = newData;
+      }
+    },
+  },
+};
 </script>
 <style scoped>
-  .editable-row-operations a {
-    margin: 0 8px;
-  }
+.editable-row-operations a {
+  margin: 0 8px;
+}
 </style>

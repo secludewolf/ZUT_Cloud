@@ -5,12 +5,14 @@
 <mapper namespace="com.ztu.cloud.cloud.common.dao.mysql.FileMapper">
     <insert id="insertFile"
             parameterType="com.ztu.cloud.cloud.common.bean.mysql.File">
-        insert into file (id,name,path,size,createTime,changeTime,type,status,quoteNumber)
-        values (#{id},#{name},#{path},#{size},#{createTime},#{changeTime},#{type},#{status},#{quoteNumber})
+        insert into file (id, name, path, size, createTime, changeTime, type, status, quoteNumber)
+        values (#{id}, #{name}, #{path}, #{size}, #{createTime}, #{changeTime}, #{type}, #{status}, #{quoteNumber})
     </insert>
     <delete id="deleteFileById"
             parameterType="String">
-        delete from file where ID=#{id}
+        delete
+        from file
+        where ID = #{id}
     </delete>
     <update id="updateFile"
             parameterType="com.ztu.cloud.cloud.common.bean.mysql.File">
@@ -52,17 +54,44 @@
     <select id="getFileById"
             parameterType="String"
             resultType="com.ztu.cloud.cloud.common.bean.mysql.File">
-        select * from file where ID=#{id}
+        select *
+        from file
+        where ID = #{id}
     </select>
     <!--    根据文件列表-->
     <select id="getFiles"
+            parameterType="com.ztu.cloud.cloud.common.dto.condition.File"
             resultType="com.ztu.cloud.cloud.common.bean.mysql.File">
-        select * from file
+        select *
+        from file
+        where 1 = 1
+        <if test="name != null">
+            and name like concat('%',#{name},'%')
+        </if>
+        <if test="type != null">
+            and type in ${type}
+        </if>
+        <if test="startSize != null">
+            and size &gt;= #{startSize}
+        </if>
+        <if test="endSize != null">
+            and size &lt;= #{endSize}
+        </if>
+        <if test="startTime != null">
+            and createTime &gt;= #{startTime}
+        </if>
+        <if test="endTime != null">
+            and createTime &lt;= #{endTime}
+        </if>
+        <if test="status != null">
+            and status = #{status}
+        </if>
     </select>
     <!--    获取文件数量-->
     <select id="getFileCount"
             resultType="long">
-        select count(*) from file
+        select count(*)
+        from file
     </select>
     <update id="fileQuoteNumberAdd">
         update file
