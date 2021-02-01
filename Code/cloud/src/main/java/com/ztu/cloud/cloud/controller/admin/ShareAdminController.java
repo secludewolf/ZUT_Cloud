@@ -1,5 +1,6 @@
 package com.ztu.cloud.cloud.controller.admin;
 
+import com.ztu.cloud.cloud.common.log.SysLog;
 import com.ztu.cloud.cloud.common.validation.Token;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.service.admin.ShareManageService;
@@ -38,6 +39,7 @@ public class ShareAdminController {
      * @param userId     文件类型
      * @param name       文件名称
      */
+    @SysLog(descrption = "管理员获取分享列表", type = "分享管理", modul = "管理员模块")
     @GetMapping("/admin/share/list/{pageNumber}")
     public ResultResponseEntity getShareList(
             @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
@@ -60,6 +62,7 @@ public class ShareAdminController {
      * @param shareId 分享ID
      * @return 分享信息
      */
+    @SysLog(descrption = "管理员获取分享信息", type = "分享管理", modul = "管理员模块")
     @GetMapping("/admin/share/{shareId}")
     public ResultResponseEntity getShare(
             @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
@@ -74,6 +77,7 @@ public class ShareAdminController {
      * @param shareId 分享ID
      * @return 删除结果
      */
+    @SysLog(descrption = "管理员删除分享", type = "分享管理", modul = "管理员模块")
     @DeleteMapping("/admin/share/{shareId}")
     public ResultResponseEntity deleteShare(
             @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,

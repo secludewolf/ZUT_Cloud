@@ -2,6 +2,7 @@ package com.ztu.cloud.cloud.controller.user;
 
 import com.ztu.cloud.cloud.common.dto.user.download.Download;
 import com.ztu.cloud.cloud.common.dto.user.download.DownloadId;
+import com.ztu.cloud.cloud.common.log.SysLog;
 import com.ztu.cloud.cloud.common.validation.Token;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.service.user.DownloadService;
@@ -35,30 +36,28 @@ public class DownloadController {
     /**
      * 获取下载ID
      *
-     * @param token
-     *            用户Token
-     * @param parameter
-     *            请求参数 shareId 分享ID repositoryId 仓库ID fileId 文件Id fileName 文件名 folder 文件夹
+     * @param token     用户Token
+     * @param parameter 请求参数 shareId 分享ID repositoryId 仓库ID fileId 文件Id fileName 文件名 folder 文件夹
      * @return 下载ID
      */
+    @SysLog(descrption = "用户获取下载ID", type = "文件下载", modul = "用户模块")
     @PostMapping("/download")
     public ResultResponseEntity getDownloadId(
-        @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "user") String token,
-        @RequestBody @Valid DownloadId parameter) {
+            @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "user") String token,
+            @RequestBody @Valid DownloadId parameter) {
         return this.downloadService.getDownloadId(token, parameter);
     }
 
     /**
      * 下载文件
      *
-     * @param response
-     *            response
-     * @param downloadId
-     *            下载ID
+     * @param response   response
+     * @param downloadId 下载ID
      */
+    @SysLog(descrption = "用户下载文件", type = "文件下载", modul = "用户模块")
     @GetMapping("/download/{downloadId}")
     public void download(HttpServletResponse response,
-        @PathVariable @NotBlank(message = "下载ID不能为空") String downloadId) {
+                         @PathVariable @NotBlank(message = "下载ID不能为空") String downloadId) {
         Download download = this.downloadService.download(downloadId);
         if (download == null) {
             response.setCharacterEncoding("UTF-8");
@@ -78,8 +77,8 @@ public class DownloadController {
         response.setContentType("application/force-download");
         try {
             response.setHeader("Content-Disposition",
-                "attachment; fileName=" + URLEncoder.encode(download.getFileName(), "UTF-8") + ";filename*=utf-8''"
-                    + URLEncoder.encode(download.getFileName(), "UTF-8"));
+                    "attachment; fileName=" + URLEncoder.encode(download.getFileName(), "UTF-8") + ";filename*=utf-8''"
+                            + URLEncoder.encode(download.getFileName(), "UTF-8"));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }

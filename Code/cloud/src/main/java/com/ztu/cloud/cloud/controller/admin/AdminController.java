@@ -4,6 +4,7 @@ import com.ztu.cloud.cloud.common.dto.admin.*;
 import com.ztu.cloud.cloud.common.dto.common.ChangePassword;
 import com.ztu.cloud.cloud.common.dto.common.ForgetEmail;
 import com.ztu.cloud.cloud.common.dto.common.LoginAccount;
+import com.ztu.cloud.cloud.common.log.SysLog;
 import com.ztu.cloud.cloud.common.validation.Token;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.service.admin.AdminService;
@@ -36,6 +37,7 @@ public class AdminController {
      * @param token 管理员Token
      * @return 管理员信息以及更新后的Token
      */
+    @SysLog(descrption = "管理员Token登陆", type = "登陆", modul = "管理员模块")
     @GetMapping("/login/token")
     public ResultResponseEntity
     loginByToken(@RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token) {
@@ -48,6 +50,7 @@ public class AdminController {
      * @param parameter 请求数据 {account 账号 password 密码}
      * @return 管理员信息以及更新后的Token
      */
+    @SysLog(descrption = "管理员账号登陆", type = "登陆", modul = "管理员模块")
     @PostMapping("/login/account")
     public ResultResponseEntity loginByAccount(@RequestBody @NotNull @Valid LoginAccount parameter) {
         return this.adminService.loginByAccount(parameter);
@@ -59,6 +62,7 @@ public class AdminController {
      * @param parameter 请求数据 {email 邮箱}
      * @return 成功或失败
      */
+    @SysLog(descrption = "管理员重置密码", type = "重置密码", modul = "管理员模块")
     @PostMapping("/forget/email")
     public ResultResponseEntity forgetEmail(@RequestBody @Valid ForgetEmail parameter) {
         return this.adminService.forgetEmail(parameter);
@@ -70,6 +74,7 @@ public class AdminController {
      * @param parameter 请求数据 {name 用户名 account 账号 password 密码 email 邮箱 phone 手机 key 授权码}
      * @return 成功或失败
      */
+    @SysLog(descrption = "管理员注册", type = "注册", modul = "管理员模块")
     @PutMapping("/register/account")
     public ResultResponseEntity registerByAccount(@RequestBody @Valid RegisterAdmin parameter) {
         return this.adminService.registerByAccount(parameter);
@@ -82,6 +87,7 @@ public class AdminController {
      * @param adminId 管理员ID
      * @return 管理员信息
      */
+    @SysLog(descrption = "获取管理员个人信息", type = "获取个人信息", modul = "管理员模块")
     @GetMapping("/info/{adminId}")
     public ResultResponseEntity getAdminInfo(
             @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
@@ -96,6 +102,7 @@ public class AdminController {
      * @param parameter 请求数据 {id 管理员ID account 账号 email 邮箱 phone 手机 name 用户名}
      * @return 管理员信息
      */
+    @SysLog(descrption = "修改管理员个人信息", type = "修改个人信息", modul = "管理员模块")
     @PatchMapping("/info")
     public ResultResponseEntity changeAdminInfo(
             @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
@@ -110,6 +117,7 @@ public class AdminController {
      * @param parameter 请求数据 id 管理员ID oldPassword 原密码 newPassword 新密码
      * @return 成功或失败
      */
+    @SysLog(descrption = "修改管理员密码", type = "修改密码", modul = "管理员模块")
     @PatchMapping("/password")
     public ResultResponseEntity changeAdminPassword(
             @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
@@ -124,6 +132,7 @@ public class AdminController {
      * @param parameter 请求数据 name 用户名 account 账号 password 密码 email 邮箱 phone 手机
      * @return 成功或失败
      */
+    @SysLog(descrption = "管理员创建用户", type = "账号管理", modul = "管理员模块")
     @PutMapping("/user")
     public ResultResponseEntity createUserManage(
             @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
@@ -138,6 +147,7 @@ public class AdminController {
      * @param parameter 请求数据 name 用户名 account 账号 password 密码 email 邮箱 phone 手机 key 授权码
      * @return 成功或失败
      */
+    @SysLog(descrption = "管理员创建管理员", type = "账号管理", modul = "管理员模块")
     @PutMapping("/admin")
     public ResultResponseEntity createAdminManage(
             @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
@@ -152,6 +162,7 @@ public class AdminController {
      * @param parameter 请求数据 id 用户ID
      * @return 成功或失败
      */
+    @SysLog(descrption = "管理员删除用户", type = "账号管理", modul = "管理员模块")
     @DeleteMapping("/user")
     public ResultResponseEntity deleteUserManage(
             @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
@@ -166,14 +177,13 @@ public class AdminController {
      * @param parameter 请求数据 id 管理员ID
      * @return 成功或失败
      */
+    @SysLog(descrption = "管理员删除管理员", type = "账号管理", modul = "管理员模块")
     @DeleteMapping("/admin")
     public ResultResponseEntity deleteAdminManage(
             @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
             @RequestBody @Valid DeleteAdmin parameter) {
         return this.adminService.deleteAdminManage(token, parameter);
     }
-
-    // 完善分页排序
 
     /**
      * 获取用户列表
@@ -191,6 +201,7 @@ public class AdminController {
      * @param account    账号
      * @return 用户列表
      */
+    @SysLog(descrption = "分页获取管理员列表", type = "账号管理", modul = "管理员模块")
     @GetMapping("/user/list/{pageNumber}")
     public ResultResponseEntity getUserListManage(
             @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
@@ -223,6 +234,7 @@ public class AdminController {
      * @param account    账号
      * @return 管理员列表
      */
+    @SysLog(descrption = "分页获取管理员列表", type = "账号管理", modul = "管理员模块")
     @GetMapping("/admin/list/{pageNumber}")
     public ResultResponseEntity getAdminListManage(
             @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
@@ -246,6 +258,7 @@ public class AdminController {
      * @param userId 用户ID
      * @return 用户信息
      */
+    @SysLog(descrption = "管理员获取用户信息", type = "账号管理", modul = "管理员模块")
     @GetMapping("/user/{userId}/info")
     public ResultResponseEntity getUserInfoManage(
             @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
@@ -260,6 +273,7 @@ public class AdminController {
      * @param adminId 管理员ID
      * @return 成功或失败
      */
+    @SysLog(descrption = "管理员获取管理员信息", type = "账号管理", modul = "管理员模块")
     @GetMapping("/admin/{adminId}/info")
     public ResultResponseEntity getAdminInfoManage(
             @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
@@ -274,6 +288,7 @@ public class AdminController {
      * @param parameter 请求数据 id 用户ID account 账号 email 邮箱 phone 手机 name 昵称 password 密码 status 状态 level 等级 repoSize 仓库大小
      * @return 用户信息
      */
+    @SysLog(descrption = "管理员修改用户信息", type = "账号管理", modul = "管理员模块")
     @PatchMapping("/user")
     public ResultResponseEntity changeUserInfoManage(
             @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
@@ -288,6 +303,7 @@ public class AdminController {
      * @param parameter 请求数据 id 管理员ID account 账号 email 邮箱 phone 手机 password 密码 name 昵称 status 状态 level 等级
      * @return 用户信息
      */
+    @SysLog(descrption = "管理员修改管理员信息", type = "账号管理", modul = "管理员模块")
     @PatchMapping("/admin")
     public ResultResponseEntity changeAdminInfoManage(
             @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,

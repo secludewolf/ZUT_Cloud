@@ -1,6 +1,7 @@
 package com.ztu.cloud.cloud.controller.admin;
 
 import com.ztu.cloud.cloud.common.dto.user.download.Download;
+import com.ztu.cloud.cloud.common.log.SysLog;
 import com.ztu.cloud.cloud.common.validation.Token;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.service.admin.FileService;
@@ -41,6 +42,7 @@ public class FileController {
      * @param token    管理员Token
      * @param fileId   文件ID
      */
+    @SysLog(descrption = "管理员下载文件", type = "文件管理", modul = "管理员模块")
     @GetMapping("/download/{fileId}")
     public void download(HttpServletRequest request, HttpServletResponse response,
                          @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
@@ -99,6 +101,7 @@ public class FileController {
      * @param name       文件名称
      * @return 文件列表
      */
+    @SysLog(descrption = "管理员获取文件列表", type = "文件管理", modul = "管理员模块")
     @GetMapping("/file/list/{pageNumber}")
     public ResultResponseEntity getFileList(
             @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
@@ -122,6 +125,7 @@ public class FileController {
      * @param fileId 文件ID
      * @return 文件信息
      */
+    @SysLog(descrption = "管理员获取文件信息", type = "文件管理", modul = "管理员模块")
     @GetMapping("/file/{fileId}/info")
     public ResultResponseEntity getFileInfo(
             @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
@@ -136,6 +140,7 @@ public class FileController {
      * @param fileId 文件ID
      * @return 是否成功
      */
+    @SysLog(descrption = "管理员删除文件", type = "文件管理", modul = "管理员模块")
     @DeleteMapping("/file/{fileId}")
     public ResultResponseEntity deleteFile(
             @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,

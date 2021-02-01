@@ -1,6 +1,7 @@
 package com.ztu.cloud.cloud.controller.admin;
 
 import com.ztu.cloud.cloud.common.dto.admin.CreateInform;
+import com.ztu.cloud.cloud.common.log.SysLog;
 import com.ztu.cloud.cloud.common.validation.Token;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.service.admin.InformManageService;
@@ -34,6 +35,7 @@ public class InformAdminController {
 	 * @param parameter 请求参数 header 标题 content 内容 validTime 有消息
 	 * @return 通知信息
 	 */
+	@SysLog(descrption = "管理员创建用户通知", type = "通知管理", modul = "管理员模块")
 	@PutMapping("/admin/inform/user")
 	public ResultResponseEntity createUserInform(
 			@RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
@@ -48,6 +50,7 @@ public class InformAdminController {
 	 * @param parameter 请求参数 header 标题 content 内容 validTime 有消息
 	 * @return 通知信息
 	 */
+	@SysLog(descrption = "管理员创建管理员通知", type = "通知管理", modul = "管理员模块")
 	@PutMapping("/admin/inform/admin")
 	public ResultResponseEntity createAdminInform(
 			@RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
@@ -61,6 +64,7 @@ public class InformAdminController {
 	 * @param token 管理员Token
 	 * @return 通知列表
 	 */
+	@SysLog(descrption = "管理员获取通知列表", type = "通知管理", modul = "管理员模块")
 	@GetMapping("/admin/inform")
 	public ResultResponseEntity
 	getInformList(@RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token) {
@@ -74,6 +78,7 @@ public class InformAdminController {
 	 * @param informId 通知ID
 	 * @return 通知信息
 	 */
+	@SysLog(descrption = "管理员获取通知信息", type = "通知管理", modul = "管理员模块")
 	@GetMapping("/admin/inform/{informId}")
 	public ResultResponseEntity getInform(@RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
 	                                      @PathVariable @NotBlank(message = "通知ID不能为空") String informId) {
@@ -88,6 +93,7 @@ public class InformAdminController {
 	 * @param status   通知状态
 	 * @return 是否成功
 	 */
+	@SysLog(descrption = "管理员修改通知信息", type = "通知管理", modul = "管理员模块")
 	@PatchMapping("/admin/inform/{informId}/{status}")
 	public ResultResponseEntity changeInformStatus(
 			@RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
@@ -106,6 +112,7 @@ public class InformAdminController {
 	 * @param sortType   排序类型
 	 * @return 文件列表
 	 */
+	@SysLog(descrption = "管理员获取通知列表", type = "通知管理", modul = "管理员模块")
 	@GetMapping("/admin/inform/admin/{pageNumber}")
 	public ResultResponseEntity getAdminInformList(
 			@RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
@@ -126,6 +133,7 @@ public class InformAdminController {
 	 * @param sortType   排序类型
 	 * @return 文件列表
 	 */
+	@SysLog(descrption = "管理员获取通知列表", type = "通知管理", modul = "管理员模块")
 	@GetMapping("/admin/inform/user/{pageNumber}")
 	public ResultResponseEntity getUserInformList(
 			@RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
@@ -142,6 +150,7 @@ public class InformAdminController {
 	 * @param informId 通知ID
 	 * @return 删除结果
 	 */
+	@SysLog(descrption = "管理员删除通知", type = "通知管理", modul = "管理员模块")
 	@DeleteMapping("/admin/inform/{role}/{informId}")
 	public ResultResponseEntity deleteInform(@RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
 	                                         @PathVariable @NotBlank(message = "类型不能为空") String role,

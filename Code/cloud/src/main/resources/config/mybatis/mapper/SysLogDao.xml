@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ztu.cloud.cloud.common.dao.mysql.SysLogDao">
+
+    <insert id="insertSysLog"
+            parameterType="com.ztu.cloud.cloud.common.bean.mysql.SysLog"
+            useGeneratedKeys="true"
+            keyProperty="id">
+        insert into log (memberId, memberType, requestIp, actionUrl, actionMethod, optionType, optionDesc, optionModel,
+                         classPath, requestMethod, parameter, message, status, startTime, finishTime, consumingTime)
+        values (#{memberId}, #{memberType}, #{requestIp}, #{actionUrl}, #{actionMethod}, #{optionType}, #{optionDesc},
+                #{optionModel}, #{classPath}, #{requestMethod}, #{parameter}, #{message}, #{status}, #{startTime},
+                #{finishTime}, #{consumingTime})
+    </insert>
+    <select id="getSysLogs"
+            resultType="com.ztu.cloud.cloud.common.bean.mysql.SysLog"
+            parameterType="com.ztu.cloud.cloud.common.dto.condition.SysLog">
+        select *
+        from log
+        where 1=1
+        <if test="memberType != null">
+            and memberType = #{memberType}
+        </if>
+        <if test="actionUrl != null">
+            and actionUrl like concat('%',#{actionUrl},'%')
+        </if>
+        <if test="email != null">
+            and requestIp like concat('%',#{requestIp},'%')
+        </if>
+        <if test="status != null">
+            and status = #{status}
+        </if>
+        <if test="startTime != null">
+            and startTime &gt;= #{startTime}
+        </if>
+        <if test="finishTime != null">
+            and startTime &lt;= #{finishTime}
+        </if>
+    </select>
+</mapper>

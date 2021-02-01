@@ -1,7 +1,6 @@
 <template>
   <div>
-    <mavon-editor v-model="inform" style="position:relative;height: 500px;width: 100%;z-index: 1"/>
-    <a-form :form="form" :label-col="{ span: 2 }" :wrapper-col="{ span: 10 }" @submit="handleSubmit"
+    <a-form :form="form" :label-col="{ span: 2 }" :wrapper-col="{ span: 6 }" @submit="handleSubmit"
             style="padding: 30px 0 0 0; ">
       <a-form-item label="标题">
         <a-input
@@ -23,7 +22,13 @@
           v-decorator="['time', { rules: [{ required: true, message: '有效期不能为空!' }] }]"
         />
       </a-form-item>
-      <a-form-item :wrapper-col="{ span: 6, offset: 2 }">
+      <a-form-item label="内容">
+        <a-textarea
+          v-decorator="['content', { rules: [{ required: true, message: '内容不能为空!'},{ min: 5, message: '长度不能小于5字符'}] }]"
+          style="min-height: 200px;"
+        />
+      </a-form-item>
+      <a-form-item :wrapper-col="{offset: 2, span: 6 }">
         <a-button type="primary" html-type="submit" block>
           发布
         </a-button>
@@ -34,49 +39,45 @@
 
 <script>
 
-  import {message} from "../../util/message";
-  import moment from 'moment';
-  import {createAdminInform, createUserInform} from "../../api/inform";
+import {message} from "../../util/message";
+import moment from 'moment';
+import {createAdminInform, createUserInform} from "../../api/inform";
 
-  export default {
-    name: "CreateInform",
-    data() {
-      return {
-        inform: "",
-        formLayout: 'horizontal',
-        form: this.$form.createForm(this, {name: 'coordinated'}),
-      }
-    },
-    methods: {
-      handleSubmit: function (e) {
-        e.preventDefault();
-        this.form.validateFields((err, values) => {
-          if (!err) {
-            if (this.inform.length === 0) {
-              message("通知内容不能为空!", "warning");
-              return;
-            }
-            const data = {
-              header: values.title,
-              content: this.inform,
-              validTime: moment(values.time[1]).valueOf()
-            };
-            const handler = (data) => {
-              message("创建成功");
-            };
-            const catcher = (code, content) => {
-              message(content, "warning");
-            };
-            if (values.receiver === "user") {
-              createUserInform(data, handler, catcher);
-            } else if (values.receiver === "admin") {
-              createAdminInform(data, handler, catcher);
-            }
+export default {
+  name: "CreateInform",
+  data() {
+    return {
+      inform: "",
+      formLayout: 'horizontal',
+      form: this.$form.createForm(this, {name: 'coordinated'}),
+    }
+  },
+  methods: {
+    handleSubmit: function (e) {
+      e.preventDefault();
+      this.form.validateFields((err, values) => {
+        if (!err) {
+          const data = {
+            header: values.title,
+            content: values.content,
+            validTime: moment(values.time[1]).valueOf()
+          };
+          const handler = (data) => {
+            message("创建成功");
+          };
+          const catcher = (code, content) => {
+            message(content, "warning");
+          };
+          if (values.receiver === "user") {
+            createUserInform(data, handler, catcher);
+          } else if (values.receiver === "admin") {
+            createAdminInform(data, handler, catcher);
           }
-        });
-      },
+        }
+      });
     },
-  }
+  },
+}
 </script>
 
 <style scoped>

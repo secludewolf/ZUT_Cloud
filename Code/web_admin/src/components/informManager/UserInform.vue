@@ -1,44 +1,5 @@
 <template>
   <div style="height: 100%;width: 100%">
-    <div style="margin-bottom: 20px;">
-      <a-form :form="form" layout="inline" @submit="handleSubmit">
-        <a-form-model-item label="状态">
-          <a-select v-decorator="['status']" placeholder="账号状态" style="width: 150px;">
-            <a-select-option value="1">
-              正常
-            </a-select-option>
-            <a-select-option value="-1">
-              停用
-            </a-select-option>
-          </a-select>
-        </a-form-model-item>
-        <a-form-item label="时间范围">
-          <a-range-picker v-decorator="['range-picker']"/>
-        </a-form-item>
-        <a-form-item
-          label="手机号">
-          <a-input placeholder="手机号"
-                   v-decorator="['phone']"/>
-        </a-form-item>
-        <a-form-item
-          label="邮箱">
-          <a-input placeholder="邮箱"
-                   v-decorator="['email']"/>
-        </a-form-item>
-        <a-form-item
-          label="账号">
-          <a-input placeholder="账号"
-                   v-decorator="['phone']"/>
-        </a-form-item>
-        <a-button type="default" style="margin-left:10px;float: right">
-          增加
-        </a-button>
-        <a-button type="primary" html-type="submit" style="float: right">
-          筛选
-          <a-icon type="search"/>
-        </a-button>
-      </a-form>
-    </div>
     <a-table :columns="columns"
              :rowKey="record => record.id"
              :data-source="data"

@@ -7,22 +7,45 @@
     <select id="getShareById"
             parameterType="String"
             resultType="com.ztu.cloud.cloud.common.bean.mysql.Share">
-        select * from share where ID=#{id}
+        select *
+        from share
+        where ID = #{id}
     </select>
     <select id="getShareByUserId"
             parameterType="int"
             resultType="com.ztu.cloud.cloud.common.bean.mysql.Share">
-        select * from share where userId=#{userId}
+        select *
+        from share
+        where userId = #{userId}
     </select>
     <!--    根据分页文件列表-->
     <select id="getShares"
+            parameterType="com.ztu.cloud.cloud.common.dto.condition.Share"
             resultType="com.ztu.cloud.cloud.common.bean.mysql.Share">
-        select * from share
+        select *
+        from share
+        where 1 = 1
+        <if test="userId != null">
+            and userId = #{userId}
+        </if>
+        <if test="name != null">
+            and name like concat('%',#{name},'%')
+        </if>
+        <if test="status != null">
+            and status = #{status}
+        </if>
+        <if test="startTime != null">
+            and createTime &gt;= #{startTime}
+        </if>
+        <if test="endTime != null">
+            and createTime &lt;= #{endTime}
+        </if>
     </select>
     <!--    获取分享数量-->
     <select id="getShareCount"
             resultType="long">
-        select count(*) from share
+        select count(*)
+        from share
     </select>
     <!--    通过用户信息实体类修改用户信息-->
     <update id="updateShare"
@@ -50,12 +73,14 @@
     <!--    根据用户信息实体类插入一个用户-->
     <insert id="insertShare"
             parameterType="com.ztu.cloud.cloud.common.bean.mysql.Share">
-        insert into share (id,userId,repoId,name,password,status,createTime,validTime)
-        values (#{id},#{userId},#{repoId},#{name},#{password},#{status},#{createTime},#{validTime})
+        insert into share (id, userId, repoId, name, password, status, createTime, validTime)
+        values (#{id}, #{userId}, #{repoId}, #{name}, #{password}, #{status}, #{createTime}, #{validTime})
     </insert>
     <delete id="deleteShareById"
             parameterType="String">
-        delete from share where id=#{id}
+        delete
+        from share
+        where id = #{id}
     </delete>
     <!--    修改用户密码-->
     <update id="updateShareStatus">
