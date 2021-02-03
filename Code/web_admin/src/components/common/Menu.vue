@@ -55,46 +55,41 @@
           </router-link>
         </a-menu-item>
       </a-sub-menu>
-      <!--      <a-sub-menu key="sub3 ">-->
-      <!--        <span slot="title"><a-icon type="cloud-server"/><span>服务器信息</span></span>-->
-      <!--        <a-menu-item key="8">-->
-      <!--          <router-link to="/admin">-->
-      <!--            图表-->
-      <!--          </router-link>-->
-      <!--        </a-menu-item>-->
-      <!--        <a-menu-item key="9">-->
-      <!--          <router-link to="/admin">-->
-      <!--            日志-->
-      <!--          </router-link>-->
-      <!--        </a-menu-item>-->
-      <!--      </a-sub-menu>-->
+      <a-sub-menu key="sub4">
+        <span slot="title"><a-icon type="notification"/><span>日志管理</span></span>
+        <a-menu-item key="8">
+          <router-link to="/log">
+            日志
+          </router-link>
+        </a-menu-item>
+      </a-sub-menu>
     </a-menu>
   </div>
 </template>
 
 <script>
-  export default {
-    name: "Menu",
-    props: {
-      collapsed: {
-        type: Boolean,
-        default: true
-      }
+export default {
+  name: "Menu",
+  props: {
+    collapsed: {
+      type: Boolean,
+      default: true
+    }
+  },
+  data() {
+    return {};
+  },
+  methods: {
+    toggleCollapsed() {
+      this.collapsed = !this.collapsed;
     },
-    data() {
-      return {};
-    },
-    methods: {
-      toggleCollapsed() {
-        this.collapsed = !this.collapsed;
-      },
-    },
-  };
+  },
+};
 </script>
 
 <style scoped>
-  .logo {
-    height: 32px;
-    margin: 16px;
-  }
+.logo {
+  height: 32px;
+  margin: 16px;
+}
 </style>

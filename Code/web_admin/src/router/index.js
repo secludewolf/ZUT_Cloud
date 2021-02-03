@@ -14,6 +14,7 @@ import Login from "../views/Login";
 import Register from "../views/Register";
 import Forget from "../views/Forget";
 import NotFoundTarget from "../views/404"
+import Log from "../components/logManager/Log";
 
 Vue.use(Router);
 
@@ -122,6 +123,14 @@ const router = new Router({
           meta: {
             parent: '通知管理',
             title: '创建',
+          },
+        }, {
+          path: "/log",
+          name: "log",
+          component: Log,
+          meta: {
+            parent: '日志管理',
+            title: '日志',
           },
         },
       ],
