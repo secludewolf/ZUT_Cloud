@@ -33,9 +33,9 @@
           <a-input placeholder="账号"
                    v-decorator="['phone']"/>
         </a-form-item>
-        <a-button type="default" style="margin-left:10px;float: right">
-          增加
-        </a-button>
+<!--        <a-button type="default" style="margin-left:10px;float: right">-->
+        <!--          增加-->
+        <!--        </a-button>-->
         <a-button type="primary" html-type="submit" style="float: right">
           筛选
           <a-icon type="search"/>

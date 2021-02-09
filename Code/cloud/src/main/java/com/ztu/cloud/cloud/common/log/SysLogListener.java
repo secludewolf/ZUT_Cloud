@@ -1,6 +1,6 @@
 package com.ztu.cloud.cloud.common.log;
 
-import com.ztu.cloud.cloud.service.common.SysLogService;
+import com.ztu.cloud.cloud.service.admin.SysLogService;
 import com.ztu.cloud.cloud.common.bean.mysql.SysLog;
 import org.springframework.context.event.EventListener;
 import org.springframework.core.annotation.Order;

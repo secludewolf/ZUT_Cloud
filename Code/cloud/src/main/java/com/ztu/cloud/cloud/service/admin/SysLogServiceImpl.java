@@ -1,4 +1,4 @@
-package com.ztu.cloud.cloud.service.common;
+package com.ztu.cloud.cloud.service.admin;
 
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;

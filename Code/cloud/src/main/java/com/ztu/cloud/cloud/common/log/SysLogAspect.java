@@ -92,11 +92,16 @@ public class SysLogAspect {
     @AfterReturning(returning = "ret", pointcut = "sysLogAspect()")
     public void doAfterReturning(Object ret) {
         ResultResponseEntity result = (ResultResponseEntity) ret;
-        if (result.getStatusCode().value() == 200) {
-            sysLog.setStatus(1);
-        } else {
+        try {
+            if (result.getStatusCode().value() == 200) {
+                sysLog.setStatus(1);
+            } else {
+                sysLog.setStatus(-1);
+                sysLog.setMessage(result.toString());
+            }
+        } catch (Exception ignored) {
             sysLog.setStatus(-1);
-            sysLog.setMessage(result.toString());
+            sysLog.setMessage(String.valueOf(result));
         }
         applicationContext.publishEvent(new SysLogEvent(sysLog));
     }

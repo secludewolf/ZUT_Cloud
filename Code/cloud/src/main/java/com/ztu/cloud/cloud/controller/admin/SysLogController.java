@@ -3,7 +3,7 @@ package com.ztu.cloud.cloud.controller.admin;
 import com.ztu.cloud.cloud.common.log.SysLog;
 import com.ztu.cloud.cloud.common.validation.Token;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
-import com.ztu.cloud.cloud.service.common.SysLogService;
+import com.ztu.cloud.cloud.service.admin.SysLogService;
 import com.ztu.cloud.cloud.util.TokenUtil;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -43,7 +43,7 @@ public class SysLogController {
      */
     @SysLog(descrption = "管理员获取日志列表", type = "日志管理", modul = "管理员模块")
     @GetMapping("/log/list/{pageNumber}")
-    public ResultResponseEntity getUserListManage(
+    public ResultResponseEntity getLogListManage(
             @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "admin") String token,
             @PathVariable("pageNumber") @Min(1) Integer pageNumber,
             @RequestParam(name = "pageSize", defaultValue = "20", required = false) @Min(1) Integer pageSize,

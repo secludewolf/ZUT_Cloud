@@ -1,4 +1,4 @@
-package com.ztu.cloud.cloud.service.common;
+package com.ztu.cloud.cloud.service.admin;
 
 import com.ztu.cloud.cloud.common.bean.mysql.SysLog;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;

@@ -138,10 +138,13 @@
           <!--                </span>-->
           <div>
             <!--          <a :disabled="editingKey !== ''" @click="() => edit(record.key)">编辑</a>-->
+            <a-button @click="download(record.id)">
+              下载
+            </a-button>
             <a-popconfirm
               title="确定要禁用此文件吗?"
               @confirm="() => onDelete(record.id)">
-              <a-button :disabled="record.status !== 1" href="javascript:">禁用</a-button>
+              <a-button :disabled="record.status !== 1" type="danger" href="javascript:">禁用</a-button>
             </a-popconfirm>
           </div>
         </div>
@@ -153,6 +156,7 @@
 import {deleteFile, getFileList} from "../../api/file";
 import {message} from "../../util/message";
 import {getFormatSize} from "../../util/util";
+import {getDownloadId} from "../../api/download";
 
 const columns = [
   {
@@ -193,7 +197,7 @@ const columns = [
   {
     title: '操作',
     dataIndex: 'operation',
-    width: '150px',
+    width: '200px',
     scopedSlots: {customRender: 'operation'},
     align: "center",
   },
@@ -358,7 +362,19 @@ export default {
     },
     getFormatSize(size) {
       return getFormatSize(size);
-    }
+    },
+    download(fileId) {
+      const parent = this;
+      const handler = (data) => {
+        console.log(data.id);
+        window.open("/api/download/" + data.id, '_blank');
+      }
+      const catcher = (code, content) => {
+        parent.$message.warn(content);
+      }
+      console.log(fileId);
+      getDownloadId(fileId, handler, catcher);
+    },
   },
 };
 </script>

@@ -1,17 +1,11 @@
-package com.ztu.cloud.cloud.service.user;
+package com.ztu.cloud.cloud.service.common;
 
 import com.ztu.cloud.cloud.common.bean.mongodb.ShareRepository;
-import com.ztu.cloud.cloud.common.bean.mysql.File;
-import com.ztu.cloud.cloud.common.bean.mysql.Share;
-import com.ztu.cloud.cloud.common.bean.mysql.User;
-import com.ztu.cloud.cloud.common.bean.mysql.UserFile;
+import com.ztu.cloud.cloud.common.bean.mysql.*;
 import com.ztu.cloud.cloud.common.bean.redis.Download;
 import com.ztu.cloud.cloud.common.constant.ResultConstant;
 import com.ztu.cloud.cloud.common.dao.mongodb.ShareRepositoryDao;
-import com.ztu.cloud.cloud.common.dao.mysql.FileMapper;
-import com.ztu.cloud.cloud.common.dao.mysql.ShareMapper;
-import com.ztu.cloud.cloud.common.dao.mysql.UserFileMapper;
-import com.ztu.cloud.cloud.common.dao.mysql.UserMapper;
+import com.ztu.cloud.cloud.common.dao.mysql.*;
 import com.ztu.cloud.cloud.common.dao.redis.DownLoadDao;
 import com.ztu.cloud.cloud.common.dto.user.download.DownloadId;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
@@ -31,6 +25,7 @@ import java.util.UUID;
 @Component
 public class DownLoadServiceImpl implements DownloadService {
     UserMapper userDao;
+    AdminMapper adminMapper;
     ShareMapper shareDao;
     FileMapper fileDao;
     UserFileMapper userFileDao;
@@ -38,9 +33,9 @@ public class DownLoadServiceImpl implements DownloadService {
     StoreUtil storeUtil;
     DownLoadDao downloadDao;
 
-    public DownLoadServiceImpl(UserMapper userDao, ShareMapper shareDao, FileMapper fileDao, UserFileMapper userFileDao,
-        ShareRepositoryDao shareRepositoryDao, StoreUtil storeUtil, DownLoadDao downloadDao) {
+    public DownLoadServiceImpl(UserMapper userDao, AdminMapper adminMapper, ShareMapper shareDao, FileMapper fileDao, UserFileMapper userFileDao, ShareRepositoryDao shareRepositoryDao, StoreUtil storeUtil, DownLoadDao downloadDao) {
         this.userDao = userDao;
+        this.adminMapper = adminMapper;
         this.shareDao = shareDao;
         this.fileDao = fileDao;
         this.userFileDao = userFileDao;
@@ -52,10 +47,8 @@ public class DownLoadServiceImpl implements DownloadService {
     /**
      * 获取下载ID
      *
-     * @param token
-     *            用户Token
-     * @param parameter
-     *            请求参数 shareId 分享ID repositoryId 仓库ID fileId 文件Id fileName 文件名 folder 文件夹
+     * @param token     用户Token
+     * @param parameter 请求参数 shareId 分享ID repositoryId 仓库ID fileId 文件Id fileName 文件名 folder 文件夹
      * @return 下载ID
      */
     @Override
@@ -147,10 +140,44 @@ public class DownLoadServiceImpl implements DownloadService {
     }
 
     /**
+     * 获取下载ID
+     *
+     * @param token  管理员Token
+     * @param fileId 文件ID
+     * @return 下载ID
+     */
+    @Override
+    public ResultResponseEntity getAdminDownloadId(String token, String fileId) {
+        // TODO 创建缓存文件并使用缓存文件下载
+        // TODO 防止重复创建链接
+        // TODO 更新下载次数
+        int id = TokenUtil.getId(token);
+        Admin admin = this.adminMapper.getAdminById(id);
+        if (admin == null) {
+            return ResultConstant.USER_NOT_FOUND;
+        }
+        if (admin.getStatus() != 1) {
+            return ResultConstant.USER_STATUS_ABNORMAL;
+        }
+
+        File fileById = this.fileDao.getFileById(fileId);
+        if (fileById == null) {
+            return ResultConstant.REQUEST_PARAMETER_ERROR;
+        }
+        // 仓库下载
+        Download download = new Download();
+        String uuid = getUUID();
+        download.setId(uuid);
+        download.setFileId(fileId);
+        download.setName(fileById.getName());
+        this.downloadDao.insert(download);
+        return ResultUtil.createResult("成功", new com.ztu.cloud.cloud.common.vo.user.DownloadId(uuid));
+    }
+
+    /**
      * 下载文件
      *
-     * @param downloadId
-     *            下载ID
+     * @param downloadId 下载ID
      * @return 文件数据流
      */
     @Override
