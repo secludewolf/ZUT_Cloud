@@ -6,7 +6,9 @@
     <a-layout style="height: 100%;">
       <a-layout-header style="background: #fff; padding: 0">
         <span
-          style="margin: 0 20px;font-size: 14px;font-weight: bold;">{{ this.$route.meta.parent}} / {{ this.$route.meta.title }}</span>
+          style="margin: 0 20px;font-size: 14px;font-weight: bold;">{{ this.$route.meta.parent }} / {{
+            this.$route.meta.title
+          }}</span>
         <div style="float: right;height: 64px;padding:0 30px;background: white;line-height: 64px;">
           <a-dropdown style="padding: 3px;">
             <a class="ant-dropdown-link" @click="e => e.preventDefault()">
@@ -57,83 +59,86 @@
 </template>
 
 <script>
-  import Menu from "../components/common/Menu";
-  import {changeInformStatus, getInformList} from "../api/inform";
-  import {message} from "../util/message";
+import Menu from "../components/common/Menu";
+import {changeInformStatus, getInformList} from "../api/inform";
+import {message} from "../util/message";
 
-  export default {
-    name: 'Index',
-    components: {
-      Menu
-    },
-    created() {
-      console.log(localStorage.getItem("token"));
-      if (this.$store.state.admin.id === 0 && (localStorage.getItem("token") !== "" || localStorage.getItem("token") !== null)) {
-        this.$store.dispatch("loginByToken");
+export default {
+  name: 'Index',
+  components: {
+    Menu
+  },
+  created() {
+    console.log(localStorage.getItem("token"));
+    if (this.$store.state.admin.id === 0 && (localStorage.getItem("token") !== "" || localStorage.getItem("token") !== null)) {
+      this.$store.dispatch("loginByToken");
+    }
+  },
+  mounted() {
+    const handler = (data) => {
+      data.informList.sort(function (a, b) {
+        return b.createTime - a.createTime;
+      })
+      this.informList = data.informList;
+    };
+    const catcher = (code, content) => {
+      message(content, "warning");
+    };
+    getInformList(handler, catcher);
+  },
+  data() {
+    return {
+      collapsed: false,
+      visible: false,
+      informList: []
+    }
+  },
+  computed: {
+    unReadInformNumber() {
+      let count = 0;
+      for (let i = 0; i < this.informList.length; i++) {
+        if (this.informList[i].status === 0) {
+          count++;
+        }
       }
-    },
-    mounted() {
+      return count;
+    }
+  },
+  methods: {
+    changeInformStatus(index) {
+      const data = this.informList[index].id + "/1";
       const handler = (data) => {
-        this.informList = data.informList;
+        this.informList[index].status = 1;
       };
       const catcher = (code, content) => {
-        message(content, "warning");
+        message(content, "warning")
       };
-      getInformList(handler, catcher);
+      changeInformStatus(data, handler, catcher);
     },
-    data() {
-      return {
-        collapsed: false,
-        visible: false,
-        informList: []
-      }
+    showDrawer() {
+      this.visible = true;
     },
-    computed: {
-      unReadInformNumber() {
-        let count = 0;
-        for (let i = 0; i < this.informList.length; i++) {
-          if (this.informList[i].status === 0) {
-            count++;
-          }
-        }
-        return count;
-      }
+    onClose() {
+      this.visible = false;
     },
-    methods: {
-      changeInformStatus(index) {
-        const data = this.informList[index].id + "/1";
-        const handler = (data) => {
-          this.informList[index].status = 1;
-        };
-        const catcher = (code, content) => {
-          message(content, "warning")
-        };
-        changeInformStatus(data, handler, catcher);
-      },
-      showDrawer() {
-        this.visible = true;
-      },
-      onClose() {
-        this.visible = false;
-      },
-      exit() {
-        localStorage.setItem("token", "");
-        this.$message.success("退出成功");
-      },
-    }
+    exit() {
+      localStorage.setItem("token", "");
+      this.$message.success("退出成功");
+    },
   }
+}
 </script>
 
 <style scoped>
-  .trigger {
-    font-size: 18px;
-    line-height: 64px;
-    padding: 0 24px;
-    cursor: pointer;
-    transition: color 0.3s;
-  }
+.trigger {
+  font-size: 18px;
+  line-height: 64px;
+  padding: 0 24px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
 
-  .trigger:hover {
-    color: #1890ff;
-  }
+.trigger:hover {
+  color: #1890ff;
+}
 </style>

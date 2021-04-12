@@ -119,6 +119,9 @@
       getInformList() {
         const parent = this;
         const handler = function (data) {
+          data.informList.sort(function (a, b) {
+            return b.createTime - a.createTime;
+          })
           parent.informList = data.informList;
         };
         const catcher = function (code, content) {
