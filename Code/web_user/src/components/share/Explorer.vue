@@ -61,7 +61,7 @@ export default {
     if (sessionStorage.getItem(this.$route.query["id"]) != null)
       this.autoLoadData();
     else
-      this.loadData();
+      this.passwordVisible = true;
   },
   mounted() {
   },
