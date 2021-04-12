@@ -162,14 +162,14 @@
                 <span slot="changeTime" slot-scope="text">{{ getFormatDate(text) }}</span>
                 <span slot="action" slot-scope="text, record, index">
                 <span>
-                  <a v-if="!isRecycleBin" @click="download(index)">
+                  <a v-if="record.depth==null&&!isRecycleBin" @click="download(index)">
                   <a-icon type="download" style="padding-right:5px;"/>下载</a>
                 </span>
                 <a v-if="isRecycleBin" @click="restore(index)">
                   <a-icon type="rest" style="padding-right:5px;"/>恢复
                 </a>
-                <a v-if="!isShare" @click="delete_(index)">
-                  <a-divider type="vertical"/>
+                  <a-divider v-if="record.depth==null&&isRepository||isRecycleBin" type="vertical"/>
+                <a v-if="isRecycleBin||isRepository" @click="delete_(index)">
                   <a-icon type="delete" style="padding-right:5px;"/>删除</a>
               </span>
               </a-table>
