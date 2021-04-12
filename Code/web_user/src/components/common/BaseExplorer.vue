@@ -3,13 +3,14 @@
     <a-layout-header
       style="position:relative;background: white;margin:0;padding:0 10px;height: 48px;line-height: 48px;">
       <div style="float: left">
-        <a-button type="primary" :disabled="!isRepository">
+        <a-button type="primary" v-if="!isShare&&(isRepository||isSearch)" :disabled="isSearch">
           <a-icon type="cloud-upload"/>
           <span>上传</span>
           <input type="file" v-on:change="uploadFile" multiple="multiple"
                  style="position: absolute;top: 0;bottom: 0;left: 0;right: 0;height: 40px;width: 88px;opacity: 0;"/>
         </a-button>
-        <a-button type="primary" :disabled="!isRepository" v-on:click="createFolderVisible = true">
+        <a-button type="primary" v-if="!isShare&&(isRepository||isSearch)" :disabled="isSearch"
+                  v-on:click="createFolderVisible = true">
           <a-icon type="folder-add"/>
           新建文件夹
         </a-button>
@@ -1119,10 +1120,10 @@ export default {
     },
     formatPath() {
       if (this.target.path != null)
-        return this.target.path.replace("/root","/全部文件");
+        return this.target.path.replace("/root", "/全部文件");
       else
         return "";
-    }
+    },
   }
 }
 </script>
