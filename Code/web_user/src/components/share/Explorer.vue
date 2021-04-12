@@ -103,19 +103,8 @@ export default {
         parent.passwordVisible = false;
         parent.repositoryVisible = true;
         parent.loading = false;
-        sessionStorage.setItem(parent.$route.query["id"], parent.password);
       };
-      const catcher = function (code, content) {
-        parent.loading = false;
-        if (code === -6 || code === -7) {
-          parent.resultVisible = false;
-          parent.passwordVisible = true;
-          parent.passwordErrorVisible = true;
-        } else {
-          parent.resultTitle = content;
-          parent.resultVisible = true;
-        }
-      };
+      const catcher = function () {};
       getShare(data, handler, catcher);
     },
     loadData() {
