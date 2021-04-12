@@ -253,7 +253,14 @@
               <a-input placeholder="请输入分享密码" v-model="sharePassword"/>
             </a-form-item>
             <a-form-item label="截止日期">
-              <a-date-picker v-model="shareTime" :locale="locale"/>
+              <a-date-picker
+                format="YYYY-MM-DD HH:mm:ss"
+                :disabled-date="disabledDate"
+                :disabled-time="disabledDateTime"
+                :show-time="{ defaultValue: moment('00:00:00', 'HH:mm:ss') }"
+                v-model="shareTime"
+                :locale="locale"
+              />
             </a-form-item>
           </a-form>
         </a-modal>
@@ -328,6 +335,7 @@ import {createShare, saveShare} from "../../api/share";
 import {uploadBigFile, uploadSmallFile} from "../../api/upload";
 import {getDownloadId} from "../../api/download";
 import merge from "webpack-merge";
+import moment from 'moment';
 
 const columns = [
   {
@@ -962,6 +970,22 @@ export default {
         this.$message.warn("分享名称不能为空!")
         return;
       }
+      if (this.shareName.length < 2) {
+        this.$message.warn("分享名称过短!")
+        return;
+      }
+      if (this.sharePassword === "") {
+        this.$message.warn("分享密码不能为空!")
+        return;
+      }
+      if (this.sharePassword.length < 4) {
+        this.$message.warn("分享密码不能少于4位!")
+        return;
+      }
+      if (this.shareTime == null) {
+        this.$message.warn("分享失效时间不能为空!")
+        return;
+      }
       this.shareLoading = true;
       const parent = this;
       const data = {
@@ -1124,6 +1148,38 @@ export default {
       else
         return "";
     },
+    moment,
+    range(start, end) {
+      const result = [];
+      for (let i = start; i < end; i++) {
+        result.push(i);
+      }
+      return result;
+    },
+    disabledDate(current) {
+      return current && current < moment().endOf('day');
+    },
+    disabledDateTime() {
+      return {
+        disabledHours: () => this.range(0, 24).splice(4, 20),
+        disabledMinutes: () => this.range(30, 60),
+        disabledSeconds: () => [55, 56],
+      };
+    },
+    disabledRangeTime(_, type) {
+      if (type === 'start') {
+        return {
+          disabledHours: () => this.range(0, 60).splice(4, 20),
+          disabledMinutes: () => this.range(30, 60),
+          disabledSeconds: () => [55, 56],
+        };
+      }
+      return {
+        disabledHours: () => this.range(0, 60).splice(20, 4),
+        disabledMinutes: () => this.range(0, 31),
+        disabledSeconds: () => [55, 56],
+      };
+    }
   }
 }
 </script>
