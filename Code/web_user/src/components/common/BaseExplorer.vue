@@ -203,7 +203,7 @@
               分享
             </a-menu-item>
             <a-menu-item key="6"
-                         v-if="(isRepository || isShare || isSearch) && (isFile || isFolder)"
+                         v-if="(isRepository || isShare || isSearch) && (isFile)"
                          @click="download">
               下载
             </a-menu-item>
@@ -614,8 +614,8 @@ export default {
         this.$emit("changeFolders", this.root.folders);
         return;
       }
-      let folders = this.$store.getters.getRoot.folders;
-      let files = this.$store.getters.getRoot.files;
+      let folders = this.repository.folder.folders;
+      let files = this.repository.folder.files;
       let path = ["全部文件"];
       for (let i = 1; i <= index; i++) {
         if (folders[this.path[i]] == null) {

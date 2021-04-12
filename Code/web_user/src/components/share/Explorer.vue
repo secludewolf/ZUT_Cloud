@@ -52,99 +52,100 @@
 </template>
 
 <script>
-  import BaseExplorer from "../common/BaseExplorer";
-  import {getShare} from "../../api/share";
+import BaseExplorer from "../common/BaseExplorer";
+import {getShare} from "../../api/share";
 
-  export default {
-    name: "Explorer",
-    created() {
-      //模拟加载数据
-      this.loadData();
-    },
-    mounted() {
-    },
-    components: {
-      BaseExplorer
-    },
-    data() {
-      return {
-        resultVisible: false,
-        repositoryVisible: false,
-        passwordVisible: false,
-        passwordErrorVisible: false,
-        resultTitle: "",
-        loading: false,
-        password: "",
-        key: ["all"],
-        visible: false,
-        isShare: true,
-        isSearch: false,
-        isRecycleBin: false,
-        repository: {},
-        root: {},
-        files: {},
-        folders: {},
-      }
-    },
-    methods: {
-      loadData() {
-        this.loading = true;
-        const parent = this;
-        const data = {
-          shareId: this.$route.query["id"],
-          password: this.password.length === 0 ? null : this.password
-        };
-        const handler = function (data) {
-          parent.files = data.shareRepository.folder.files === null ? {} : data.shareRepository.folder.files;
-          parent.folders = data.shareRepository.folder.folders === null ? {} : data.shareRepository.folder.folders;
-          parent.root = data.shareRepository.folder;
-          parent.passwordVisible = false;
-          parent.repositoryVisible = true;
-          parent.loading = false;
-        };
-        const catcher = function (code, content) {
-          parent.loading = false;
-          if (code === -6 || code === -7) {
-            parent.resultVisible = false;
-            parent.passwordVisible = true;
-            parent.passwordErrorVisible = true;
-          } else {
-            parent.resultTitle = content;
-            parent.resultVisible = true;
-          }
-        };
-        getShare(data, handler, catcher);
-      },
-      changeIsRepository(isRepository) {
-        this.isRepository = isRepository;
-        this.isSearch = !isRepository;
-        this.isRecycleBin = !isRepository;
-        this.key = ["all"];
-      },
-      changeIsSearch(isSearch) {
-        this.isSearch = isSearch;
-        this.isRecycleBin = !isSearch;
-        this.isRepository = !isSearch;
-      },
-      changeIsRecycleBin(isRecycleBin) {
-        this.isRecycleBin = isRecycleBin;
-        this.isSearch = !isRecycleBin;
-        this.isRepository = !isRecycleBin;
-      },
-      changeRepository(repository) {
-        this.repository = repository;
-        this.isRepository = true;
-        this.isSearch = false;
-        this.isRecycleBin = false;
-      },
-      changeFiles(files) {
-        this.files = files;
-      },
-      changeFolders(folders) {
-        this.folders = folders;
-      },
+export default {
+  name: "Explorer",
+  created() {
+    //模拟加载数据
+    this.loadData();
+  },
+  mounted() {
+  },
+  components: {
+    BaseExplorer
+  },
+  data() {
+    return {
+      resultVisible: false,
+      repositoryVisible: false,
+      passwordVisible: false,
+      passwordErrorVisible: false,
+      resultTitle: "",
+      loading: false,
+      password: "",
+      key: ["all"],
+      visible: false,
+      isShare: true,
+      isSearch: false,
+      isRecycleBin: false,
+      repository: {},
+      root: {},
+      files: {},
+      folders: {},
     }
+  },
+  methods: {
+    loadData() {
+      this.loading = true;
+      const parent = this;
+      const data = {
+        shareId: this.$route.query["id"],
+        password: this.password.length === 0 ? null : this.password
+      };
+      const handler = function (data) {
+        parent.files = data.shareRepository.folder.files === null ? {} : data.shareRepository.folder.files;
+        parent.folders = data.shareRepository.folder.folders === null ? {} : data.shareRepository.folder.folders;
+        parent.repository = data.shareRepository;
+        parent.root = data.shareRepository.folder;
+        parent.passwordVisible = false;
+        parent.repositoryVisible = true;
+        parent.loading = false;
+      };
+      const catcher = function (code, content) {
+        parent.loading = false;
+        if (code === -6 || code === -7) {
+          parent.resultVisible = false;
+          parent.passwordVisible = true;
+          parent.passwordErrorVisible = true;
+        } else {
+          parent.resultTitle = content;
+          parent.resultVisible = true;
+        }
+      };
+      getShare(data, handler, catcher);
+    },
+    changeIsRepository(isRepository) {
+      this.isRepository = isRepository;
+      this.isSearch = !isRepository;
+      this.isRecycleBin = !isRepository;
+      this.key = ["all"];
+    },
+    changeIsSearch(isSearch) {
+      this.isSearch = isSearch;
+      this.isRecycleBin = !isSearch;
+      this.isRepository = !isSearch;
+    },
+    changeIsRecycleBin(isRecycleBin) {
+      this.isRecycleBin = isRecycleBin;
+      this.isSearch = !isRecycleBin;
+      this.isRepository = !isRecycleBin;
+    },
+    changeRepository(repository) {
+      this.repository = repository;
+      this.isRepository = true;
+      this.isSearch = false;
+      this.isRecycleBin = false;
+    },
+    changeFiles(files) {
+      this.files = files;
+    },
+    changeFolders(folders) {
+      this.folders = folders;
+    },
   }
+}
 </script>
 
 <style scoped>
