@@ -270,7 +270,7 @@
               {{ target.name }}
             </a-descriptions-item>
             <a-descriptions-item label="位置" :span="3">
-              {{ target.path }}
+              {{ formatPath() }}
             </a-descriptions-item>
             <a-descriptions-item label="大小" :span="1">
               {{ getFormatSize(target.size) }}
@@ -1116,6 +1116,12 @@ export default {
       this.selectFolderKey = key[0];
     },
     expandFolder(event) {
+    },
+    formatPath() {
+      if (this.target.path != null)
+        return this.target.path.replace("/root","/全部文件");
+      else
+        return "";
     }
   }
 }
