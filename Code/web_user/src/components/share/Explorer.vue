@@ -58,8 +58,10 @@ import {getShare} from "../../api/share";
 export default {
   name: "Explorer",
   created() {
-    //模拟加载数据
-    this.loadData();
+    if (sessionStorage.getItem(this.$route.query["id"]) != null)
+      this.autoLoadData();
+    else
+      this.loadData();
   },
   mounted() {
   },
@@ -87,6 +89,35 @@ export default {
     }
   },
   methods: {
+    autoLoadData() {
+      const parent = this;
+      const data = {
+        shareId: this.$route.query["id"],
+        password: sessionStorage.getItem(this.$route.query["id"])
+      };
+      const handler = function (data) {
+        parent.files = data.shareRepository.folder.files === null ? {} : data.shareRepository.folder.files;
+        parent.folders = data.shareRepository.folder.folders === null ? {} : data.shareRepository.folder.folders;
+        parent.repository = data.shareRepository;
+        parent.root = data.shareRepository.folder;
+        parent.passwordVisible = false;
+        parent.repositoryVisible = true;
+        parent.loading = false;
+        sessionStorage.setItem(parent.$route.query["id"], parent.password);
+      };
+      const catcher = function (code, content) {
+        parent.loading = false;
+        if (code === -6 || code === -7) {
+          parent.resultVisible = false;
+          parent.passwordVisible = true;
+          parent.passwordErrorVisible = true;
+        } else {
+          parent.resultTitle = content;
+          parent.resultVisible = true;
+        }
+      };
+      getShare(data, handler, catcher);
+    },
     loadData() {
       this.loading = true;
       const parent = this;
@@ -102,6 +133,7 @@ export default {
         parent.passwordVisible = false;
         parent.repositoryVisible = true;
         parent.loading = false;
+        sessionStorage.setItem(parent.$route.query["id"], parent.password);
       };
       const catcher = function (code, content) {
         parent.loading = false;
