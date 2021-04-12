@@ -51,7 +51,7 @@
         </a-menu-item>
         <a-menu-item key="7">
           <router-link to="/createInform">
-            新建
+            发布
           </router-link>
         </a-menu-item>
       </a-sub-menu>

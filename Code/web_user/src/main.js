@@ -21,7 +21,7 @@ VueRouter.prototype.push = function push(location) {
   return originalPush.call(this, location).catch(err => err)
 }
 
-//Mock测试
+// // Mock测试
 // import "./mock/mock";
 
 Vue.use(Antd);
