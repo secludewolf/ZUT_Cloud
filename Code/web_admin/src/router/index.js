@@ -1,8 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
-import User from '../components/userManager/User'
-import Admin from '../components/userManager/Admin'
-import File from '../components/fileManager/File'
+import Controller from '../components/controller/Controller';
+import User from '../components/userManager/User';
+import Admin from '../components/userManager/Admin';
+import File from '../components/fileManager/File';
 import Share from "../components/fileManager/Share";
 import UserInform from "../components/informManager/UserInform";
 import AdminInform from "../components/informManager/AdminInform";
@@ -67,6 +68,13 @@ const router = new Router({
           component: AdminPassword,
           meta: {
             title: '修改密码',
+          },
+        }, {
+          path: "/controller",
+          name: "controller",
+          component: Controller,
+          meta: {
+            title: '控制台',
           },
         }, {
           path: "/userManager",
@@ -134,7 +142,7 @@ const router = new Router({
           },
         },
       ],
-      redirect: "/userManager"
+      redirect: "/controller"
     }, {
       path: '*',
       name: 'error',

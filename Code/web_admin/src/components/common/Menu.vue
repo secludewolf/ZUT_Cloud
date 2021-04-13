@@ -4,13 +4,19 @@
       <img src="../../assets/logo.png" alt="logo" style="height: 100%;margin: 0 60px;"/>
     </div>
     <a-menu
-      :default-selected-keys="['1']"
-      :default-open-keys="['sub1']"
+      :default-selected-keys="['0']"
+      :default-open-keys="['sub1','sub2','sub3']"
       mode="inline"
       theme="dark"
       :inline-collapsed="collapsed"
       style="position:absolute;width: 100%"
     >
+      <a-menu-item key="0">
+        <a-icon type="pie-chart"/><span>控制台</span>
+        <router-link to="/controller">
+          控制台
+        </router-link>
+      </a-menu-item>
       <a-sub-menu key="sub1">
         <span slot="title"><a-icon type="user"/><span>账号管理</span></span>
         <a-menu-item key="1">
@@ -55,14 +61,12 @@
           </router-link>
         </a-menu-item>
       </a-sub-menu>
-      <a-sub-menu key="sub4">
-        <span slot="title"><a-icon type="notification"/><span>日志管理</span></span>
-        <a-menu-item key="8">
-          <router-link to="/log">
-            日志
-          </router-link>
-        </a-menu-item>
-      </a-sub-menu>
+      <a-menu-item key="8">
+        <a-icon type="container"/><span>日志</span>
+        <router-link to="/log">
+          日志
+        </router-link>
+      </a-menu-item>
     </a-menu>
   </div>
 </template>
