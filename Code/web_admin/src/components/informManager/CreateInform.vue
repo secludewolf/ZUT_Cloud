@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div style="width: 100%;padding: 24px;background: #fff;">
     <a-form :form="form" :label-col="{ span: 2 }" :wrapper-col="{ span: 6 }" @submit="handleSubmit"
             style="padding: 30px 0 0 0; ">
       <a-form-item label="标题">

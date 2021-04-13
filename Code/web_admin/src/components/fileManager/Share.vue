@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100%;width: 100%">
+  <div style="width: 100%;padding: 24px;background: #fff;">
     <div style="margin-bottom: 20px;">
       <a-form :form="form" layout="inline" @submit="handleSubmit">
         <a-form-model-item label="状态">

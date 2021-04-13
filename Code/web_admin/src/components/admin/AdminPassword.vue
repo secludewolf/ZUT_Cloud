@@ -1,5 +1,5 @@
 <template>
-  <div style="height: 100%;width: 100%;">
+  <div style="width: 100%;padding: 24px;background: #fff;">
     <a-form
       style="position: relative;top:0;bottom:0;left:0;right:0;margin:0 auto;width: 400px;"
       :form="form"

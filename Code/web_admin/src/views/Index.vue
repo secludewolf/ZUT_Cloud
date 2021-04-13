@@ -50,9 +50,7 @@
         </div>
       </a-layout-header>
       <a-layout-content style="height: 100%;;margin: 24px 16px 0">
-        <div style="padding: 24px;background: #fff;">
           <router-view/>
-        </div>
       </a-layout-content>
     </a-layout>
   </a-layout>
