@@ -58,7 +58,7 @@
             v-if="record.editable"
             style="margin: -5px 0"
             :value="text"
-            @change="e => handleChange(e.target.value, record.key, col)"
+            @change="e => handleChange(e.target.value, record.id, col)"
           />
           <template v-else>
             {{ text }}
@@ -70,7 +70,7 @@
           v-if="record.editable"
           style="margin: -5px 0"
           :value="text"
-          @change="e => handleChange(e.target.value, record.key, 'status')"
+          @change="e => handleChange(e.target.value, record.id, 'status')"
         />
         <template v-else>
           {{ text === 1 ? '正常' : '异常' }}
@@ -79,17 +79,14 @@
       <template slot="operation" slot-scope="text, record, index">
         <div class="editable-row-operations">
         <span v-if="record.editable">
-          <a @click="() => cancel(record.key)">取消</a>
-          <a @click="() => save(record.key)">更新</a>
-          <!--          <a-popconfirm title="确定要修改吗?" @confirm="() => save(record.key)">-->
-          <!--            <a>更新</a>-->
-          <!--          </a-popconfirm>-->
+          <a @click="() => cancel(record.id)">取消</a>
+          <a @click="() => save(record.id)">更新</a>
         </span>
           <div v-else>
-            <a :disabled="editingKey !== ''" @click="() => edit(record.key)">编辑</a>
+            <a :disabled="editingKey !== ''" @click="() => edit(record.id)">编辑</a>
             <a-popconfirm
               title="确定要删除此用户吗?"
-              @confirm="() => onDelete(record.key)"
+              @confirm="() => onDelete(record.id)"
             >
               <a href="javascript:">删除</a>
             </a-popconfirm>
@@ -262,7 +259,7 @@ export default {
     },
     handleChange(value, key, column) {
       const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      const target = newData.filter(item => key === item.id)[0];
       if (target) {
         target[column] = value;
         this.data = newData;
@@ -274,7 +271,7 @@ export default {
       };
       const handler = () => {
         const temp = [...this.data];
-        this.data = temp.filter(item => item.key !== key);
+        this.data = temp.filter(item => item.id !== key);
         message("删除成功")
       };
       const catcher = (code, content) => {
@@ -284,7 +281,7 @@ export default {
     },
     edit(key) {
       const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      const target = newData.filter(item => key === item.id)[0];
       this.editingKey = key;
       if (target) {
         target.editable = true;
@@ -295,8 +292,8 @@ export default {
     save(key) {
       const newData = [...this.data];
       const newCacheData = [...this.cacheData];
-      const target = newData.filter(item => key === item.key)[0];
-      const targetCache = newCacheData.filter(item => key === item.key)[0];
+      const target = newData.filter(item => key === item.id)[0];
+      const targetCache = newCacheData.filter(item => key === item.id)[0];
       if (target && targetCache) {
         const data = {
           id: target.id,
@@ -325,10 +322,10 @@ export default {
     },
     cancel(key) {
       const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      const target = newData.filter(item => key === item.id)[0];
       this.editingKey = '';
       if (target) {
-        Object.assign(target, this.cacheData.filter(item => key === item.key)[0]);
+        Object.assign(target, this.cacheData.filter(item => key === item.id)[0]);
         delete target.editable;
         this.data = newData;
       }
