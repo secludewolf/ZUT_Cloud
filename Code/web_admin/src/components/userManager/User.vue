@@ -33,7 +33,7 @@
           <a-input placeholder="账号"
                    v-decorator="['account']"/>
         </a-form-item>
-<!--        <a-button type="default" style="margin-left:10px;float: right">-->
+        <!--        <a-button type="default" style="margin-left:10px;float: right">-->
         <!--          增加-->
         <!--        </a-button>-->
         <a-button type="primary" html-type="submit" style="float: right">
@@ -59,7 +59,7 @@
             v-if="record.editable"
             style="margin: -5px 0"
             :value="text"
-            @change="e => handleChange(e.target.value, record.key, col)"
+            @change="e => handleChange(e.target.value, record.id, col)"
           />
           <template v-else>
             {{ text }}
@@ -67,12 +67,21 @@
         </div>
       </template>
       <div slot="repoSize" slot-scope="text, record">
-        <a-input
-          v-if="record.editable"
-          style="margin: -5px 0"
-          :value="text"
-          @change="e => handleChange(e.target.value, record.key, 'repoSize')"
-        />
+        <a-select v-if="record.editable" :value="getFormatSize(record.repoSize)" style="width: 120px;margin: -5px 0"
+                  @change="value => handleChange(value, record.id, 'repoSize')">
+          <a-select-option value="549755813888">
+            512GB
+          </a-select-option>
+          <a-select-option value="1099511627776">
+            1TB
+          </a-select-option>
+          <a-select-option value="2199023255552">
+            2TB
+          </a-select-option>
+          <a-select-option value="4398046511104">
+            4TB
+          </a-select-option>
+        </a-select>
         <template v-else>
           {{ getFormatSize(record.repoSize) }}
         </template>
@@ -85,16 +94,16 @@
       <template slot="operation" slot-scope="text, record, index">
         <div class="editable-row-operations">
         <span v-if="record.editable">
-          <a @click="() => cancel(record.key)">取消</a>
-          <a-popconfirm title="确定要修改吗?" @confirm="() => save(record.key)">
+          <a @click="() => cancel(record.id)">取消</a>
+          <a-popconfirm title="确定要修改吗?" @confirm="() => save(record.id)">
             <a>更新</a>
           </a-popconfirm>
         </span>
           <div v-else>
-            <a :disabled="editingKey !== ''" @click="() => edit(record.key)">编辑</a>
+            <a :disabled="editingKey !== ''" @click="() => edit(record.id)">编辑</a>
             <a-popconfirm
               title="确定要删除此用户吗?"
-              @confirm="() => onDelete(record.key)"
+              @confirm="() => onDelete(record.id)"
             >
               <a href="javascript:">删除</a>
             </a-popconfirm>
@@ -273,12 +282,14 @@ export default {
       getUserListManage(data, handler, catcher);
     },
     handleChange(value, key, column) {
+      console.log(value, key, column)
       const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      const target = newData.filter(item => key === item.id)[0];
       if (target) {
         target[column] = value;
         this.data = newData;
       }
+      console.log(target);
     },
     onDelete(key) {
       const data = {
@@ -286,7 +297,7 @@ export default {
       };
       const handler = () => {
         const temp = [...this.data];
-        this.data = temp.filter(item => item.key !== key);
+        this.data = temp.filter(item => item.id !== key);
         message("删除成功")
       };
       const catcher = (code, content) => {
@@ -296,7 +307,7 @@ export default {
     },
     edit(key) {
       const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      const target = newData.filter(item => key === item.id)[0];
       this.editingKey = key;
       if (target) {
         target.editable = true;
@@ -307,8 +318,8 @@ export default {
     save(key) {
       const newData = [...this.data];
       const newCacheData = [...this.cacheData];
-      const target = newData.filter(item => key === item.key)[0];
-      const targetCache = newCacheData.filter(item => key === item.key)[0];
+      const target = newData.filter(item => key === item.id)[0];
+      const targetCache = newCacheData.filter(item => key === item.id)[0];
       if (target && targetCache) {
         const data = {
           id: target.id,
@@ -338,10 +349,10 @@ export default {
     },
     cancel(key) {
       const newData = [...this.data];
-      const target = newData.filter(item => key === item.key)[0];
+      const target = newData.filter(item => key === item.id)[0];
       this.editingKey = '';
       if (target) {
-        Object.assign(target, this.cacheData.filter(item => key === item.key)[0]);
+        Object.assign(target, this.cacheData.filter(item => key === item.id)[0]);
         delete target.editable;
         this.data = newData;
       }
