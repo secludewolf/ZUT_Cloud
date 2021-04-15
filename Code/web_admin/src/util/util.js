@@ -1,9 +1,10 @@
 /**
  * 获取格式化时间
  * @param date 时间戳
+ * @param showMillisecond 是否显示毫秒
  * @returns {string} 格式化时间
  */
-export function getFormatDate(date) {
+export function getFormatDate(date, showMillisecond = false) {
   date = new Date(date);
   let YY = date.getFullYear() + '-';
   let MM = (date.getMonth() + 1 < 10 ? '0' + (date.getMonth() + 1) : date.getMonth() + 1) + '-';
@@ -11,6 +12,10 @@ export function getFormatDate(date) {
   let hh = (date.getHours() < 10 ? '0' + date.getHours() : date.getHours()) + ':';
   let mm = (date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()) + ':';
   let ss = (date.getSeconds() < 10 ? '0' + date.getSeconds() : date.getSeconds());
+  if (showMillisecond) {
+    let SSS = "." + date.getMilliseconds();
+    return YY + MM + DD + " " + hh + mm + ss + SSS;
+  }
   return YY + MM + DD + " " + hh + mm + ss;
 }
 
@@ -21,7 +26,7 @@ export function getFormatDate(date) {
  * @returns {string} 格式化文件大小
  */
 export function getFormatSize(size, fractionDigits = 2) {
-  if (size === 0){
+  if (size === 0) {
     return "0";
   }
   if (null == size || size === '') {

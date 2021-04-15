@@ -41,8 +41,7 @@
         </a-button>
       </a-form>
     </div>
-    <a-table bordered
-             :columns="columns"
+    <a-table :columns="columns"
              :data-source="data"
              :loading="loading"
              :pagination="pagination"
@@ -107,6 +106,58 @@
         <template v-else>
           {{ text === 1 ? '正常' : '异常' }}
         </template>
+      </div>
+      <div slot="expandedRowRender" slot-scope="record" style="margin: 0">
+        <a-descriptions size="small">
+          <a-descriptions-item label="用户ID">
+            {{ record.memberId }}
+          </a-descriptions-item>
+          <a-descriptions-item label="用户类型">
+            {{ record.memberType == "admin" ? "管理员" : "用户" }}
+          </a-descriptions-item>
+          <a-descriptions-item label="状态">
+            {{ record.status == 1 ? "正常" : "异常" }}
+          </a-descriptions-item>
+          <a-descriptions-item label="请求URL">
+            {{ record.actionUrl }}
+          </a-descriptions-item>
+          <a-descriptions-item label="请求类型">
+            {{ record.actionMethod }}
+          </a-descriptions-item>
+          <a-descriptions-item label="请求IP">
+            {{ record.requestIp }}
+          </a-descriptions-item>
+          <a-descriptions-item label="操作类型">
+            {{ record.optionType }}
+          </a-descriptions-item>
+          <a-descriptions-item label="操作描述">
+            {{ record.optionDesc }}
+          </a-descriptions-item>
+          <a-descriptions-item label="操作模块">
+            {{ record.optionModel }}
+          </a-descriptions-item>
+          <a-descriptions-item label="类路径" :span="2">
+            {{ record.classPath }}
+          </a-descriptions-item>
+          <a-descriptions-item label="请求方法" :span="1">
+            {{ record.requestMethod }}
+          </a-descriptions-item>
+          <a-descriptions-item label="请求参数" :span="3">
+            {{ record.parameter }}
+          </a-descriptions-item>
+          <a-descriptions-item label="消息" :span="3">
+            {{ record.message == null ? "无" : record.message }}
+          </a-descriptions-item>
+          <a-descriptions-item label="开始时间">
+            {{ getFormatDate(record.startTime, true) }}
+          </a-descriptions-item>
+          <a-descriptions-item label="结束时间">
+            {{ getFormatDate(record.finishTime, true) }}
+          </a-descriptions-item>
+          <a-descriptions-item label="响应时间">
+            {{ record.consumingTime == 0 ? '<1ms' : record.consumingTime + 'ms' }}
+          </a-descriptions-item>
+        </a-descriptions>
       </div>
     </a-table>
   </div>
@@ -283,8 +334,8 @@ export default {
         this.data = newData;
       }
     },
-    getFormatDate(date) {
-      return getFormatDate(date);
+    getFormatDate(date, showMillisecond = false) {
+      return getFormatDate(date, showMillisecond);
     },
   },
 };

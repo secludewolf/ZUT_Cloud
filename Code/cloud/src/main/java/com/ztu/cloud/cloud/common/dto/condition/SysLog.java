@@ -28,6 +28,9 @@ public class SysLog {
     private Long finishTime;
     private Long consumingTime;
 
+    public SysLog() {
+    }
+
     public SysLog(String memberType, String requestIp, String actionUrl, Integer status, Long startTime, Long finishTime) {
         this.memberType = memberType;
         this.requestIp = requestIp;
