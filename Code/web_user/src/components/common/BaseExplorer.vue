@@ -31,6 +31,10 @@
           <a-icon type="save"/>
           保存分享
         </a-button>
+        <a-button type="danger" v-if="isShare" @click="()=>{this.menuVisible = false;this.shareReportVisible = true;}">
+          <a-icon type="alert"/>
+          举报
+        </a-button>
         <a-modal
           title="保存分享"
           :visible="saveShareVisible"
@@ -222,6 +226,11 @@
                          @click="()=>{this.menuVisible = false;this.fileInfoVisible = true;}">
               详细信息
             </a-menu-item>
+            <a-menu-item key="10"
+                         v-if="(isRepository || isShare || isSearch) && (isFile)"
+                         @click="()=>{this.menuVisible = false;this.fileReportVisible = true;}">
+              举报
+            </a-menu-item>
           </a-menu>
         </a-dropdown>
         <a-modal v-model="renameVisible"
@@ -299,6 +308,67 @@
               {{ target.depth != null ? target.depth : '-' }}
             </a-descriptions-item>
           </a-descriptions>
+        </a-modal>
+        <a-modal v-model="fileReportVisible"
+                 title="举报文件"
+                 okText="确认"
+                 cancelText="取消"
+                 :maskClosable="false"
+                 :confirm-loading="fileReportLoading"
+                 @cancel="()=>{this.fileReportVisible = false;this.fileReportType = '';this.fileReportContent = '';this.fileReportLoading = false}"
+                 @ok="fileReport">
+          <a-form :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
+            <a-form-item label="举报类型">
+              <a-select default-value="" @change="value => {this.fileReportType = value}" :value="this.fileReportType">
+                <a-select-option value="侵权文件">
+                  侵权文件
+                </a-select-option>
+                <a-select-option value="敏感文件">
+                  敏感文件
+                </a-select-option>
+                <a-select-option value="违规文件">
+                  违规文件
+                </a-select-option>
+                <a-select-option value="其他">
+                  其他
+                </a-select-option>
+              </a-select>
+            </a-form-item>
+            <a-form-item label="详细信息">
+              <a-textarea v-model="fileReportContent" placeholder="请输入详细描述" style="min-height: 200px;"/>
+            </a-form-item>
+          </a-form>
+        </a-modal>
+        <a-modal v-model="shareReportVisible"
+                 title="举报文件"
+                 okText="确认"
+                 cancelText="取消"
+                 :maskClosable="false"
+                 :confirm-loading="shareReportLoading"
+                 @cancel="()=>{this.shareReportVisible = false;this.shareReportType = '';this.shareReportContent = '';this.shareReportLoading = false}"
+                 @ok="shareReport">
+          <a-form :label-col="{ span: 4 }" :wrapper-col="{ span: 20 }">
+            <a-form-item label="举报类型">
+              <a-select default-value="" @change="value => {this.shareReportType = value}"
+                        :value="this.shareReportType">
+                <a-select-option value="侵权分享">
+                  侵权分享
+                </a-select-option>
+                <a-select-option value="敏感分享">
+                  敏感分享
+                </a-select-option>
+                <a-select-option value="违规分享">
+                  违规分享
+                </a-select-option>
+                <a-select-option value="其他">
+                  其他
+                </a-select-option>
+              </a-select>
+            </a-form-item>
+            <a-form-item label="详细信息">
+              <a-textarea v-model="shareReportContent" placeholder="请输入详细描述" style="min-height: 200px;"/>
+            </a-form-item>
+          </a-form>
         </a-modal>
       </a-layout>
     </a-layout-content>
@@ -459,6 +529,14 @@ export default {
       shareName: "",
       sharePassword: "",
       shareTime: null,
+      fileReportVisible: false,
+      fileReportLoading: false,
+      fileReportType: "",
+      fileReportContent: "",
+      shareReportVisible: false,
+      shareReportLoading: false,
+      shareReportType: "",
+      shareReportContent: "",
     }
   },
   computed: {
@@ -1179,7 +1257,63 @@ export default {
         disabledMinutes: () => this.range(0, 31),
         disabledSeconds: () => [55, 56],
       };
-    }
+    },
+    fileReport() {
+      if (this.fileReportType === "") {
+        this.$message.warn("举报类型不能为空!")
+        return;
+      }
+      // this.fileReportLoading = true;
+      const parent = this;
+      const data = {
+        fileId: this.target.id,
+        type: this.fileReportType,
+        content: this.fileReportContent,
+      };
+      this.fileReportType = "";
+      this.fileReportContent = "";
+      console.log(this.fileReportType, this.fileReportContent, data);
+      // const handler = (data) => {
+      // this.shareLoading = false;
+      // this.shareVisible = false;
+      //   parent.shareLink = "/share?id=" + data.share.id;
+      //   parent.shareCreatedVisible = true;
+      //   parent.$message.success("分享成功");
+      // };
+      // const catcher = (code, content) => {
+      //   parent.shareLoading = false;
+      //   parent.$message.warn(content);
+      // };
+      // createShare(data, handler, catcher);
+    },
+    shareReport() {
+      if (this.shareReportType === "") {
+        this.$message.warn("举报类型不能为空!")
+        return;
+      }
+      // this.shareReportLoading = true;
+      const parent = this;
+      const data = {
+        fileId: this.target.id,
+        type: this.shareReportType,
+        content: this.shareReportContent,
+      };
+      this.shareReportType = "";
+      this.shareReportContent = "";
+      console.log(this.shareReportType, this.shareReportContent, data);
+      // const handler = (data) => {
+      // this.shareLoading = false;
+      // this.shareVisible = false;
+      //   parent.shareLink = "/share?id=" + data.share.id;
+      //   parent.shareCreatedVisible = true;
+      //   parent.$message.success("分享成功");
+      // };
+      // const catcher = (code, content) => {
+      //   parent.shareLoading = false;
+      //   parent.$message.warn(content);
+      // };
+      // createShare(data, handler, catcher);
+    },
   }
 }
 </script>
