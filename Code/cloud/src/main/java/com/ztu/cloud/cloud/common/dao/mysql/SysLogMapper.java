@@ -13,7 +13,7 @@ import java.util.List;
  **/
 @Mapper
 @Component
-public interface SysLogDao {
+public interface SysLogMapper {
     /**
      * 保存系统日志
      *

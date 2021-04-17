@@ -6,7 +6,7 @@ import com.ztu.cloud.cloud.common.bean.mysql.Admin;
 import com.ztu.cloud.cloud.common.bean.mysql.SysLog;
 import com.ztu.cloud.cloud.common.constant.ResultConstant;
 import com.ztu.cloud.cloud.common.dao.mysql.AdminMapper;
-import com.ztu.cloud.cloud.common.dao.mysql.SysLogDao;
+import com.ztu.cloud.cloud.common.dao.mysql.SysLogMapper;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.common.vo.common.PageVo;
 import com.ztu.cloud.cloud.util.ResultUtil;
@@ -24,11 +24,11 @@ import java.util.List;
 
 @Component
 public class SysLogServiceImpl implements SysLogService {
-    SysLogDao sysLogDao;
+    SysLogMapper sysLogMapper;
     AdminMapper adminDao;
 
-    public SysLogServiceImpl(SysLogDao sysLogDao, AdminMapper adminDao) {
-        this.sysLogDao = sysLogDao;
+    public SysLogServiceImpl(SysLogMapper sysLogMapper, AdminMapper adminDao) {
+        this.sysLogMapper = sysLogMapper;
         this.adminDao = adminDao;
     }
 
@@ -39,7 +39,7 @@ public class SysLogServiceImpl implements SysLogService {
      */
     @Override
     public void save(SysLog sysLog) {
-        this.sysLogDao.insertSysLog(sysLog);
+        this.sysLogMapper.insertSysLog(sysLog);
     }
 
     /**
@@ -80,7 +80,7 @@ public class SysLogServiceImpl implements SysLogService {
         List<SysLog> result;
         com.ztu.cloud.cloud.common.dto.condition.SysLog conditionBean = new com.ztu.cloud.cloud.common.dto.condition.SysLog(memberType, requestIp, actionUrl, status, startTime, finishTime);
         try {
-            result = this.sysLogDao.getSysLogs(conditionBean);
+            result = this.sysLogMapper.getSysLogs(conditionBean);
         } catch (Exception e) {
             e.printStackTrace();
             result = new LinkedList<>();
