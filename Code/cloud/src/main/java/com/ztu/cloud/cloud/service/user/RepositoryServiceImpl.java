@@ -7,6 +7,7 @@ import com.ztu.cloud.cloud.common.bean.mysql.UserFile;
 import com.ztu.cloud.cloud.common.constant.ResultConstant;
 import com.ztu.cloud.cloud.common.dao.mongodb.UserRepositoryDao;
 import com.ztu.cloud.cloud.common.dao.mysql.FileMapper;
+import com.ztu.cloud.cloud.common.dao.mysql.FileReportMapper;
 import com.ztu.cloud.cloud.common.dao.mysql.ShareMapper;
 import com.ztu.cloud.cloud.common.dao.mysql.UserFileMapper;
 import com.ztu.cloud.cloud.common.dto.user.repository.*;
@@ -33,22 +34,21 @@ public class RepositoryServiceImpl implements RepositoryService {
     UserFileMapper userFileDao;
     FileMapper fileDao;
     ShareMapper shareDao;
+    FileReportMapper fileReportMapper;
 
-    public RepositoryServiceImpl(UserRepositoryDao userRepositoryDao, UserFileMapper userFileDao, FileMapper fileDao,
-        ShareMapper shareDao) {
+    public RepositoryServiceImpl(UserRepositoryDao userRepositoryDao, UserFileMapper userFileDao, FileMapper fileDao, ShareMapper shareDao, FileReportMapper fileReportMapper) {
         this.userRepositoryDao = userRepositoryDao;
         this.userFileDao = userFileDao;
         this.fileDao = fileDao;
         this.shareDao = shareDao;
+        this.fileReportMapper = fileReportMapper;
     }
 
     /**
      * 获取仓库信息
      *
-     * @param token
-     *            用户Token
-     * @param repositoryId
-     *            仓库ID
+     * @param token        用户Token
+     * @param repositoryId 仓库ID
      * @return 仓库信息
      */
     @Override
@@ -65,10 +65,8 @@ public class RepositoryServiceImpl implements RepositoryService {
     /**
      * 创建文件
      *
-     * @param token
-     *            用户Token
-     * @param parameter
-     *            请求参数 repositoryId 仓库ID fileId 文件ID name 文件名 path 保存路径
+     * @param token     用户Token
+     * @param parameter 请求参数 repositoryId 仓库ID fileId 文件ID name 文件名 path 保存路径
      * @return 仓库信息
      */
     @Override
@@ -108,7 +106,7 @@ public class RepositoryServiceImpl implements RepositoryService {
         String type = temp[temp.length - 1];
         // 将文件插入文件夹
         folder.getFiles().put(parameter.getName(), new com.ztu.cloud.cloud.common.bean.mongodb.inside.File(
-            parameter.getFileId(), userFile.getId(), parameter.getName(), parameter.getPath(), type, file.getSize()));
+                parameter.getFileId(), userFile.getId(), parameter.getName(), parameter.getPath(), type, file.getSize()));
         // 更新仓库以使用空间大小
         repository.setUseSize(repository.getUseSize() + file.getSize());
         this.userRepositoryDao.updateFolderById(repository.getId(), repository.getFolder());
@@ -119,10 +117,8 @@ public class RepositoryServiceImpl implements RepositoryService {
     /**
      * 创建文件夹
      *
-     * @param token
-     *            用户Token
-     * @param parameter
-     *            请求参数 repositoryId 仓库ID name 文件名 path 保存路径
+     * @param token     用户Token
+     * @param parameter 请求参数 repositoryId 仓库ID name 文件名 path 保存路径
      * @return 仓库信息
      */
     @Override
@@ -149,7 +145,7 @@ public class RepositoryServiceImpl implements RepositoryService {
             return ResultConstant.FOLDER_EXISTED;
         }
         folder.getFolders().put(parameter.getName(),
-            new Folder(parameter.getName(), parameter.getPath(), folder.getDepth() + 1));
+                new Folder(parameter.getName(), parameter.getPath(), folder.getDepth() + 1));
         this.userRepositoryDao.updateFolderById(repository.getId(), repository.getFolder());
         return ResultUtil.createResult("创建成功", new RepositoryInfo(repository));
     }
@@ -157,10 +153,8 @@ public class RepositoryServiceImpl implements RepositoryService {
     /**
      * 移动文件
      *
-     * @param token
-     *            用户Token
-     * @param parameter
-     *            请求参数 repositoryId 仓库ID name 文件名 oldPath 原路径 newPath 新路径
+     * @param token     用户Token
+     * @param parameter 请求参数 repositoryId 仓库ID name 文件名 oldPath 原路径 newPath 新路径
      * @return 仓库信息
      */
     @Override
@@ -203,10 +197,8 @@ public class RepositoryServiceImpl implements RepositoryService {
     /**
      * 移动文件夹
      *
-     * @param token
-     *            用户Token
-     * @param parameter
-     *            请求参数 repositoryId 仓库ID name 文件名 oldPath 原路径 newPath 新路径
+     * @param token     用户Token
+     * @param parameter 请求参数 repositoryId 仓库ID name 文件名 oldPath 原路径 newPath 新路径
      * @return 仓库信息
      */
     @Override
@@ -276,10 +268,8 @@ public class RepositoryServiceImpl implements RepositoryService {
     /**
      * 复制文件
      *
-     * @param token
-     *            用户Token
-     * @param parameter
-     *            请求参数 repositoryId 仓库ID name 文件名 oldPath 原路径 newPath 新路径
+     * @param token     用户Token
+     * @param parameter 请求参数 repositoryId 仓库ID name 文件名 oldPath 原路径 newPath 新路径
      * @return 仓库信息
      */
     @Override
@@ -335,10 +325,8 @@ public class RepositoryServiceImpl implements RepositoryService {
     /**
      * 复制文件夹
      *
-     * @param token
-     *            用户Token
-     * @param parameter
-     *            请求参数 repositoryId 仓库ID name 文件名 oldPath 原路径 newPath 新路径
+     * @param token     用户Token
+     * @param parameter 请求参数 repositoryId 仓库ID name 文件名 oldPath 原路径 newPath 新路径
      * @return 仓库信息
      */
     @Override
@@ -412,10 +400,8 @@ public class RepositoryServiceImpl implements RepositoryService {
     /**
      * 文件重命名
      *
-     * @param token
-     *            用户Token
-     * @param parameter
-     *            请求参数 repositoryId 仓库ID oldName 原名称 newName 新名称 path 路径
+     * @param token     用户Token
+     * @param parameter 请求参数 repositoryId 仓库ID oldName 原名称 newName 新名称 path 路径
      * @return 仓库信息
      */
     @Override
@@ -449,10 +435,8 @@ public class RepositoryServiceImpl implements RepositoryService {
     /**
      * 文件夹重命名
      *
-     * @param token
-     *            用户Token
-     * @param parameter
-     *            请求参数 repositoryId 仓库ID oldName 原名称 newName 新名称 path 路径
+     * @param token     用户Token
+     * @param parameter 请求参数 repositoryId 仓库ID oldName 原名称 newName 新名称 path 路径
      * @return 仓库信息
      */
     @Override
@@ -481,12 +465,12 @@ public class RepositoryServiceImpl implements RepositoryService {
         RepositoryUtil.getFolderList(folder, folders);
         for (File file : files) {
             file.setPath(file.getPath().replaceFirst(folder.getPath() + "/" + parameter.getOldName(),
-                folder.getPath() + "/" + parameter.getNewName()));
+                    folder.getPath() + "/" + parameter.getNewName()));
             this.userFileDao.updateUserFilePath(file.getUserFileId(), file.getPath());
         }
         for (Folder temp : folders) {
             temp.setPath(temp.getPath().replaceFirst(folder.getPath() + "/" + parameter.getOldName(),
-                folder.getPath() + "/" + parameter.getNewName()));
+                    folder.getPath() + "/" + parameter.getNewName()));
         }
         folder.setName(parameter.getNewName());
         folder.setChangeTime(System.currentTimeMillis());
@@ -499,10 +483,8 @@ public class RepositoryServiceImpl implements RepositoryService {
     /**
      * 删除文件
      *
-     * @param token
-     *            用户Token
-     * @param parameter
-     *            请求参数 repositoryId 仓库ID isFile 是否是文件 name 文件名 path 保存路径
+     * @param token     用户Token
+     * @param parameter 请求参数 repositoryId 仓库ID isFile 是否是文件 name 文件名 path 保存路径
      * @return 仓库信息
      */
     @Override
@@ -554,10 +536,8 @@ public class RepositoryServiceImpl implements RepositoryService {
     /**
      * 恢复文件
      *
-     * @param token
-     *            用户Token
-     * @param parameter
-     *            请求参数 repositoryId 仓库ID isFile 是否是文件 recycleId 回收站ID
+     * @param token     用户Token
+     * @param parameter 请求参数 repositoryId 仓库ID isFile 是否是文件 recycleId 回收站ID
      * @return 仓库信息
      */
     @Override
@@ -611,10 +591,8 @@ public class RepositoryServiceImpl implements RepositoryService {
     /**
      * 删除文件
      *
-     * @param token
-     *            用户Token
-     * @param parameter
-     *            请求参数 repositoryId 仓库ID isFile 是否是文件 recycleId 回收站ID
+     * @param token     用户Token
+     * @param parameter 请求参数 repositoryId 仓库ID isFile 是否是文件 recycleId 回收站ID
      * @return 仓库信息
      */
     @Override
@@ -666,10 +644,8 @@ public class RepositoryServiceImpl implements RepositoryService {
     /**
      * 删除文件
      *
-     * @param token
-     *            用户Token
-     * @param parameter
-     *            请求参数 repositoryId 仓库ID
+     * @param token     用户Token
+     * @param parameter 请求参数 repositoryId 仓库ID
      * @return 仓库信息
      */
     @Override
@@ -700,6 +676,20 @@ public class RepositoryServiceImpl implements RepositoryService {
         this.userRepositoryDao.updateRecycleBinById(repository.getId(), repository.getRecycleBin());
         this.userRepositoryDao.updateUseSizeById(repository.getId(), repository.getUseSize());
         return ResultUtil.createResult("删除成功", new RepositoryInfo(repository));
+    }
+
+    /**
+     * 举报文件
+     *
+     * @param token     用户Token
+     * @param parameter 请求参数 shareId 文件ID type 举报类型 content 举报内容
+     * @return 举报结果
+     */
+    @Override
+    public ResultResponseEntity fileReport(String token, FileReport parameter) {
+        int userId = TokenUtil.getId(token);
+        this.fileReportMapper.insertFileReport(new com.ztu.cloud.cloud.common.bean.mysql.FileReport(parameter, userId));
+        return ResultUtil.createResult(1, "举报成功");
     }
 
     private long deleteFile(Collection<File> files, long size) {

@@ -396,12 +396,12 @@ import {
   createFile,
   createFolder,
   deleteFromRecycleBin,
-  deleteFromRepository,
+  deleteFromRepository, fileReport,
   moveFile,
   moveFolder,
   renameFile, renameFolder, restoreFromRecycleBin
 } from "../../api/repository";
-import {createShare, saveShare} from "../../api/share";
+import {createShare, saveShare, shareReport} from "../../api/share";
 import {uploadBigFile, uploadSmallFile} from "../../api/upload";
 import {getDownloadId} from "../../api/download";
 import merge from "webpack-merge";
@@ -1263,7 +1263,7 @@ export default {
         this.$message.warn("举报类型不能为空!")
         return;
       }
-      // this.fileReportLoading = true;
+      this.fileReportLoading = true;
       const parent = this;
       const data = {
         fileId: this.target.id,
@@ -1273,46 +1273,42 @@ export default {
       this.fileReportType = "";
       this.fileReportContent = "";
       console.log(this.fileReportType, this.fileReportContent, data);
-      // const handler = (data) => {
-      // this.shareLoading = false;
-      // this.shareVisible = false;
-      //   parent.shareLink = "/share?id=" + data.share.id;
-      //   parent.shareCreatedVisible = true;
-      //   parent.$message.success("分享成功");
-      // };
-      // const catcher = (code, content) => {
-      //   parent.shareLoading = false;
-      //   parent.$message.warn(content);
-      // };
-      // createShare(data, handler, catcher);
+      const handler = (data) => {
+        this.fileReportLoading = false;
+        this.fileReportVisible = false;
+        parent.$message.success("举报成功");
+      };
+      const catcher = (code, content) => {
+        parent.fileReportLoading = false;
+        parent.$message.warn(content);
+      };
+      fileReport(data, handler, catcher);
     },
     shareReport() {
       if (this.shareReportType === "") {
         this.$message.warn("举报类型不能为空!")
         return;
       }
-      // this.shareReportLoading = true;
+      this.shareReportLoading = true;
       const parent = this;
       const data = {
-        fileId: this.target.id,
+        shareId: this.$route.query.id,
         type: this.shareReportType,
         content: this.shareReportContent,
       };
       this.shareReportType = "";
       this.shareReportContent = "";
       console.log(this.shareReportType, this.shareReportContent, data);
-      // const handler = (data) => {
-      // this.shareLoading = false;
-      // this.shareVisible = false;
-      //   parent.shareLink = "/share?id=" + data.share.id;
-      //   parent.shareCreatedVisible = true;
-      //   parent.$message.success("分享成功");
-      // };
-      // const catcher = (code, content) => {
-      //   parent.shareLoading = false;
-      //   parent.$message.warn(content);
-      // };
-      // createShare(data, handler, catcher);
+      const handler = (data) => {
+        this.shareReportLoading = false;
+        this.shareReportVisible = false;
+        parent.$message.success("举报成功");
+      };
+      const catcher = (code, content) => {
+        parent.shareReportLoading = false;
+        parent.$message.warn(content);
+      };
+      shareReport(data, handler, catcher);
     },
   }
 }

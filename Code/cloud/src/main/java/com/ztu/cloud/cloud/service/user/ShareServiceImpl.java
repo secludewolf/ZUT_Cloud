@@ -10,8 +10,10 @@ import com.ztu.cloud.cloud.common.constant.ResultConstant;
 import com.ztu.cloud.cloud.common.dao.mongodb.ShareRepositoryDao;
 import com.ztu.cloud.cloud.common.dao.mongodb.UserRepositoryDao;
 import com.ztu.cloud.cloud.common.dao.mysql.ShareMapper;
+import com.ztu.cloud.cloud.common.dao.mysql.ShareReportMapper;
 import com.ztu.cloud.cloud.common.dao.mysql.UserFileMapper;
 import com.ztu.cloud.cloud.common.dao.mysql.UserMapper;
+import com.ztu.cloud.cloud.common.dto.user.share.ShareReport;
 import com.ztu.cloud.cloud.common.dto.user.share.CreateShare;
 import com.ztu.cloud.cloud.common.dto.user.share.GetShare;
 import com.ztu.cloud.cloud.common.dto.user.share.SaveShare;
@@ -41,14 +43,15 @@ public class ShareServiceImpl implements ShareService {
     ShareMapper shareDao;
     UserRepositoryDao userRepositoryDao;
     ShareRepositoryDao shareRepositoryDao;
+    ShareReportMapper shareReportMapper;
 
-    public ShareServiceImpl(UserMapper userDao, UserFileMapper userFileDao, ShareMapper shareDao,
-        UserRepositoryDao userRepositoryDao, ShareRepositoryDao shareRepositoryDao) {
+    public ShareServiceImpl(UserMapper userDao, UserFileMapper userFileDao, ShareMapper shareDao, UserRepositoryDao userRepositoryDao, ShareRepositoryDao shareRepositoryDao, ShareReportMapper shareReportMapper) {
         this.userDao = userDao;
         this.userFileDao = userFileDao;
         this.shareDao = shareDao;
         this.userRepositoryDao = userRepositoryDao;
         this.shareRepositoryDao = shareRepositoryDao;
+        this.shareReportMapper = shareReportMapper;
     }
 
     /**
@@ -248,6 +251,20 @@ public class ShareServiceImpl implements ShareService {
         shareRepository.getSaveUserIdList().get(userId).add(System.currentTimeMillis());
         this.shareRepositoryDao.updateSaveUserIdMapById(shareRepository.getId(), shareRepository.getSaveUserIdList());
         return ResultUtil.createResult(1, "成功");
+    }
+
+    /**
+     * 举报分享
+     *
+     * @param token     用户Token
+     * @param parameter 请求参数 shareId 分享ID type 举报类型 content 举报内容
+     * @return 举报结果
+     */
+    @Override
+    public ResultResponseEntity shareReport(String token, ShareReport parameter) {
+        int userId = TokenUtil.getId(token);
+        this.shareReportMapper.insertShareReport(new com.ztu.cloud.cloud.common.bean.mysql.ShareReport(parameter, userId));
+        return ResultUtil.createResult(1, "举报成功");
     }
 
     private void getFolderList(Folder folder, Collection<Folder> folders) {

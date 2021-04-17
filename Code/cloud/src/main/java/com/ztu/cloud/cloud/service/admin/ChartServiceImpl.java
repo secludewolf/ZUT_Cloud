@@ -8,7 +8,7 @@ import com.ztu.cloud.cloud.common.constant.ResultConstant;
 import com.ztu.cloud.cloud.common.dao.mysql.AdminMapper;
 import com.ztu.cloud.cloud.common.dao.mysql.FileMapper;
 import com.ztu.cloud.cloud.common.dao.mysql.ShareMapper;
-import com.ztu.cloud.cloud.common.dao.mysql.SysLogDao;
+import com.ztu.cloud.cloud.common.dao.mysql.SysLogMapper;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.common.vo.admin.*;
 import com.ztu.cloud.cloud.util.ResultUtil;
@@ -26,13 +26,13 @@ import java.util.*;
 @Component
 public class ChartServiceImpl implements ChartService {
     AdminMapper adminDao;
-    SysLogDao sysLogDao;
+    SysLogMapper sysLogMapper;
     FileMapper fileMapper;
     ShareMapper shareMapper;
 
-    public ChartServiceImpl(AdminMapper adminDao, SysLogDao sysLogDao, FileMapper fileMapper, ShareMapper shareMapper) {
+    public ChartServiceImpl(AdminMapper adminDao, SysLogMapper sysLogMapper, FileMapper fileMapper, ShareMapper shareMapper) {
         this.adminDao = adminDao;
-        this.sysLogDao = sysLogDao;
+        this.sysLogMapper = sysLogMapper;
         this.fileMapper = fileMapper;
         this.shareMapper = shareMapper;
     }
@@ -63,7 +63,7 @@ public class ChartServiceImpl implements ChartService {
         for (i = 7; i > 0; i--) {
             condition.setStartTime(this.getTime(i));
             condition.setFinishTime(this.nextDay(condition.getStartTime()));
-            List<SysLog> lists = this.sysLogDao.getSysLogs(condition);
+            List<SysLog> lists = this.sysLogMapper.getSysLogs(condition);
             name.add(getFormatDate(condition.getStartTime()));
             list.add(lists.size());
         }
@@ -97,7 +97,7 @@ public class ChartServiceImpl implements ChartService {
         for (i = 7; i > 0; i--) {
             condition.setStartTime(this.getTime(i));
             condition.setFinishTime(this.nextDay(condition.getStartTime()));
-            List<SysLog> lists = this.sysLogDao.getSysLogs(condition);
+            List<SysLog> lists = this.sysLogMapper.getSysLogs(condition);
             Set<Integer> set = new LinkedHashSet<>();
             lists.forEach(p -> set.add(p.getMemberId()));
             name.add(getFormatDate(condition.getStartTime()));
@@ -218,7 +218,7 @@ public class ChartServiceImpl implements ChartService {
         for (i = 7; i > 0; i--) {
             condition.setStartTime(this.getTime(i));
             condition.setFinishTime(this.nextDay(condition.getStartTime()));
-            List<SysLog> logs = this.sysLogDao.getSysLogs(condition);
+            List<SysLog> logs = this.sysLogMapper.getSysLogs(condition);
             name.add(getFormatDate(condition.getStartTime()));
             int finalI = i;
             logs.forEach(p -> {

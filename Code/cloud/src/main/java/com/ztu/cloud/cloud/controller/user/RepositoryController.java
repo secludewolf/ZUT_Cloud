@@ -221,4 +221,19 @@ public class RepositoryController {
             @RequestBody @Valid CleanRecyclebin parameter) {
         return this.repositoryService.cleanRecycleBin(token, parameter);
     }
+
+    /**
+     * 举报文件
+     *
+     * @param token     用户Token
+     * @param parameter 请求参数 fileId 文件ID type 举报类型 content 举报内容
+     * @return 举报结果
+     */
+    @SysLog(descrption = "用户举报文件", type = "仓库管理", modul = "用户模块")
+    @PutMapping("/file/report")
+    public ResultResponseEntity fileReport(
+            @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "user") String token,
+            @RequestBody @Valid FileReport parameter) {
+        return this.repositoryService.fileReport(token, parameter);
+    }
 }

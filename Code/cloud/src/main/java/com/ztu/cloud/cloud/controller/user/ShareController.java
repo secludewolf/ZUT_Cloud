@@ -1,5 +1,6 @@
 package com.ztu.cloud.cloud.controller.user;
 
+import com.ztu.cloud.cloud.common.dto.user.share.ShareReport;
 import com.ztu.cloud.cloud.common.dto.user.share.CreateShare;
 import com.ztu.cloud.cloud.common.dto.user.share.GetShare;
 import com.ztu.cloud.cloud.common.dto.user.share.SaveShare;
@@ -106,4 +107,18 @@ public class ShareController {
         return this.shareService.saveShare(token, parameter);
     }
 
+    /**
+     * 举报分享
+     *
+     * @param token     用户Token
+     * @param parameter 请求参数 shareId 分享ID type 举报类型 content 举报内容
+     * @return 举报结果
+     */
+    @SysLog(descrption = "用户举报分享", type = "分享管理", modul = "用户模块")
+    @PutMapping("/share/report")
+    public ResultResponseEntity fileReport(
+            @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "user") String token,
+            @RequestBody @Valid ShareReport parameter) {
+        return this.shareService.shareReport(token, parameter);
+    }
 }
