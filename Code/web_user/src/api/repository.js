@@ -15,6 +15,7 @@ const repositoryApi = {
   restoreFromRecycleBin: "/repository/recyclebin",
   deleteFromRecycleBin: "/repository/recyclebin",
   cleanRecycleBin: "/repository/recyclebin/clean",
+  fileReport: "/repository/file/report",
 };
 
 const catcher = (code, content) => {
@@ -71,4 +72,8 @@ export function deleteFromRecycleBin(data, handler, catcher = catcher) {
 
 export function cleanRecycleBin(data, handler, catcher = catcher) {
   delete_(repositoryApi.cleanRecycleBin, data, handler, catcher);
+}
+
+export function fileReport(data, handler, catcher = catcher) {
+  put(repositoryApi.fileReport, data, handler, catcher);
 }

@@ -10,4 +10,10 @@
         insert into shareReport (userId, shareId, type, content)
         values (#{userId}, #{shareId}, #{type}, #{content})
     </insert>
+    <select id="getShareReportListByFileId" parameterType="string"
+            resultType="com.ztu.cloud.cloud.common.bean.mysql.ShareReport">
+        select *
+        from sharereport
+        where shareId = #{shareId}
+    </select>
 </mapper>

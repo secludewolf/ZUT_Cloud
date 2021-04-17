@@ -2,6 +2,8 @@ package com.ztu.cloud.cloud.common.bean.mysql;
 
 import lombok.Data;
 
+import java.util.List;
+
 /**
  * @author Jager
  * @description 分享信息表
@@ -17,6 +19,9 @@ public class Share {
 	private int status;
 	private long createTime;
 	private long validTime;
+	private int reportNumber;
+	private List<ShareReport> reportList;
+
 
 	public Share() {
 	}

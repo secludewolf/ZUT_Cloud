@@ -44,36 +44,18 @@
         slot-scope="text, record, index"
       >
         <div :key="col">
-          <a-input
-            v-if="record.editable"
-            style="margin: -5px 0"
-            :value="text"
-            @change="e => handleChange(e.target.value, record.key, col)"
-          />
-          <template v-else>
+          <template>
             {{ text }}
           </template>
         </div>
       </template>
       <div slot="password" slot-scope="text, record,col">
-        <a-input
-          v-if="record.editable"
-          style="margin: -5px 0"
-          :value="text"
-          @change="e => handleChange(e.target.value, record.key, 'password')"
-        />
-        <template v-else>
+        <template>
           {{ (text === '') ? '无密码' : text }}
         </template>
       </div>
       <div slot="status" slot-scope="text, record,col">
-        <a-input
-          v-if="record.editable"
-          style="margin: -5px 0"
-          :value="text"
-          @change="e => handleChange(e.target.value, record.key, 'status')"
-        />
-        <template v-else>
+        <template>
           {{ text === 1 ? '正常' : '失效' }}
         </template>
       </div>
@@ -83,35 +65,46 @@
         </template>
       </div>
       <div slot="validTime" slot-scope="text, record,col">
-        <a-input
-          v-if="record.editable"
-          style="margin: -5px 0"
-          :value="text"
-          @change="e => handleChange(e.target.value, record.key, 'validTime')"
-        />
-        <template v-else>
+        <template>
           {{ getFormatDate(text) }}
         </template>
       </div>
       <template slot="operation" slot-scope="text, record, index">
         <div class="editable-row-operations">
           <div>
-            <!--          <a :disabled="editingKey !== ''" @click="() => edit(record.key)">编辑</a>-->
             <a-popconfirm
               title="确定要禁用此分享吗?"
               @confirm="() => onDelete(record.id)">
               <a-button :disabled="record.status !== 1" href="javascript:">禁用</a-button>
             </a-popconfirm>
           </div>
-          <!--                <span v-if="record.editable">-->
-          <!--                  <a @click="() => cancel(record.key)">取消</a>-->
-          <!--                  <a @click="() => save(record.key)">更新</a>-->
-          <!--                  &lt;!&ndash;          <a-popconfirm title="确定要修改吗?" @confirm="() => save(record.key)">&ndash;&gt;-->
-          <!--                  &lt;!&ndash;            <a>更新</a>&ndash;&gt;-->
-          <!--                  &lt;!&ndash;          </a-popconfirm>&ndash;&gt;-->
-          <!--                </span>-->
         </div>
       </template>
+      <a-popover slot="reportNumber" slot-scope="text, record, col" trigger="click">
+        <template>
+          <div>
+            <a-tag color="blue">
+              {{ text }}
+            </a-tag>
+          </div>
+        </template>
+        <template slot="content">
+          <a-list item-layout="horizontal">
+            <a-list-item v-for="(value,index) in record.reportList"
+                         :key="index"
+                         :index="index">
+              <a-descriptions size="small" style="width: 300px;" bordered>
+                <a-descriptions-item label="举报类型" :span="4">
+                  {{ value.type }}
+                </a-descriptions-item>
+                <a-descriptions-item label="描述" :span="4">
+                  {{ value.content }}
+                </a-descriptions-item>
+              </a-descriptions>
+            </a-list-item>
+          </a-list>
+        </template>
+      </a-popover>
     </a-table>
   </div>
 </template>
@@ -160,6 +153,13 @@ const columns = [
     dataIndex: 'validTime',
     sorter: true,
     scopedSlots: {customRender: 'validTime'},
+    align: "center",
+  },
+  {
+    title: '举报数',
+    dataIndex: 'reportNumber',
+    sorter: true,
+    scopedSlots: {customRender: 'reportNumber'},
     align: "center",
   },
   {

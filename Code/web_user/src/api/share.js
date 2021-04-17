@@ -8,6 +8,7 @@ const shareApi = {
   deleteShare: "/share/",
   getShare: "/share",
   saveShare: "/share/save",
+  shareReport: "/share/report",
 };
 
 const catcher = (code, content) => {
@@ -33,4 +34,8 @@ export function getShare(data, handler, catcher = catcher) {
 
 export function saveShare(data, handler, catcher = catcher) {
   post(shareApi.saveShare, data, handler, catcher);
+}
+
+export function shareReport(data, handler, catcher = catcher) {
+  put(shareApi.shareReport, data, handler, catcher);
 }

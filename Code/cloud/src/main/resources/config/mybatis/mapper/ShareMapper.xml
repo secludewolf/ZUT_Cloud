@@ -22,8 +22,8 @@
     <select id="getShares"
             parameterType="com.ztu.cloud.cloud.common.dto.condition.Share"
             resultType="com.ztu.cloud.cloud.common.bean.mysql.Share">
-        select *
-        from share
+        select share.*,count(sharereport.shareId) as reportNumber
+        from share left join sharereport on share.id = sharereport.shareId
         where 1 = 1
         <if test="userId != null">
             and userId = #{userId}
@@ -40,6 +40,7 @@
         <if test="endTime != null">
             and createTime &lt;= #{endTime}
         </if>
+        GROUP BY share.id
     </select>
     <!--    获取分享数量-->
     <select id="getShareCount"

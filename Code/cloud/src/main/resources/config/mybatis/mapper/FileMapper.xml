@@ -62,8 +62,8 @@
     <select id="getFiles"
             parameterType="com.ztu.cloud.cloud.common.dto.condition.File"
             resultType="com.ztu.cloud.cloud.common.bean.mysql.File">
-        select *
-        from file
+        select file.*,count(filereport.fileId) as reportNumber
+        from file left join filereport on file.id = filereport.fileId
         where 1 = 1
         <if test="name != null">
             and name like concat('%',#{name},'%')
@@ -86,6 +86,7 @@
         <if test="status != null">
             and status = #{status}
         </if>
+        GROUP BY file.id
     </select>
     <!--    获取文件数量-->
     <select id="getFileCount"

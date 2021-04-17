@@ -22,4 +22,12 @@ public interface FileReportMapper {
      * @return 插入结果
      */
     int insertFileReport(FileReport fileReport);
+
+    /**
+     * 获取举报列表
+     *
+     * @param fileId 文件Id
+     * @return 举报列表
+     */
+    List<FileReport> getFileReportListByFileId(String fileId);
 }

@@ -23,4 +23,12 @@ public interface ShareReportMapper {
      * @return 插入结果
      */
     int insertShareReport(ShareReport shareReport);
+
+    /**
+     * 获取举报列表
+     *
+     * @param shareId 分享Id
+     * @return 举报列表
+     */
+    List<ShareReport> getShareReportListByFileId(String shareId);
 }

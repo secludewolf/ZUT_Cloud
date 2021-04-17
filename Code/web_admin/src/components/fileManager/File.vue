@@ -83,61 +83,54 @@
         slot-scope="text, record, index"
       >
         <div :key="col">
-          <a-input
-            v-if="record.editable"
-            style="margin: -5px 0"
-            :value="text"
-            @change="e => handleChange(e.target.value, record.key, col)"
-          />
-          <template v-else>
+          <template>
             {{ text }}
           </template>
         </div>
       </template>
       <div slot="status" slot-scope="text, record,col">
-        <a-input
-          v-if="record.editable"
-          style="margin: -5px 0"
-          :value="text"
-          @change="e => handleChange(e.target.value, record.key, 'status')"
-        />
-        <template v-else>
+        <template>
           {{ text === 1 ? '正常' : '异常' }}
         </template>
       </div>
       <div slot="size" slot-scope="text, record,col">
-        <a-input
-          v-if="record.editable"
-          style="margin: -5px 0"
-          :value="text"
-          @change="e => handleChange(e.target.value, record.key, 'size')"
-        />
-        <template v-else>
+        <template>
           {{ getFormatSize(text) }}
         </template>
       </div>
       <div slot="type" slot-scope="text, record,col">
-        <a-input
-          v-if="record.editable"
-          style="margin: -5px 0"
-          :value="text"
-          @change="e => handleChange(e.target.value, record.key, 'type')"
-        />
-        <template v-else>
+        <template>
           {{ text.toUpperCase() }}
         </template>
       </div>
+      <a-popover slot="reportNumber" slot-scope="text, record, col" trigger="click">
+        <template>
+          <div>
+            <a-tag color="blue">
+              {{ text }}
+            </a-tag>
+          </div>
+        </template>
+        <template slot="content">
+          <a-list item-layout="horizontal">
+            <a-list-item v-for="(value,index) in record.reportList"
+                         :key="index"
+                         :index="index">
+              <a-descriptions size="small" style="width: 300px;" bordered>
+                <a-descriptions-item label="举报类型" :span="4">
+                  {{ value.type }}
+                </a-descriptions-item>
+                <a-descriptions-item label="描述" :span="4">
+                  {{ value.content }}
+                </a-descriptions-item>
+              </a-descriptions>
+            </a-list-item>
+          </a-list>
+        </template>
+      </a-popover>
       <template slot="operation" slot-scope="text, record, index">
         <div class="editable-row-operations">
-          <!--                <span v-if="record.editable">-->
-          <!--                  <a @click="() => cancel(record.key)">取消</a>-->
-          <!--                  <a @click="() => save(record.key)">更新</a>-->
-          <!--                  &lt;!&ndash;          <a-popconfirm title="确定要修改吗?" @confirm="() => save(record.key)">&ndash;&gt;-->
-          <!--                  &lt;!&ndash;            <a>更新</a>&ndash;&gt;-->
-          <!--                  &lt;!&ndash;          </a-popconfirm>&ndash;&gt;-->
-          <!--                </span>-->
           <div>
-            <!--          <a :disabled="editingKey !== ''" @click="() => edit(record.key)">编辑</a>-->
             <a-button @click="download(record.id)">
               下载
             </a-button>
@@ -192,6 +185,13 @@ const columns = [
     dataIndex: 'quoteNumber',
     sorter: true,
     scopedSlots: {customRender: 'quoteNumber'},
+    align: "center",
+  },
+  {
+    title: '举报数',
+    dataIndex: 'reportNumber',
+    sorter: true,
+    scopedSlots: {customRender: 'reportNumber'},
     align: "center",
   },
   {

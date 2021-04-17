@@ -4,11 +4,13 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.ztu.cloud.cloud.common.bean.mongodb.ShareRepository;
 import com.ztu.cloud.cloud.common.bean.mysql.Admin;
+import com.ztu.cloud.cloud.common.bean.mysql.File;
 import com.ztu.cloud.cloud.common.bean.mysql.Share;
 import com.ztu.cloud.cloud.common.constant.ResultConstant;
 import com.ztu.cloud.cloud.common.dao.mongodb.ShareRepositoryDao;
 import com.ztu.cloud.cloud.common.dao.mysql.AdminMapper;
 import com.ztu.cloud.cloud.common.dao.mysql.ShareMapper;
+import com.ztu.cloud.cloud.common.dao.mysql.ShareReportMapper;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.common.vo.common.PageVo;
 import com.ztu.cloud.cloud.util.ResultUtil;
@@ -28,11 +30,13 @@ public class ShareManageServiceImpl implements ShareManageService {
     AdminMapper adminDao;
     ShareMapper shareDao;
     ShareRepositoryDao shareRepositoryDao;
+    ShareReportMapper shareReportMapper;
 
-    public ShareManageServiceImpl(AdminMapper adminDao, ShareMapper shareDao, ShareRepositoryDao shareRepositoryDao) {
+    public ShareManageServiceImpl(AdminMapper adminDao, ShareMapper shareDao, ShareRepositoryDao shareRepositoryDao, ShareReportMapper shareReportMapper) {
         this.adminDao = adminDao;
         this.shareDao = shareDao;
         this.shareRepositoryDao = shareRepositoryDao;
+        this.shareReportMapper = shareReportMapper;
     }
 
     /**
@@ -76,6 +80,13 @@ public class ShareManageServiceImpl implements ShareManageService {
         } catch (Exception e) {
             e.printStackTrace();
             result = new LinkedList<>();
+        }
+        for (Share share : result) {
+            if (share.getReportNumber() > 0) {
+                share.setReportList(this.shareReportMapper.getShareReportListByFileId(share.getId()));
+            } else {
+                share.setReportList(new LinkedList<>());
+            }
         }
         PageVo<Share> pageVo = new PageVo<>(new PageInfo<>(result), sortKey, sortType);
         return ResultUtil.createResult("成功", pageVo);

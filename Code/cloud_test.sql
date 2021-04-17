@@ -11,7 +11,7 @@
  Target Server Version : 50730
  File Encoding         : 65001
 
- Date: 12/01/2021 22:23:27
+ Date: 17/04/2021 18:18:37
 */
 
 SET NAMES utf8mb4;
@@ -33,7 +33,7 @@ CREATE TABLE `admin`  (
   `createTime` bigint(20) NOT NULL COMMENT '创建时间',
   `changeTime` bigint(20) NOT NULL COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for file
@@ -53,6 +53,44 @@ CREATE TABLE `file`  (
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
+-- Table structure for filereport
+-- ----------------------------
+DROP TABLE IF EXISTS `filereport`;
+CREATE TABLE `filereport`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `fileId` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `type` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `content` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for log
+-- ----------------------------
+DROP TABLE IF EXISTS `log`;
+CREATE TABLE `log`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `memberId` int(11) NULL DEFAULT NULL,
+  `memberType` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `requestIp` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `actionUrl` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `actionMethod` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `optionType` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `optionDesc` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `optionModel` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `classPath` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `requestMethod` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
+  `parameter` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
+  `message` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
+  `status` int(255) NULL DEFAULT NULL,
+  `startTime` bigint(20) NULL DEFAULT NULL,
+  `finishTime` bigint(20) NULL DEFAULT NULL,
+  `consumingTime` bigint(20) NULL DEFAULT NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2248 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
 -- Table structure for share
 -- ----------------------------
 DROP TABLE IF EXISTS `share`;
@@ -67,6 +105,19 @@ CREATE TABLE `share`  (
   `validTime` bigint(20) NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Table structure for sharereport
+-- ----------------------------
+DROP TABLE IF EXISTS `sharereport`;
+CREATE TABLE `sharereport`  (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `userId` int(11) NOT NULL,
+  `shareId` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `type` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NOT NULL,
+  `content` text CHARACTER SET utf8 COLLATE utf8_general_ci NULL,
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for user
@@ -85,7 +136,7 @@ CREATE TABLE `user`  (
   `createTime` bigint(20) NOT NULL COMMENT '创建时间',
   `changeTime` bigint(20) NOT NULL COMMENT '修改时间',
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 -- ----------------------------
 -- Table structure for userfile
@@ -97,6 +148,6 @@ CREATE TABLE `userfile`  (
   `fileId` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   `path` varchar(255) CHARACTER SET utf8 COLLATE utf8_general_ci NULL DEFAULT NULL,
   PRIMARY KEY (`id`) USING BTREE
-) ENGINE = InnoDB AUTO_INCREMENT = 4 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
+) ENGINE = InnoDB AUTO_INCREMENT = 18 CHARACTER SET = utf8 COLLATE = utf8_general_ci ROW_FORMAT = Dynamic;
 
 SET FOREIGN_KEY_CHECKS = 1;

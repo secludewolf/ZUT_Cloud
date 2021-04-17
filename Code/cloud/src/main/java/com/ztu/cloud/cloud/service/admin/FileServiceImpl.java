@@ -7,6 +7,7 @@ import com.ztu.cloud.cloud.common.bean.mysql.File;
 import com.ztu.cloud.cloud.common.constant.ResultConstant;
 import com.ztu.cloud.cloud.common.dao.mysql.AdminMapper;
 import com.ztu.cloud.cloud.common.dao.mysql.FileMapper;
+import com.ztu.cloud.cloud.common.dao.mysql.FileReportMapper;
 import com.ztu.cloud.cloud.common.dto.user.download.Download;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.common.vo.admin.FileInfo;
@@ -30,11 +31,13 @@ public class FileServiceImpl implements FileService {
     AdminMapper adminDao;
     FileMapper fileDao;
     StoreUtil storeUtil;
+    FileReportMapper fileReportMapper;
 
-    public FileServiceImpl(AdminMapper adminDao, FileMapper fileDao, StoreUtil storeUtil) {
+    public FileServiceImpl(AdminMapper adminDao, FileMapper fileDao, StoreUtil storeUtil, FileReportMapper fileReportMapper) {
         this.adminDao = adminDao;
         this.fileDao = fileDao;
         this.storeUtil = storeUtil;
+        this.fileReportMapper = fileReportMapper;
     }
 
     /**
@@ -100,6 +103,7 @@ public class FileServiceImpl implements FileService {
             return ResultConstant.NO_ACCESS;
         }
         String orderBy = sortKey + " " + sortType;
+        //分页查询
         PageHelper.startPage(pageNumber, pageSize, orderBy);
         List<File> result;
         com.ztu.cloud.cloud.common.dto.condition.File conditionBean = new com.ztu.cloud.cloud.common.dto.condition.File(name, status, startTime, endTime);
@@ -136,6 +140,13 @@ public class FileServiceImpl implements FileService {
         } catch (Exception e) {
             e.printStackTrace();
             result = new LinkedList<>();
+        }
+        for (File file : result) {
+            if (file.getReportNumber() > 0) {
+                file.setReportList(this.fileReportMapper.getFileReportListByFileId(file.getId()));
+            } else {
+                file.setReportList(new LinkedList<>());
+            }
         }
         PageVo<File> pageVo = new PageVo<>(new PageInfo<>(result), sortKey, sortType);
         return ResultUtil.createResult("查询成功", pageVo);
