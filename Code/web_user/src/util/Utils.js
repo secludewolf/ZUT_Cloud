@@ -37,7 +37,7 @@ export function getTypeName(type) {
  * @returns {string} 格式化文件大小
  */
 export function getFormatSize(size, fractionDigits = 2) {
-  if (size === 0){
+  if (size === 0) {
     return "0";
   }
   if (size == null || size === '') {
@@ -64,6 +64,8 @@ export function getImg(type) {
   } else {
     if (FileType["ai"].indexOf(type) !== -1) {
       return require("../assets/explorer/file_ai.svg");
+    } else if (FileType["photo"].indexOf(type) !== -1) {
+      return require("../assets/explorer/file_img.svg");
     } else if (FileType["torrent"].indexOf(type) !== -1) {
       return require("../assets/explorer/file_bt.svg");
     } else if (FileType["cad"].indexOf(type) !== -1) {
