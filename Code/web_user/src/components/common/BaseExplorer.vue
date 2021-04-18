@@ -35,6 +35,9 @@
           <a-icon type="alert"/>
           举报
         </a-button>
+        <a-button type="primary" @click="()=>{this.previewVisible = true}">
+          测试预览
+        </a-button>
         <a-modal
           title="保存分享"
           :visible="saveShareVisible"
@@ -370,6 +373,20 @@
             </a-form-item>
           </a-form>
         </a-modal>
+        <a-modal
+          title="预览测试"
+          :visible="previewVisible"
+          :footer="false"
+          @cancel="()=>{this.previewVisible = false}"
+          :width="1000">
+          <button @click="previewFile">测试</button>
+          <img :src="previewPhotoUrl" alt="12"/>
+          <!--          <img src="../../assets/logo.png" alt="12"/>-->
+          <!--          <img src="../../assets/logo.png" alt="12"/>-->
+          <!--          <img src="../../assets/logo.png" alt="12"/>-->
+          <!--          <img src="../../assets/logo.png" alt="12"/>-->
+          <!--          <img src="../../assets/logo.png" alt="12"/>-->
+        </a-modal>
       </a-layout>
     </a-layout-content>
   </a-layout>
@@ -396,16 +413,20 @@ import {
   createFile,
   createFolder,
   deleteFromRecycleBin,
-  deleteFromRepository, fileReport,
+  deleteFromRepository,
+  fileReport,
   moveFile,
   moveFolder,
-  renameFile, renameFolder, restoreFromRecycleBin
+  renameFile,
+  renameFolder,
+  restoreFromRecycleBin
 } from "../../api/repository";
 import {createShare, saveShare, shareReport} from "../../api/share";
 import {uploadBigFile, uploadSmallFile} from "../../api/upload";
 import {getDownloadId} from "../../api/download";
 import merge from "webpack-merge";
 import moment from 'moment';
+import {previewPhoto} from "../../api/preview";
 
 const columns = [
   {
@@ -537,6 +558,8 @@ export default {
       shareReportLoading: false,
       shareReportType: "",
       shareReportContent: "",
+      previewVisible: false,
+      previewPhotoUrl: require('../../assets/logo.png'),
     }
   },
   computed: {
@@ -1309,6 +1332,17 @@ export default {
         parent.$message.warn(content);
       };
       shareReport(data, handler, catcher);
+    },
+    previewFile() {
+      const parent = this;
+      const data = "repositoryId/fileId";
+      const handler = (response) => {
+        parent.previewPhotoUrl = window.URL.createObjectURL(response.data);
+      };
+      const catcher = (code, content) => {
+        parent.$message.error("预览错误");
+      };
+      previewPhoto(data, handler, catcher);
     },
   }
 }
