@@ -1390,24 +1390,6 @@ export default {
         parent.$message.info("暂不支持此类型文件预览");
       }
     },
-    flashTarget(event) {//刷新目标文件
-      for (const index in event.path) {
-        if (event.path[index].id === "file") {
-          flag = "file";
-          this.isFile = true;
-          this.targetIndex = event.path[index].getAttribute("index");
-          this.target = this.files[this.targetIndex];
-          break;
-        } else if (event.path[index].id === "folder") {
-          flag = "folder";
-          this.isFolder = true;
-          this.targetIndex = event.path[index].getAttribute("index");
-          this.target = this.folders[this.targetIndex];
-          break;
-        }
-      }
-      console.log(this.target);
-    }
   }
 }
 </script>
