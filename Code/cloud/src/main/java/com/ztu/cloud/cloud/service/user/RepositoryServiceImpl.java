@@ -688,6 +688,9 @@ public class RepositoryServiceImpl implements RepositoryService {
     @Override
     public ResultResponseEntity fileReport(String token, FileReport parameter) {
         int userId = TokenUtil.getId(token);
+        //TODO 禁止重复举报
+        //TODO 验证举报信息
+        //TODO 超过阈值自动锁定
         this.fileReportMapper.insertFileReport(new com.ztu.cloud.cloud.common.bean.mysql.FileReport(parameter, userId));
         return ResultUtil.createResult(1, "举报成功");
     }

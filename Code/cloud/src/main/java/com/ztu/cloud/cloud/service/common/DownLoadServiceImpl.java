@@ -193,6 +193,7 @@ public class DownLoadServiceImpl implements DownloadService {
             return null;
         }
         InputStream file = this.storeUtil.getFile(fileInfo.getPath());
+        //TODO inputStream可能为空
         return new com.ztu.cloud.cloud.common.dto.user.download.Download(download.getName(), file);
     }
 

@@ -57,10 +57,8 @@ public class ShareServiceImpl implements ShareService {
     /**
      * 创建分享
      *
-     * @param token
-     *            用户Token
-     * @param parameter
-     *            请求参数 repositoryId 仓库ID name 分享名称 path 分享位置 password 密码
+     * @param token     用户Token
+     * @param parameter 请求参数 repositoryId 仓库ID name 分享名称 path 分享位置 password 密码
      * @return 分享信息
      */
     @Override
@@ -112,7 +110,7 @@ public class ShareServiceImpl implements ShareService {
         }
         this.shareRepositoryDao.insert(shareRepository);
         Share share = new Share(shareId, userId, shareRepository.getId(), parameter.getName(), parameter.getPassword(),
-            parameter.getValidTime());
+                parameter.getValidTime());
         this.shareDao.insertShare(share);
         this.userRepositoryDao.updateFolderById(repository.getId(), repository.getFolder());
         return ResultUtil.createResult("成功", new ShareInfo(share));
@@ -121,8 +119,7 @@ public class ShareServiceImpl implements ShareService {
     /**
      * 获取分享列表
      *
-     * @param token
-     *            用户Token
+     * @param token 用户Token
      * @return 分享列表
      */
     @Override
@@ -135,10 +132,8 @@ public class ShareServiceImpl implements ShareService {
     /**
      * 删除信息
      *
-     * @param token
-     *            用户Token
-     * @param shareId
-     *            分享ID
+     * @param token   用户Token
+     * @param shareId 分享ID
      * @return 删除结果
      */
     @Override
@@ -158,10 +153,8 @@ public class ShareServiceImpl implements ShareService {
     /**
      * 获取分享信息
      *
-     * @param token
-     *            用户Token
-     * @param parameter
-     *            请求参数 shareId 分享ID password 分享密码
+     * @param token     用户Token
+     * @param parameter 请求参数 shareId 分享ID password 分享密码
      * @return 分享信息
      */
     @Override
@@ -178,16 +171,14 @@ public class ShareServiceImpl implements ShareService {
         }
         ShareRepository shareRepository = this.shareRepositoryDao.getById(shareInfo.getRepoId());
         return ResultUtil.createResult("成功",
-            new com.ztu.cloud.cloud.common.vo.user.ShareRepository(shareInfo, shareRepository));
+                new com.ztu.cloud.cloud.common.vo.user.ShareRepository(shareInfo, shareRepository));
     }
 
     /**
      * 保存分享
      *
-     * @param token
-     *            用户信Token
-     * @param parameter
-     *            请求参数 shareId 分享ID password 分享密码 path 保存位置
+     * @param token     用户信Token
+     * @param parameter 请求参数 shareId 分享ID password 分享密码 path 保存位置
      * @return 是否保存成功
      */
     @Override
@@ -263,6 +254,9 @@ public class ShareServiceImpl implements ShareService {
     @Override
     public ResultResponseEntity shareReport(String token, ShareReport parameter) {
         int userId = TokenUtil.getId(token);
+        //TODO 禁止重复举报
+        //TODO 验证举报信息
+        //TODO 超过阈值自动锁定
         this.shareReportMapper.insertShareReport(new com.ztu.cloud.cloud.common.bean.mysql.ShareReport(parameter, userId));
         return ResultUtil.createResult(1, "举报成功");
     }
