@@ -1,7 +1,7 @@
 import {get} from "../util/request";
 
 const previewApi = {
-  previewPhoto: "/preview/photo/"
+  previewPhoto: "/preview/user/photo/"
 };
 
 export function previewPhoto(data, handler, catcher) {

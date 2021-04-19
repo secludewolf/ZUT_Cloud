@@ -114,7 +114,7 @@
                       v-for="(value,index) in folders"
                       :key="index"
                       :index="index"
-                      v-on:dblclick="openFile('folder',value.name)">
+                      v-on:dblclick="(event) => openFile('folder',value.name,event)">
                 <img
                   slot="cover"
                   alt="folder"
@@ -129,7 +129,7 @@
                       v-for="(value,index) in files"
                       :key="index"
                       :index="index"
-                      v-on:dblclick="openFile(value.type,value.name)">
+                      v-on:dblclick="(event) =>openFile(value.type,value.name,event)">
                 <img
                   slot="cover"
                   alt="file"
@@ -230,6 +230,11 @@
               详细信息
             </a-menu-item>
             <a-menu-item key="10"
+                         v-if="(isRepository || isShare || isSearch) && (isFile || isFolder)"
+                         @click="previewFile">
+              预览
+            </a-menu-item>
+            <a-menu-item key="11"
                          v-if="(isRepository || isShare || isSearch) && (isFile)"
                          @click="()=>{this.menuVisible = false;this.fileReportVisible = true;}">
               举报
@@ -374,18 +379,27 @@
           </a-form>
         </a-modal>
         <a-modal
-          title="预览测试"
-          :visible="previewVisible"
+          :title=false
           :footer="false"
+          :closable="false"
+          :visible="previewVisible"
           @cancel="()=>{this.previewVisible = false}"
-          :width="1000">
-          <button @click="previewFile">测试</button>
-          <img :src="previewPhotoUrl" alt="12"/>
-          <!--          <img src="../../assets/logo.png" alt="12"/>-->
-          <!--          <img src="../../assets/logo.png" alt="12"/>-->
-          <!--          <img src="../../assets/logo.png" alt="12"/>-->
-          <!--          <img src="../../assets/logo.png" alt="12"/>-->
-          <!--          <img src="../../assets/logo.png" alt="12"/>-->
+          centered
+          :width="1000"
+          style="max-height: 80%">
+          <div v-on:contextmenu.prevent="">
+            <a-row>
+              <a-col :span="2">
+                <button style="float: left">上一页</button>
+              </a-col>
+              <a-col :span="20">
+                <img :src="previewPhotoUrl" alt="预览图片" style="width:100%; height:auto;"/>
+              </a-col>
+              <a-col :span="2">
+                <button style="float: right">下一页</button>
+              </a-col>
+            </a-row>
+          </div>
         </a-modal>
       </a-layout>
     </a-layout-content>
@@ -697,7 +711,20 @@ export default {
       this.$router.push({query: merge(this.$route.query, {'path': path})})
       this.path = newPath;
     },
-    openFile(type, name) {
+    openFile(type, name, event) {
+      for (const index in event.path) {
+        if (event.path[index].id === "file") {
+          this.isFile = true;
+          this.targetIndex = event.path[index].getAttribute("index");
+          this.target = this.files[this.targetIndex];
+          break;
+        } else if (event.path[index].id === "folder") {
+          this.isFolder = true;
+          this.targetIndex = event.path[index].getAttribute("index");
+          this.target = this.folders[this.targetIndex];
+          break;
+        }
+      }
       if (type === "folder") {
         if (!this.isRepository && !this.isShare) {
           this.$message.warn("暂不支持在搜索结果中打开文件夹");
@@ -709,7 +736,7 @@ export default {
         this.path.push(name);
         this.updatePath(this.path);
       } else {
-        this.$message.warn("暂不支持文件预览!");
+        this.previewFile();
       }
     },
     lastParent: function () {
@@ -1184,9 +1211,6 @@ export default {
       }
       this.menuVisible = false;
     },
-    showInfo() {
-
-    },
     tableOptionInit(index) {
       if (this.tableSource[index].depth != null) {
         this.targetIndex = findKey(this.folders, this.tableSource[index]);
@@ -1334,16 +1358,56 @@ export default {
       shareReport(data, handler, catcher);
     },
     previewFile() {
+      let photoTypeList = ["webp", "bmp", "pcx", "tif", "gif", "jpeg", "tga", "exif", "fpx", "svg", "psd", "sdr", "pcd", "dxf", "ufo", "eps", "png", "hdri", "raw", "wmf", "flic", "emf", "ico"];
+      this.menuVisible = false;
       const parent = this;
-      const data = "repositoryId/fileId";
-      const handler = (response) => {
-        parent.previewPhotoUrl = window.URL.createObjectURL(response.data);
-      };
-      const catcher = (code, content) => {
-        parent.$message.error("预览错误");
-      };
-      previewPhoto(data, handler, catcher);
+      if (photoTypeList.indexOf(this.target.type.toLowerCase()) !== -1) {
+        const data = this.$store.getters.getRepositoryId + "/" + this.target.id;
+        const handler = (response) => {
+          console.log(response.data.type);
+          // 预览失败
+          if (response.data.type === "application/json") {
+            const reader = new FileReader();
+            reader.readAsText(response.data, 'utf-8');
+            reader.onload = function () {
+              let data = JSON.parse(reader.result)
+              if (data.message != null) {
+                parent.$message.error(data.message);
+              } else {
+                parent.$message.error("预览失败");
+              }
+            }
+          } else {
+            this.previewVisible = true;
+            parent.previewPhotoUrl = window.URL.createObjectURL(response.data);
+          }
+        };
+        const catcher = (code, content) => {
+          parent.$message.error("预览错误");
+        };
+        previewPhoto(data, handler, catcher);
+      } else {
+        parent.$message.info("暂不支持此类型文件预览");
+      }
     },
+    flashTarget(event) {//刷新目标文件
+      for (const index in event.path) {
+        if (event.path[index].id === "file") {
+          flag = "file";
+          this.isFile = true;
+          this.targetIndex = event.path[index].getAttribute("index");
+          this.target = this.files[this.targetIndex];
+          break;
+        } else if (event.path[index].id === "folder") {
+          flag = "folder";
+          this.isFolder = true;
+          this.targetIndex = event.path[index].getAttribute("index");
+          this.target = this.folders[this.targetIndex];
+          break;
+        }
+      }
+      console.log(this.target);
+    }
   }
 }
 </script>
