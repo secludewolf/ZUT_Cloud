@@ -230,11 +230,6 @@
               详细信息
             </a-menu-item>
             <a-menu-item key="10"
-                         v-if="(isRepository || isShare || isSearch) && (isFile || isFolder)"
-                         @click="previewFile">
-              预览
-            </a-menu-item>
-            <a-menu-item key="11"
                          v-if="(isRepository || isShare || isSearch) && (isFile)"
                          @click="()=>{this.menuVisible = false;this.fileReportVisible = true;}">
               举报
@@ -384,18 +379,18 @@
           :closable="false"
           :visible="previewVisible"
           @cancel="()=>{this.previewVisible = false}"
-          centered
-          :width="1000"
-          style="max-height: 80%">
+          :width="800"
+          dialogClass="PreviewDiv"
+          centered>
           <div v-on:contextmenu.prevent="">
             <a-row>
-              <a-col :span="2">
+              <a-col :span="2" v-if="previewPageButtonVisible">
                 <button style="float: left">上一页</button>
               </a-col>
-              <a-col :span="20">
+              <a-col :span="previewContentSpan">
                 <img :src="previewPhotoUrl" alt="预览图片" style="width:100%; height:auto;"/>
               </a-col>
-              <a-col :span="2">
+              <a-col :span="2" v-if="previewPageButtonVisible">
                 <button style="float: right">下一页</button>
               </a-col>
             </a-row>
@@ -573,6 +568,8 @@ export default {
       shareReportType: "",
       shareReportContent: "",
       previewVisible: false,
+      previewPageButtonVisible: false,
+      previewContentSpan: 24,
       previewPhotoUrl: require('../../assets/logo.png'),
     }
   },
@@ -712,6 +709,10 @@ export default {
       this.path = newPath;
     },
     openFile(type, name, event) {
+      if (this.isRecycleBin) {
+        this.$message.warn("禁止在回收站打开文件");
+        return;
+      }
       for (const index in event.path) {
         if (event.path[index].id === "file") {
           this.isFile = true;
@@ -736,7 +737,12 @@ export default {
         this.path.push(name);
         this.updatePath(this.path);
       } else {
-        this.previewFile();
+        let photoTypeList = ["webp", "bmp", "pcx", "tif", "gif", "jpeg", "tga", "exif", "fpx", "svg", "psd", "sdr", "pcd", "dxf", "ufo", "eps", "png", "hdri", "raw", "wmf", "flic", "emf", "ico"];
+        if (photoTypeList.indexOf(this.target.type.toLowerCase()) !== -1) {
+          this.previewPhoto();
+        } else {
+          this.$message.info("暂不支持此类型文件预览");
+        }
       }
     },
     lastParent: function () {
@@ -1357,38 +1363,34 @@ export default {
       };
       shareReport(data, handler, catcher);
     },
-    previewFile() {
+    previewPhoto() {
       let photoTypeList = ["webp", "bmp", "pcx", "tif", "gif", "jpeg", "tga", "exif", "fpx", "svg", "psd", "sdr", "pcd", "dxf", "ufo", "eps", "png", "hdri", "raw", "wmf", "flic", "emf", "ico"];
       this.menuVisible = false;
       const parent = this;
-      if (photoTypeList.indexOf(this.target.type.toLowerCase()) !== -1) {
-        const data = this.$store.getters.getRepositoryId + "/" + this.target.id;
-        const handler = (response) => {
-          console.log(response.data.type);
-          // 预览失败
-          if (response.data.type === "application/json") {
-            const reader = new FileReader();
-            reader.readAsText(response.data, 'utf-8');
-            reader.onload = function () {
-              let data = JSON.parse(reader.result)
-              if (data.message != null) {
-                parent.$message.error(data.message);
-              } else {
-                parent.$message.error("预览失败");
-              }
+      const data = this.$store.getters.getRepositoryId + "/" + this.target.id;
+      const handler = (response) => {
+        console.log(response.data.type);
+        // 预览失败
+        if (response.data.type === "application/json") {
+          const reader = new FileReader();
+          reader.readAsText(response.data, 'utf-8');
+          reader.onload = function () {
+            let data = JSON.parse(reader.result)
+            if (data.message != null) {
+              parent.$message.error(data.message);
+            } else {
+              parent.$message.error("预览失败");
             }
-          } else {
-            this.previewVisible = true;
-            parent.previewPhotoUrl = window.URL.createObjectURL(response.data);
           }
-        };
-        const catcher = (code, content) => {
-          parent.$message.error("预览错误");
-        };
-        previewPhoto(data, handler, catcher);
-      } else {
-        parent.$message.info("暂不支持此类型文件预览");
-      }
+        } else {
+          this.previewVisible = true;
+          parent.previewPhotoUrl = window.URL.createObjectURL(response.data);
+        }
+      };
+      const catcher = (code, content) => {
+        parent.$message.error("预览错误");
+      };
+      previewPhoto(data, handler, catcher);
     },
   }
 }
@@ -1398,6 +1400,14 @@ export default {
 #explorer-table td {
   padding: 5px 15px;
   overflow-wrap: break-word;
+}
+
+.PreviewDiv .ant-modal-content {
+  background: rgba(0, 0, 0, 0);
+  box-shadow: none;
+}
+.PreviewDiv .ant-modal-content .ant-modal-body {
+  padding: 0;
 }
 </style>
 
