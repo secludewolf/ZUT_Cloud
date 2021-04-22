@@ -35,7 +35,7 @@ public class UploadServiceImpl implements UploadService {
     LockDao lockDao;
 
     public UploadServiceImpl(FileMapper fileDao, UserMapper userDao, StoreUtil storeUtil, TempFileDao tempFileDao,
-        LockDao lockDao) {
+                             LockDao lockDao) {
         this.fileDao = fileDao;
         this.userDao = userDao;
         this.storeUtil = storeUtil;
@@ -46,32 +46,24 @@ public class UploadServiceImpl implements UploadService {
     /**
      * 上传文件
      *
-     * @param token
-     *            用户Token
-     * @param block
-     *            文件块
-     * @param fileName
-     *            文件名
-     * @param blockMd5
-     *            文件块MD5
-     * @param fileMd5
-     *            文件MD5
-     * @param index
-     *            文件块号
-     * @param length
-     *            文件总块数
+     * @param token    用户Token
+     * @param block    文件块
+     * @param fileName 文件名
+     * @param blockMd5 文件块MD5
+     * @param fileMd5  文件MD5
+     * @param index    文件块号
+     * @param length   文件总块数
      * @return 已接收的文件块号
      */
     @Override
     public ResultResponseEntity upload(String token, String fileName, MultipartFile block, String blockMd5,
-        String fileMd5, Integer index, Integer length) {
-
+                                       String fileMd5, Integer index, Integer length) {
         int id = TokenUtil.getId(token);
         if (block.getSize() > 5 * 1024 * 1024) {
             return ResultConstant.REQUEST_PARAMETER_ERROR;
         }
         if (blockMd5 == null || "".equals(blockMd5) || fileMd5 == null || "".equals(fileMd5) || fileName == null
-            || "".equals(fileName) || index == null || length == null) {
+                || "".equals(fileName) || index == null || length == null) {
             return ResultConstant.REQUEST_PARAMETER_ERROR;
         }
         User user = this.userDao.getUserById(id);
@@ -154,7 +146,7 @@ public class UploadServiceImpl implements UploadService {
                                 this.storeUtil.deleteTempFile(fileMd5);
                                 this.tempFileDao.delete(tempFile.getFileId());
                                 File file =
-                                    new File(tempFile.getFileId(), tempFile.getName(), path, size, tempFile.getType());
+                                        new File(tempFile.getFileId(), tempFile.getName(), path, size, tempFile.getType());
                                 this.fileDao.insertFile(file);
                                 return ResultConstant.SUCCESS;
                             }

@@ -1,5 +1,3 @@
-import {get} from "../util/request";
-
 const previewApi = {
   previewPhoto: "/preview/user/photo/"
 };

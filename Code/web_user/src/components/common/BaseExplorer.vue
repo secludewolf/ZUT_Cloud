@@ -391,7 +391,8 @@
                 <img v-if="previewImgVisible" :src="previewPhotoUrl" alt="预览图片" style="width:100%; height:auto;"/>
                 <div>
                   <video v-if="previewVideoVisible" controls autoplay
-                         src="http://localhost:8088/preview/user/video/5fec496e30ac410ee4a7675f/2748469958f5539cc1e9a1e3a90668f4" style="width: 100%"/>
+                         :src="previewVideoUrl"
+                         style="width: 100%"/>
                 </div>
               </a-col>
               <a-col v-if="previewPageButtonVisible" :span="2">
@@ -575,6 +576,7 @@ export default {
       previewPageButtonVisible: false,
       previewImgVisible: false,
       previewVideoVisible: false,
+      previewVideoUrl: "",
       previewContentSpan: 24,
       previewPhotoUrl: require('../../assets/logo.png'),
     }
@@ -744,8 +746,11 @@ export default {
         this.updatePath(this.path);
       } else {
         let photoTypeList = ["webp", "bmp", "pcx", "tif", "gif", "jpeg", "tga", "exif", "fpx", "svg", "psd", "sdr", "pcd", "dxf", "ufo", "eps", "png", "hdri", "raw", "wmf", "flic", "emf", "ico"];
+        let videoTypeList = ["mp4", "mov", "avi", "flv", "wmv", "mpeg", "mkv", "asf", "rm", "rmvb", "vob", "ts", "dat"];
         if (photoTypeList.indexOf(this.target.type.toLowerCase()) !== -1) {
           this.previewPhoto();
+        } else if (videoTypeList.indexOf(this.target.type.toLowerCase()) !== -1) {
+          this.previewVideo();
         } else {
           this.$message.info("暂不支持此类型文件预览");
         }
@@ -1397,6 +1402,15 @@ export default {
         parent.$message.error("预览错误");
       };
       previewPhoto(data, handler, catcher);
+    },
+    previewVideo() {
+      this.menuVisible = false;
+      this.previewVideoUrl = "/api/preview/user/video/" + this.$store.getters.getRepositoryId + "/" + this.target.id;
+      this.previewVideoVisible = true;
+      this.previewVisible = true;
+    },
+    previewClose() {
+      //TODO
     },
     test() {
       this.previewVideoVisible = true;

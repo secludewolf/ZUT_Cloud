@@ -2,6 +2,7 @@ package com.ztu.cloud.cloud.controller.user;
 
 import com.google.gson.JsonObject;
 import com.ztu.cloud.cloud.common.dto.user.preview.PreviewFile;
+import com.ztu.cloud.cloud.common.dto.user.preview.PreviewVideo;
 import com.ztu.cloud.cloud.common.log.SysLog;
 import com.ztu.cloud.cloud.common.validation.Token;
 import com.ztu.cloud.cloud.service.common.NonStaticResourceHttpRequestHandler;
@@ -86,15 +87,34 @@ public class PreviewController {
     }
 
     //TODO 鉴权
+
     /**
      * 获取预览视频
-     *
      */
     @SysLog(descrption = "预览视频文件", type = "预览文件", modul = "用户模块")
     @GetMapping("/user/video/{repositoryId}/{fileId}")
-    public void previewUserVideo(HttpServletRequest request, HttpServletResponse response) {
+    public void previewUserVideo(HttpServletRequest request, HttpServletResponse response,
+                                 @PathVariable("repositoryId") @NotBlank(message = "仓库ID不能为空") String repositoryId,
+                                 @PathVariable("fileId") @NotBlank(message = "文件ID不能为空") String fileId) {
+        PreviewVideo previewVideo = this.previewService.previewUserVideo(repositoryId, fileId);
+        if (previewVideo.getFile() == null) {
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/json");
+            try {
+                ServletOutputStream outputStream = response.getOutputStream();
+                JsonObject json = new JsonObject();
+                json.addProperty("code", previewVideo.getCode());
+                json.addProperty("message", previewVideo.getMessage());
+                String content = json.toString();
+                outputStream.write(content.getBytes());
+                outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
         String realPath = "C:/Users/18638/Desktop/sin/长江夜线20210126.mp4";
-        Path filePath = Paths.get(realPath);
+        Path filePath = Paths.get(previewVideo.getFile().getAbsolutePath());
         try {
             String mimeType = Files.probeContentType(filePath);
             if (!StringUtils.isEmpty(mimeType)) {
