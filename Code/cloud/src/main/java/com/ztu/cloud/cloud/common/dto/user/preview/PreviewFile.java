@@ -1,4 +1,4 @@
-package com.ztu.cloud.cloud.common.dto.user.repository;
+package com.ztu.cloud.cloud.common.dto.user.preview;
 
 import lombok.Data;
 

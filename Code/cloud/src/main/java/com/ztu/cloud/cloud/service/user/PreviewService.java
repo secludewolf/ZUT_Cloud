@@ -1,6 +1,6 @@
 package com.ztu.cloud.cloud.service.user;
 
-import com.ztu.cloud.cloud.common.dto.user.repository.PreviewFile;
+import com.ztu.cloud.cloud.common.dto.user.preview.PreviewFile;
 
 /**
  * @author Jager

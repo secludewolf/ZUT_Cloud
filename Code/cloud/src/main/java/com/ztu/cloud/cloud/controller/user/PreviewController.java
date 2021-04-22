@@ -1,24 +1,26 @@
 package com.ztu.cloud.cloud.controller.user;
 
-import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.ztu.cloud.cloud.common.dto.user.download.Download;
-import com.ztu.cloud.cloud.common.dto.user.repository.PreviewFile;
+import com.ztu.cloud.cloud.common.dto.user.preview.PreviewFile;
 import com.ztu.cloud.cloud.common.log.SysLog;
 import com.ztu.cloud.cloud.common.validation.Token;
-import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
+import com.ztu.cloud.cloud.service.common.NonStaticResourceHttpRequestHandler;
 import com.ztu.cloud.cloud.service.user.PreviewService;
-import com.ztu.cloud.cloud.util.JsonUtil;
 import com.ztu.cloud.cloud.util.TokenUtil;
+import org.springframework.util.ClassUtils;
+import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotBlank;
 import java.io.*;
-import java.net.URLEncoder;
-import java.util.Arrays;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 
 /**
  * @author Jager
@@ -30,13 +32,15 @@ import java.util.Arrays;
 @Validated
 public class PreviewController {
     PreviewService previewService;
+    NonStaticResourceHttpRequestHandler nonStaticResourceHttpRequestHandler;
 
-    public PreviewController(PreviewService previewService) {
+    public PreviewController(PreviewService previewService, NonStaticResourceHttpRequestHandler nonStaticResourceHttpRequestHandler) {
         this.previewService = previewService;
+        this.nonStaticResourceHttpRequestHandler = nonStaticResourceHttpRequestHandler;
     }
 
     /**
-     * 获取预览文件
+     * 获取预览图片
      *
      * @param token        用户Token
      * @param repositoryId 仓库ID
@@ -81,4 +85,25 @@ public class PreviewController {
         }
     }
 
+    //TODO 鉴权
+    /**
+     * 获取预览视频
+     *
+     */
+    @SysLog(descrption = "预览视频文件", type = "预览文件", modul = "用户模块")
+    @GetMapping("/user/video/{repositoryId}/{fileId}")
+    public void previewUserVideo(HttpServletRequest request, HttpServletResponse response) {
+        String realPath = "C:/Users/18638/Desktop/sin/长江夜线20210126.mp4";
+        Path filePath = Paths.get(realPath);
+        try {
+            String mimeType = Files.probeContentType(filePath);
+            if (!StringUtils.isEmpty(mimeType)) {
+                response.setContentType(mimeType);
+            }
+            request.setAttribute(NonStaticResourceHttpRequestHandler.ATTR_FILE, filePath);
+            nonStaticResourceHttpRequestHandler.handleRequest(request, response);
+        } catch (Exception e) {
+//            e.printStackTrace();
+        }
+    }
 }

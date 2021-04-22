@@ -35,8 +35,8 @@
           <a-icon type="alert"/>
           举报
         </a-button>
-        <a-button type="primary" @click="()=>{this.previewVisible = true}">
-          测试预览
+        <a-button type="primary" @click="test">
+          测试
         </a-button>
         <a-modal
           title="保存分享"
@@ -378,19 +378,23 @@
           :footer="false"
           :closable="false"
           :visible="previewVisible"
-          @cancel="()=>{this.previewVisible = false}"
+          @cancel="()=>{this.previewVisible = this.previewImgVisible = this.previewVideoVisible = this.previewPageButtonVisible = false;}"
           :width="800"
           dialogClass="PreviewDiv"
           centered>
           <div v-on:contextmenu.prevent="">
-            <a-row>
-              <a-col :span="2" v-if="previewPageButtonVisible">
+            <a-row justify="center">
+              <a-col v-if="previewPageButtonVisible" :span="2">
                 <button style="float: left">上一页</button>
               </a-col>
               <a-col :span="previewContentSpan">
-                <img :src="previewPhotoUrl" alt="预览图片" style="width:100%; height:auto;"/>
+                <img v-if="previewImgVisible" :src="previewPhotoUrl" alt="预览图片" style="width:100%; height:auto;"/>
+                <div>
+                  <video v-if="previewVideoVisible" controls autoplay
+                         src="http://localhost:8088/preview/user/video/5fec496e30ac410ee4a7675f/2748469958f5539cc1e9a1e3a90668f4" style="width: 100%"/>
+                </div>
               </a-col>
-              <a-col :span="2" v-if="previewPageButtonVisible">
+              <a-col v-if="previewPageButtonVisible" :span="2">
                 <button style="float: right">下一页</button>
               </a-col>
             </a-row>
@@ -569,6 +573,8 @@ export default {
       shareReportContent: "",
       previewVisible: false,
       previewPageButtonVisible: false,
+      previewImgVisible: false,
+      previewVideoVisible: false,
       previewContentSpan: 24,
       previewPhotoUrl: require('../../assets/logo.png'),
     }
@@ -1364,12 +1370,12 @@ export default {
       shareReport(data, handler, catcher);
     },
     previewPhoto() {
-      let photoTypeList = ["webp", "bmp", "pcx", "tif", "gif", "jpeg", "tga", "exif", "fpx", "svg", "psd", "sdr", "pcd", "dxf", "ufo", "eps", "png", "hdri", "raw", "wmf", "flic", "emf", "ico"];
+      this.previewImgVisible = true;
       this.menuVisible = false;
+      let photoTypeList = ["webp", "bmp", "pcx", "tif", "gif", "jpeg", "tga", "exif", "fpx", "svg", "psd", "sdr", "pcd", "dxf", "ufo", "eps", "png", "hdri", "raw", "wmf", "flic", "emf", "ico"];
       const parent = this;
       const data = this.$store.getters.getRepositoryId + "/" + this.target.id;
       const handler = (response) => {
-        console.log(response.data.type);
         // 预览失败
         if (response.data.type === "application/json") {
           const reader = new FileReader();
@@ -1392,6 +1398,10 @@ export default {
       };
       previewPhoto(data, handler, catcher);
     },
+    test() {
+      this.previewVideoVisible = true;
+      this.previewVisible = true;
+    }
   }
 }
 </script>
@@ -1404,8 +1414,10 @@ export default {
 
 .PreviewDiv .ant-modal-content {
   background: rgba(0, 0, 0, 0);
+  border: blue 1px solid;
   box-shadow: none;
 }
+
 .PreviewDiv .ant-modal-content .ant-modal-body {
   padding: 0;
 }

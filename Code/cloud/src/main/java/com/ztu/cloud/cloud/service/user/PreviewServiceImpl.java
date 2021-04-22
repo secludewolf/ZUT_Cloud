@@ -3,15 +3,13 @@ package com.ztu.cloud.cloud.service.user;
 import com.ztu.cloud.cloud.common.bean.mysql.File;
 import com.ztu.cloud.cloud.common.dao.mysql.FileMapper;
 import com.ztu.cloud.cloud.common.dao.mysql.UserMapper;
-import com.ztu.cloud.cloud.common.dto.user.repository.PreviewFile;
+import com.ztu.cloud.cloud.common.dto.user.preview.PreviewFile;
 import com.ztu.cloud.cloud.util.StoreUtil;
 import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
 import java.util.Arrays;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * @author Jager
