@@ -68,7 +68,7 @@ public class FileServiceImpl implements FileService {
         if (fileInfo == null) {
             return null;
         }
-        InputStream file = this.storeUtil.getFile(fileInfo.getPath());
+        InputStream file = this.storeUtil.getFileInputStream(fileInfo.getPath());
         return new Download(fileInfo.getName(), file);
     }
 

@@ -97,6 +97,8 @@ public class PreviewServiceImpl implements PreviewService {
         }
         //查找临时文件是否存在
         java.io.File tempFile = this.storeUtil.getTempFile(file.getId());
+        //更新文件最后访问时间
+        this.storeUtil.flashTempFileLastModifiedTime(file.getId());
         //创建临时文件
         if (tempFile == null) {
             InputStream fileInputStream = this.storeUtil.getFileInputStream(file.getPath());

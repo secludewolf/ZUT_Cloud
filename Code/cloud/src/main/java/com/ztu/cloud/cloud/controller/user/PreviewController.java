@@ -113,7 +113,6 @@ public class PreviewController {
             }
             return;
         }
-        String realPath = "C:/Users/18638/Desktop/sin/长江夜线20210126.mp4";
         Path filePath = Paths.get(previewVideo.getFile().getAbsolutePath());
         try {
             String mimeType = Files.probeContentType(filePath);
