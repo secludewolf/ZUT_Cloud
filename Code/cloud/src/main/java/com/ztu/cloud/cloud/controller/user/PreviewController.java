@@ -8,7 +8,7 @@ import com.ztu.cloud.cloud.common.validation.Token;
 import com.ztu.cloud.cloud.service.common.NonStaticResourceHttpRequestHandler;
 import com.ztu.cloud.cloud.service.user.PreviewService;
 import com.ztu.cloud.cloud.util.TokenUtil;
-import org.springframework.util.ClassUtils;
+import org.jodconverter.DocumentConverter;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +18,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotBlank;
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -34,10 +33,12 @@ import java.nio.file.Paths;
 public class PreviewController {
     PreviewService previewService;
     NonStaticResourceHttpRequestHandler nonStaticResourceHttpRequestHandler;
+    private DocumentConverter documentConverter;
 
-    public PreviewController(PreviewService previewService, NonStaticResourceHttpRequestHandler nonStaticResourceHttpRequestHandler) {
+    public PreviewController(PreviewService previewService, NonStaticResourceHttpRequestHandler nonStaticResourceHttpRequestHandler, DocumentConverter documentConverter) {
         this.previewService = previewService;
         this.nonStaticResourceHttpRequestHandler = nonStaticResourceHttpRequestHandler;
+        this.documentConverter = documentConverter;
     }
 
     /**
@@ -74,19 +75,18 @@ public class PreviewController {
         response.setContentType("image/*");
         byte[] buffer = new byte[1024];
         try {
-            OutputStream os = response.getOutputStream();
+            OutputStream outputStream = response.getOutputStream();
             int i = previewFile.getInputStream().read(buffer);
             while (i != -1) {
-                os.write(buffer, 0, i);
+                outputStream.write(buffer, 0, i);
                 i = previewFile.getInputStream().read(buffer);
             }
-            os.close();
+            previewFile.getInputStream().close();
+            outputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
         }
     }
-
-    //TODO 鉴权
 
     /**
      * 获取预览视频
@@ -96,6 +96,7 @@ public class PreviewController {
     public void previewUserVideo(HttpServletRequest request, HttpServletResponse response,
                                  @PathVariable("repositoryId") @NotBlank(message = "仓库ID不能为空") String repositoryId,
                                  @PathVariable("fileId") @NotBlank(message = "文件ID不能为空") String fileId) {
+        //TODO 鉴权
         PreviewVideo previewVideo = this.previewService.previewUserVideo(repositoryId, fileId);
         if (previewVideo.getFile() == null) {
             response.setCharacterEncoding("UTF-8");
@@ -122,7 +123,41 @@ public class PreviewController {
             request.setAttribute(NonStaticResourceHttpRequestHandler.ATTR_FILE, filePath);
             nonStaticResourceHttpRequestHandler.handleRequest(request, response);
         } catch (Exception e) {
-//            e.printStackTrace();
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * 获取预览文档
+     *
+     * @param token        用户Token
+     * @param repositoryId 仓库ID
+     * @param fileId       文件ID
+     */
+    @SysLog(descrption = "预览文档文件", type = "预览文件", modul = "用户模块")
+    @GetMapping("/user/document/{repositoryId}/{fileId}")
+    public void previewUserDocument(HttpServletResponse response,
+                                    @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "user") String token,
+                                    @PathVariable("repositoryId") @NotBlank(message = "仓库ID不能为空") String repositoryId,
+                                    @PathVariable("fileId") @NotBlank(message = "文件ID不能为空") String fileId) {
+        try {
+            String path = "C:/Users/18638/Desktop/Test.docx";
+            File file = new File(path);
+            this.documentConverter.convert(file).to(new File("C:/Users/18638/Desktop/Test.pdf")).execute();
+            InputStream inputStream = new FileInputStream(new File("C:/Users/18638/Desktop/Test.pdf"));
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/pdf");
+            byte[] buffer = new byte[1024];
+            OutputStream outputStream = response.getOutputStream();
+            int i = inputStream.read(buffer);
+            while (i != -1) {
+                outputStream.write(buffer, 0, i);
+                i = inputStream.read(buffer);
+            }
+            inputStream.close();
+            outputStream.close();
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }
