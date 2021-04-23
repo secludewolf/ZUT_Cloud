@@ -35,9 +35,6 @@
           <a-icon type="alert"/>
           举报
         </a-button>
-        <a-button type="primary" @click="test">
-          测试
-        </a-button>
         <a-modal
           title="保存分享"
           :visible="saveShareVisible"
@@ -378,25 +375,22 @@
           :footer="false"
           :closable="false"
           :visible="previewVisible"
-          @cancel="()=>{this.previewVisible = this.previewImgVisible = this.previewVideoVisible = this.previewPageButtonVisible = false;}"
+          @cancel="previewClose"
           :width="800"
           dialogClass="PreviewDiv"
           centered>
           <div v-on:contextmenu.prevent="">
             <a-row justify="center">
-              <a-col v-if="previewPageButtonVisible" :span="2">
-                <button style="float: left">上一页</button>
-              </a-col>
-              <a-col :span="previewContentSpan">
-                <img v-if="previewImgVisible" :src="previewPhotoUrl" alt="预览图片" style="width:100%; height:auto;"/>
+              <a-col>
+                <img v-if="previewPhotoVisible" :src="previewPhotoUrl" alt="预览图片" style="width:100%; height:auto;"/>
                 <div>
                   <video v-if="previewVideoVisible" controls autoplay
                          :src="previewVideoUrl"
                          style="width: 100%"/>
                 </div>
-              </a-col>
-              <a-col v-if="previewPageButtonVisible" :span="2">
-                <button style="float: right">下一页</button>
+                <div style="color: white;font-size: 60px;text-align: center;">
+                  <a-icon v-if="previewLoading" type="loading"/>
+                </div>
               </a-col>
             </a-row>
           </div>
@@ -573,13 +567,12 @@ export default {
       shareReportType: "",
       shareReportContent: "",
       previewVisible: false,
-      previewPageButtonVisible: false,
-      previewImgVisible: false,
+      previewLoading: false,
+      previewPhotoVisible: false,
       previewVideoVisible: false,
       previewVideoUrl: "",
-      previewContentSpan: 24,
-      previewPhotoUrl: require('../../assets/logo.png'),
-      previewDocumentUrl: require('../../assets/logo.png'),
+      previewPhotoUrl: "",
+      previewDocumentUrl: "",
     }
   },
   computed: {
@@ -746,9 +739,11 @@ export default {
         this.path.push(name);
         this.updatePath(this.path);
       } else {
-        let photoTypeList = ["webp", "bmp", "pcx", "tif", "gif", "jpeg", "tga", "exif", "fpx", "svg", "psd", "sdr", "pcd", "dxf", "ufo", "eps", "png", "hdri", "raw", "wmf", "flic", "emf", "ico"];
+        let photoTypeList = ["jpg", "jpeg", "webp", "bmp", "pcx", "tif", "gif", "jpeg", "tga", "exif", "fpx", "svg", "psd", "sdr", "pcd", "dxf", "ufo", "eps", "png", "hdri", "raw", "wmf", "flic", "emf", "ico"];
         let videoTypeList = ["mp4", "mov", "avi", "flv", "wmv", "mpeg", "mkv", "asf", "rm", "rmvb", "vob", "ts", "dat"];
         let documentTypeList = ["doc", "docx", "xlsx", "xls", "csv", "ppt", "pptx", "pdf", "txt"];
+        this.previewVisible = true;
+        this.previewLoading = true;
         if (photoTypeList.indexOf(this.target.type.toLowerCase()) !== -1) {
           this.previewPhoto();
         } else if (videoTypeList.indexOf(this.target.type.toLowerCase()) !== -1) {
@@ -756,6 +751,8 @@ export default {
         } else if (documentTypeList.indexOf(this.target.type.toLowerCase()) !== -1) {
           this.previewDocument();
         } else {
+          this.previewVisible = false;
+          this.previewLoading = false;
           this.$message.info("暂不支持此类型文件预览");
         }
       }
@@ -1379,11 +1376,11 @@ export default {
       shareReport(data, handler, catcher);
     },
     previewPhoto() {
-      this.previewImgVisible = true;
       this.menuVisible = false;
       const parent = this;
       const data = this.$store.getters.getRepositoryId + "/" + this.target.id;
       const handler = (response) => {
+        this.previewLoading = false;
         // 预览失败
         if (response.data.type === "application/json") {
           const reader = new FileReader();
@@ -1397,8 +1394,9 @@ export default {
             }
           }
         } else {
-          this.previewVisible = true;
+          this.previewLoading = false;
           parent.previewPhotoUrl = window.URL.createObjectURL(response.data);
+          this.previewPhotoVisible = true;
         }
       };
       const catcher = (code, content) => {
@@ -1409,6 +1407,7 @@ export default {
     previewVideo() {
       this.menuVisible = false;
       this.previewVideoUrl = "/api/preview/user/video/" + this.$store.getters.getRepositoryId + "/" + this.target.id;
+      this.previewLoading = false;
       this.previewVideoVisible = true;
       this.previewVisible = true;
     },
@@ -1417,6 +1416,7 @@ export default {
       const parent = this;
       const data = this.$store.getters.getRepositoryId + "/" + this.target.id;
       const handler = (response) => {
+        this.previewLoading = false;
         // 预览失败
         if (response.data.type === "application/json") {
           const reader = new FileReader();
@@ -1432,6 +1432,7 @@ export default {
         } else {
           parent.previewDocumentUrl = window.URL.createObjectURL(response.data);
           window.open(parent.previewDocumentUrl);
+          parent.previewClose();
         }
       };
       const catcher = (code, content) => {
@@ -1440,11 +1441,14 @@ export default {
       previewDocument(data, handler, catcher);
     },
     previewClose() {
-      //TODO
-    },
-    test() {
-      this.previewVideoVisible = true;
-      this.previewVisible = true;
+      this.previewVisible = false;
+      this.previewLoading = false;
+      this.previewPageButtonVisible = false;
+      this.previewPhotoVisible = false;
+      this.previewVideoVisible = false;
+      this.previewVideoUrl = "";
+      this.previewPhotoUrl = "";
+      this.previewDocumentUrl = "";
     }
   }
 }

@@ -160,7 +160,7 @@ export const FileType = {
   video: ["mp4", "mov", "avi", "flv", "wmv", "mpeg", "mkv", "asf", "rm", "rmvb", "vob", "ts", "dat"],
   torrent: ["torrent"],
   audio: ["mp3", "wma", "avi", "rm", "rmvb", "awv", "flac", "wav", "wma"],
-  photo: ["webp", "bmp", "pcx", "tif", "gif", "jpeg", "tga", "exif", "fpx", "svg", "psd", "sdr", "pcd", "dxf", "ufo", "eps", "png", "hdri", "raw", "wmf", "flic", "emf", "ico"],
+  photo: ["jpg", "jpeg", "webp", "bmp", "pcx", "tif", "gif", "jpeg", "tga", "exif", "fpx", "svg", "psd", "sdr", "pcd", "dxf", "ufo", "eps", "png", "hdri", "raw", "wmf", "flic", "emf", "ico"],
   word: ["doc", "docx"],
   excel: ["xlsx", "xls", "csv"],
   code: ["h", "java", "c", "cpp", "py", "js", "vue", "css", "dll", "lib", "jsp", "php", "ts", "asp", "net", "cmd", "sh", "bat"],
