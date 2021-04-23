@@ -1,14 +1,17 @@
 package com.ztu.cloud.cloud.controller.user;
 
 import com.google.gson.JsonObject;
-import com.ztu.cloud.cloud.common.dto.user.preview.PreviewFile;
+import com.ztu.cloud.cloud.common.dto.user.preview.PreviewDocument;
+import com.ztu.cloud.cloud.common.dto.user.preview.PreviewPhoto;
 import com.ztu.cloud.cloud.common.dto.user.preview.PreviewVideo;
 import com.ztu.cloud.cloud.common.log.SysLog;
 import com.ztu.cloud.cloud.common.validation.Token;
 import com.ztu.cloud.cloud.service.common.NonStaticResourceHttpRequestHandler;
 import com.ztu.cloud.cloud.service.user.PreviewService;
 import com.ztu.cloud.cloud.util.TokenUtil;
+import org.apache.commons.io.IOUtils;
 import org.jodconverter.DocumentConverter;
+import org.jodconverter.document.DefaultDocumentFormatRegistry;
 import org.springframework.util.StringUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
@@ -33,7 +36,7 @@ import java.nio.file.Paths;
 public class PreviewController {
     PreviewService previewService;
     NonStaticResourceHttpRequestHandler nonStaticResourceHttpRequestHandler;
-    private DocumentConverter documentConverter;
+    DocumentConverter documentConverter;
 
     public PreviewController(PreviewService previewService, NonStaticResourceHttpRequestHandler nonStaticResourceHttpRequestHandler, DocumentConverter documentConverter) {
         this.previewService = previewService;
@@ -54,15 +57,15 @@ public class PreviewController {
                                  @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "user") String token,
                                  @PathVariable("repositoryId") @NotBlank(message = "仓库ID不能为空") String repositoryId,
                                  @PathVariable("fileId") @NotBlank(message = "文件ID不能为空") String fileId) {
-        PreviewFile previewFile = this.previewService.previewUserPhoto(token, repositoryId, fileId);
-        if (previewFile.getInputStream() == null) {
+        PreviewPhoto previewPhoto = this.previewService.previewUserPhoto(token, repositoryId, fileId);
+        if (previewPhoto.getInputStream() == null) {
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json");
             try {
                 ServletOutputStream outputStream = response.getOutputStream();
                 JsonObject json = new JsonObject();
-                json.addProperty("code", previewFile.getCode());
-                json.addProperty("message", previewFile.getMessage());
+                json.addProperty("code", previewPhoto.getCode());
+                json.addProperty("message", previewPhoto.getMessage());
                 String content = json.toString();
                 outputStream.write(content.getBytes());
                 outputStream.close();
@@ -76,12 +79,12 @@ public class PreviewController {
         byte[] buffer = new byte[1024];
         try {
             OutputStream outputStream = response.getOutputStream();
-            int i = previewFile.getInputStream().read(buffer);
+            int i = previewPhoto.getInputStream().read(buffer);
             while (i != -1) {
                 outputStream.write(buffer, 0, i);
-                i = previewFile.getInputStream().read(buffer);
+                i = previewPhoto.getInputStream().read(buffer);
             }
-            previewFile.getInputStream().close();
+            previewPhoto.getInputStream().close();
             outputStream.close();
         } catch (Exception e) {
             e.printStackTrace();
@@ -140,23 +143,40 @@ public class PreviewController {
                                     @RequestHeader(TokenUtil.TOKEN_HEADER) @Token(role = "user") String token,
                                     @PathVariable("repositoryId") @NotBlank(message = "仓库ID不能为空") String repositoryId,
                                     @PathVariable("fileId") @NotBlank(message = "文件ID不能为空") String fileId) {
+        PreviewDocument previewDocument = this.previewService.previewUserDocument(token, repositoryId, fileId);
+        if (previewDocument.getInputStream() == null) {
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/json");
+            try {
+                ServletOutputStream outputStream = response.getOutputStream();
+                JsonObject json = new JsonObject();
+                json.addProperty("code", previewDocument.getCode());
+                json.addProperty("message", previewDocument.getMessage());
+                String content = json.toString();
+                outputStream.write(content.getBytes());
+                outputStream.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
         try {
-            String path = "C:/Users/18638/Desktop/Test.docx";
-            File file = new File(path);
-            this.documentConverter.convert(file).to(new File("C:/Users/18638/Desktop/Test.pdf")).execute();
-            InputStream inputStream = new FileInputStream(new File("C:/Users/18638/Desktop/Test.pdf"));
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/pdf");
-            byte[] buffer = new byte[1024];
-            OutputStream outputStream = response.getOutputStream();
-            int i = inputStream.read(buffer);
-            while (i != -1) {
-                outputStream.write(buffer, 0, i);
-                i = inputStream.read(buffer);
+            ServletOutputStream outputStream = response.getOutputStream();
+            if (previewDocument.getType().equals(DefaultDocumentFormatRegistry.PDF)) {
+                IOUtils.copy(previewDocument.getInputStream(), outputStream);
+                previewDocument.getInputStream().close();
+                outputStream.close();
+                return;
             }
-            inputStream.close();
-            outputStream.close();
+            this.documentConverter
+                    .convert(previewDocument.getInputStream(), true)
+                    .as(previewDocument.getType())
+                    .to(outputStream)
+                    .as(DefaultDocumentFormatRegistry.PDF).execute();
         } catch (Exception e) {
+            //TODO 返回错误信息
             e.printStackTrace();
         }
     }

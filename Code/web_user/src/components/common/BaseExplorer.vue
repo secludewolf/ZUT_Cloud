@@ -440,7 +440,7 @@ import {uploadBigFile, uploadSmallFile} from "../../api/upload";
 import {getDownloadId} from "../../api/download";
 import merge from "webpack-merge";
 import moment from 'moment';
-import {previewPhoto} from "../../api/preview";
+import {previewDocument, previewPhoto} from "../../api/preview";
 
 const columns = [
   {
@@ -579,6 +579,7 @@ export default {
       previewVideoUrl: "",
       previewContentSpan: 24,
       previewPhotoUrl: require('../../assets/logo.png'),
+      previewDocumentUrl: require('../../assets/logo.png'),
     }
   },
   computed: {
@@ -747,10 +748,13 @@ export default {
       } else {
         let photoTypeList = ["webp", "bmp", "pcx", "tif", "gif", "jpeg", "tga", "exif", "fpx", "svg", "psd", "sdr", "pcd", "dxf", "ufo", "eps", "png", "hdri", "raw", "wmf", "flic", "emf", "ico"];
         let videoTypeList = ["mp4", "mov", "avi", "flv", "wmv", "mpeg", "mkv", "asf", "rm", "rmvb", "vob", "ts", "dat"];
+        let documentTypeList = ["doc", "docx", "xlsx", "xls", "csv", "ppt", "pptx", "pdf", "txt"];
         if (photoTypeList.indexOf(this.target.type.toLowerCase()) !== -1) {
           this.previewPhoto();
         } else if (videoTypeList.indexOf(this.target.type.toLowerCase()) !== -1) {
           this.previewVideo();
+        } else if (documentTypeList.indexOf(this.target.type.toLowerCase()) !== -1) {
+          this.previewDocument();
         } else {
           this.$message.info("暂不支持此类型文件预览");
         }
@@ -1377,7 +1381,6 @@ export default {
     previewPhoto() {
       this.previewImgVisible = true;
       this.menuVisible = false;
-      let photoTypeList = ["webp", "bmp", "pcx", "tif", "gif", "jpeg", "tga", "exif", "fpx", "svg", "psd", "sdr", "pcd", "dxf", "ufo", "eps", "png", "hdri", "raw", "wmf", "flic", "emf", "ico"];
       const parent = this;
       const data = this.$store.getters.getRepositoryId + "/" + this.target.id;
       const handler = (response) => {
@@ -1409,6 +1412,33 @@ export default {
       this.previewVideoVisible = true;
       this.previewVisible = true;
     },
+    previewDocument() {
+      this.menuVisible = false;
+      const parent = this;
+      const data = this.$store.getters.getRepositoryId + "/" + this.target.id;
+      const handler = (response) => {
+        // 预览失败
+        if (response.data.type === "application/json") {
+          const reader = new FileReader();
+          reader.readAsText(response.data, 'utf-8');
+          reader.onload = function () {
+            let data = JSON.parse(reader.result)
+            if (data.message != null) {
+              parent.$message.error(data.message);
+            } else {
+              parent.$message.error("预览失败");
+            }
+          }
+        } else {
+          parent.previewDocumentUrl = window.URL.createObjectURL(response.data);
+          window.open(parent.previewDocumentUrl);
+        }
+      };
+      const catcher = (code, content) => {
+        parent.$message.error("预览错误");
+      };
+      previewDocument(data, handler, catcher);
+    },
     previewClose() {
       //TODO
     },
@@ -1428,7 +1458,6 @@ export default {
 
 .PreviewDiv .ant-modal-content {
   background: rgba(0, 0, 0, 0);
-  border: blue 1px solid;
   box-shadow: none;
 }
 

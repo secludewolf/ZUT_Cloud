@@ -3,21 +3,24 @@ package com.ztu.cloud.cloud.service.user;
 import com.ztu.cloud.cloud.common.bean.mysql.File;
 import com.ztu.cloud.cloud.common.dao.mysql.FileMapper;
 import com.ztu.cloud.cloud.common.dao.mysql.UserMapper;
-import com.ztu.cloud.cloud.common.dto.user.preview.PreviewFile;
+import com.ztu.cloud.cloud.common.dto.user.preview.PreviewDocument;
+import com.ztu.cloud.cloud.common.dto.user.preview.PreviewPhoto;
 import com.ztu.cloud.cloud.common.dto.user.preview.PreviewVideo;
 import com.ztu.cloud.cloud.util.StoreUtil;
+import org.jodconverter.DocumentConverter;
+import org.jodconverter.document.DefaultDocumentFormatRegistry;
 import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Locale;
 
 /**
  * @author Jager
  * @description 文件预览业务实现
  * @date 2021/04/19-16:14
  **/
-@SuppressWarnings("ArraysAsListWithZeroOrOneArgument")
 @Component
 public class PreviewServiceImpl implements PreviewService {
     UserMapper userMapper;
@@ -25,14 +28,16 @@ public class PreviewServiceImpl implements PreviewService {
     StoreUtil storeUtil;
     List<String> photoTypeList;
     List<String> videoTypeList;
+    List<String> documentTypeList;
 
-    public PreviewServiceImpl(UserMapper userMapper, FileMapper fileMapper, StoreUtil storeUtil) {
+    public PreviewServiceImpl(UserMapper userMapper, FileMapper fileMapper, StoreUtil storeUtil, DocumentConverter documentConverter) {
         this.userMapper = userMapper;
         this.fileMapper = fileMapper;
         this.storeUtil = storeUtil;
         //TODO 配置文件获取
         this.photoTypeList = Arrays.asList("jpg", "jpeg", "gif", "png");
         this.videoTypeList = Arrays.asList("mp4");
+        this.documentTypeList = Arrays.asList("doc", "docx", "xlsx", "xls", "csv", "ppt", "pptx", "pdf", "txt");
     }
 
     /**
@@ -44,30 +49,30 @@ public class PreviewServiceImpl implements PreviewService {
      * @return 预览信息
      */
     @Override
-    public PreviewFile previewUserPhoto(String token, String repositoryId, String fileId) {
+    public PreviewPhoto previewUserPhoto(String token, String repositoryId, String fileId) {
         //TODO 用户身份验证
         //TODO 用户文件权限验证
         //TODO 文件状态验证
-        PreviewFile previewFile = new PreviewFile();
+        PreviewPhoto previewPhoto = new PreviewPhoto();
         File file = this.fileMapper.getFileById(fileId);
         if (file == null) {
-            previewFile.setCode(0);
-            previewFile.setMessage("文件不存在");
-            return previewFile;
+            previewPhoto.setCode(0);
+            previewPhoto.setMessage("文件不存在");
+            return previewPhoto;
         }
         if (!this.photoTypeList.contains(file.getType().toLowerCase())) {
-            previewFile.setCode(0);
-            previewFile.setMessage("暂不支持" + file.getType() + "格式文件预览");
-            return previewFile;
+            previewPhoto.setCode(0);
+            previewPhoto.setMessage("暂不支持" + file.getType() + "格式文件预览");
+            return previewPhoto;
         }
         InputStream inputStream = this.storeUtil.getFileInputStream(file.getPath());
         if (inputStream == null) {
-            previewFile.setCode(0);
-            previewFile.setMessage("预览异常");
-            return previewFile;
+            previewPhoto.setCode(0);
+            previewPhoto.setMessage("预览异常");
+            return previewPhoto;
         }
-        previewFile.setInputStream(inputStream);
-        return previewFile;
+        previewPhoto.setInputStream(inputStream);
+        return previewPhoto;
     }
 
     /**
@@ -112,5 +117,76 @@ public class PreviewServiceImpl implements PreviewService {
         }
         previewVideo.setFile(tempFile);
         return previewVideo;
+    }
+
+    /**
+     * 获取预览文档
+     *
+     * @param token        用户Token
+     * @param repositoryId 仓库ID
+     * @param fileId       文件ID
+     */
+    @Override
+    public PreviewDocument previewUserDocument(String token, String repositoryId, String fileId) {
+        //TODO 用户身份验证
+        //TODO 用户文件权限验证
+        //TODO 文件状态验证
+        PreviewDocument previewDocument = new PreviewDocument();
+        File file = this.fileMapper.getFileById(fileId);
+        if (file == null) {
+            previewDocument.setCode(0);
+            previewDocument.setMessage("文件不存在");
+            return previewDocument;
+        }
+        if (!this.documentTypeList.contains(file.getType().toLowerCase())) {
+            previewDocument.setCode(0);
+            previewDocument.setMessage("暂不支持" + file.getType() + "格式文件预览");
+            return previewDocument;
+        }
+        // 限制文件大小
+        if (file.getSize() > 1024 * 1024 * 3 || ("txt".equals(file.getType().toLowerCase()) && file.getSize() > 1024 * 1024)) {
+            previewDocument.setCode(0);
+            previewDocument.setMessage("文件过大,暂不支持预览");
+            return previewDocument;
+        }
+        switch (file.getType().toLowerCase()) {
+            case "doc":
+                previewDocument.setType(DefaultDocumentFormatRegistry.DOC);
+                break;
+            case "docx":
+                previewDocument.setType(DefaultDocumentFormatRegistry.DOCX);
+                break;
+            case "xlsx":
+                previewDocument.setType(DefaultDocumentFormatRegistry.XLSX);
+                break;
+            case "xls":
+                previewDocument.setType(DefaultDocumentFormatRegistry.XLS);
+                break;
+            case "csv":
+                previewDocument.setType(DefaultDocumentFormatRegistry.CSV);
+                break;
+            case "ppt":
+                previewDocument.setType(DefaultDocumentFormatRegistry.PPT);
+                break;
+            case "pptx":
+                previewDocument.setType(DefaultDocumentFormatRegistry.PPTX);
+                break;
+            case "pdf":
+                previewDocument.setType(DefaultDocumentFormatRegistry.PDF);
+                break;
+            case "txt":
+                previewDocument.setType(DefaultDocumentFormatRegistry.TXT);
+                break;
+            default:
+                break;
+        }
+        InputStream inputStream = this.storeUtil.getFileInputStream(file.getPath());
+        if (inputStream == null) {
+            previewDocument.setCode(0);
+            previewDocument.setMessage("预览异常");
+            return previewDocument;
+        }
+        previewDocument.setInputStream(inputStream);
+        return previewDocument;
     }
 }

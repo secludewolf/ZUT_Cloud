@@ -1,6 +1,7 @@
 package com.ztu.cloud.cloud.service.user;
 
-import com.ztu.cloud.cloud.common.dto.user.preview.PreviewFile;
+import com.ztu.cloud.cloud.common.dto.user.preview.PreviewDocument;
+import com.ztu.cloud.cloud.common.dto.user.preview.PreviewPhoto;
 import com.ztu.cloud.cloud.common.dto.user.preview.PreviewVideo;
 
 /**
@@ -17,7 +18,7 @@ public interface PreviewService {
      * @param fileId       文件ID
      * @return 预览信息
      */
-    PreviewFile previewUserPhoto(String token, String repositoryId, String fileId);
+    PreviewPhoto previewUserPhoto(String token, String repositoryId, String fileId);
 
     /**
      * 获取预览视频
@@ -27,4 +28,13 @@ public interface PreviewService {
      * @return 预览信息
      */
     PreviewVideo previewUserVideo(String repositoryId, String fileId);
+
+    /**
+     * 获取预览文档
+     *
+     * @param token        用户Token
+     * @param repositoryId 仓库ID
+     * @param fileId       文件ID
+     */
+    PreviewDocument previewUserDocument(String token, String repositoryId, String fileId);
 }

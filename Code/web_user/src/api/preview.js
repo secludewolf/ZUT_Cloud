@@ -1,9 +1,14 @@
 const previewApi = {
-  previewPhoto: "/preview/user/photo/"
+  previewPhoto: "/preview/user/photo/",
+  previewDocument: "/preview/user/document/"
 };
 
 export function previewPhoto(data, handler, catcher) {
   request(previewApi.previewPhoto + data, null, "get", handler, catcher, "blob");
+}
+
+export function previewDocument(data, handler, catcher) {
+  request(previewApi.previewDocument + data, null, "get", handler, catcher, "blob");
 }
 
 import Axios from 'axios';
