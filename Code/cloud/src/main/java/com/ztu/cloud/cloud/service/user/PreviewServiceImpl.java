@@ -7,14 +7,13 @@ import com.ztu.cloud.cloud.common.dto.user.preview.PreviewDocument;
 import com.ztu.cloud.cloud.common.dto.user.preview.PreviewPhoto;
 import com.ztu.cloud.cloud.common.dto.user.preview.PreviewVideo;
 import com.ztu.cloud.cloud.util.StoreUtil;
-import org.jodconverter.DocumentConverter;
 import org.jodconverter.document.DefaultDocumentFormatRegistry;
 import org.springframework.stereotype.Component;
 
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
-import java.util.Locale;
 
 /**
  * @author Jager
@@ -29,14 +28,16 @@ public class PreviewServiceImpl implements PreviewService {
     List<String> photoTypeList;
     List<String> videoTypeList;
     List<String> documentTypeList;
+    final int normalFileMaxSize = 1024 * 1024 * 3;
+    final int textFileMaxSize = 1024 * 1024;
+    final String textType = "txt";
 
-    public PreviewServiceImpl(UserMapper userMapper, FileMapper fileMapper, StoreUtil storeUtil, DocumentConverter documentConverter) {
+    public PreviewServiceImpl(UserMapper userMapper, FileMapper fileMapper, StoreUtil storeUtil) {
         this.userMapper = userMapper;
         this.fileMapper = fileMapper;
         this.storeUtil = storeUtil;
-        //TODO 配置文件获取
         this.photoTypeList = Arrays.asList("jpg", "jpeg", "gif", "png");
-        this.videoTypeList = Arrays.asList("mp4");
+        this.videoTypeList = Collections.singletonList("mp4");
         this.documentTypeList = Arrays.asList("doc", "docx", "xlsx", "xls", "csv", "ppt", "pptx", "pdf", "txt");
     }
 
@@ -102,8 +103,6 @@ public class PreviewServiceImpl implements PreviewService {
         }
         //查找临时文件是否存在
         java.io.File tempFile = this.storeUtil.getTempFile(file.getId());
-        //更新文件最后访问时间
-        this.storeUtil.flashTempFileLastModifiedTime(file.getId());
         //创建临时文件
         if (tempFile == null) {
             InputStream fileInputStream = this.storeUtil.getFileInputStream(file.getPath());
@@ -112,7 +111,7 @@ public class PreviewServiceImpl implements PreviewService {
         }
         if (tempFile == null) {
             previewVideo.setCode(0);
-            previewVideo.setMessage("预览异常");
+            previewVideo.setMessage("预览失败");
             return previewVideo;
         }
         previewVideo.setFile(tempFile);
@@ -144,7 +143,7 @@ public class PreviewServiceImpl implements PreviewService {
             return previewDocument;
         }
         // 限制文件大小
-        if (file.getSize() > 1024 * 1024 * 3 || ("txt".equals(file.getType().toLowerCase()) && file.getSize() > 1024 * 1024)) {
+        if (file.getSize() > this.normalFileMaxSize || (this.textType.equalsIgnoreCase(file.getType()) && file.getSize() > this.textFileMaxSize)) {
             previewDocument.setCode(0);
             previewDocument.setMessage("文件过大,暂不支持预览");
             return previewDocument;
@@ -183,7 +182,7 @@ public class PreviewServiceImpl implements PreviewService {
         InputStream inputStream = this.storeUtil.getFileInputStream(file.getPath());
         if (inputStream == null) {
             previewDocument.setCode(0);
-            previewDocument.setMessage("预览异常");
+            previewDocument.setMessage("预览失败");
             return previewDocument;
         }
         previewDocument.setInputStream(inputStream);

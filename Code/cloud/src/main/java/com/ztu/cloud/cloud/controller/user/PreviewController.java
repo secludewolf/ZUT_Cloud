@@ -59,35 +59,18 @@ public class PreviewController {
                                  @PathVariable("fileId") @NotBlank(message = "文件ID不能为空") String fileId) {
         PreviewPhoto previewPhoto = this.previewService.previewUserPhoto(token, repositoryId, fileId);
         if (previewPhoto.getInputStream() == null) {
-            response.setCharacterEncoding("UTF-8");
-            response.setContentType("application/json");
-            try {
-                ServletOutputStream outputStream = response.getOutputStream();
-                JsonObject json = new JsonObject();
-                json.addProperty("code", previewPhoto.getCode());
-                json.addProperty("message", previewPhoto.getMessage());
-                String content = json.toString();
-                outputStream.write(content.getBytes());
-                outputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            returnError(previewPhoto.getCode(), previewPhoto.getMessage(), response);
             return;
         }
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("image/*");
-        byte[] buffer = new byte[1024];
         try {
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("image/*");
             OutputStream outputStream = response.getOutputStream();
-            int i = previewPhoto.getInputStream().read(buffer);
-            while (i != -1) {
-                outputStream.write(buffer, 0, i);
-                i = previewPhoto.getInputStream().read(buffer);
-            }
+            IOUtils.copy(previewPhoto.getInputStream(), outputStream);
             previewPhoto.getInputStream().close();
             outputStream.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            returnError(0, "预览失败", response);
         }
     }
 
@@ -102,19 +85,7 @@ public class PreviewController {
         //TODO 鉴权
         PreviewVideo previewVideo = this.previewService.previewUserVideo(repositoryId, fileId);
         if (previewVideo.getFile() == null) {
-            response.setCharacterEncoding("UTF-8");
-            response.setContentType("application/json");
-            try {
-                ServletOutputStream outputStream = response.getOutputStream();
-                JsonObject json = new JsonObject();
-                json.addProperty("code", previewVideo.getCode());
-                json.addProperty("message", previewVideo.getMessage());
-                String content = json.toString();
-                outputStream.write(content.getBytes());
-                outputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            returnError(previewVideo.getCode(), previewVideo.getMessage(), response);
             return;
         }
         Path filePath = Paths.get(previewVideo.getFile().getAbsolutePath());
@@ -126,7 +97,7 @@ public class PreviewController {
             request.setAttribute(NonStaticResourceHttpRequestHandler.ATTR_FILE, filePath);
             nonStaticResourceHttpRequestHandler.handleRequest(request, response);
         } catch (Exception e) {
-            e.printStackTrace();
+            returnError(0, "预览失败", response);
         }
     }
 
@@ -145,38 +116,43 @@ public class PreviewController {
                                     @PathVariable("fileId") @NotBlank(message = "文件ID不能为空") String fileId) {
         PreviewDocument previewDocument = this.previewService.previewUserDocument(token, repositoryId, fileId);
         if (previewDocument.getInputStream() == null) {
-            response.setCharacterEncoding("UTF-8");
-            response.setContentType("application/json");
-            try {
-                ServletOutputStream outputStream = response.getOutputStream();
-                JsonObject json = new JsonObject();
-                json.addProperty("code", previewDocument.getCode());
-                json.addProperty("message", previewDocument.getMessage());
-                String content = json.toString();
-                outputStream.write(content.getBytes());
-                outputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            returnError(previewDocument.getCode(), previewDocument.getMessage(), response);
             return;
         }
         try {
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/pdf");
             ServletOutputStream outputStream = response.getOutputStream();
+            //若为PDF则直接输出
             if (previewDocument.getType().equals(DefaultDocumentFormatRegistry.PDF)) {
                 IOUtils.copy(previewDocument.getInputStream(), outputStream);
                 previewDocument.getInputStream().close();
                 outputStream.close();
                 return;
             }
+            //将文档转为PDF格式并输出
             this.documentConverter
                     .convert(previewDocument.getInputStream(), true)
                     .as(previewDocument.getType())
                     .to(outputStream)
                     .as(DefaultDocumentFormatRegistry.PDF).execute();
         } catch (Exception e) {
-            //TODO 返回错误信息
+            returnError(0, "预览失败", response);
+        }
+    }
+
+    private void returnError(int code, String message, HttpServletResponse response) {
+        try {
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/json");
+            ServletOutputStream outputStream = response.getOutputStream();
+            JsonObject json = new JsonObject();
+            json.addProperty("code", code);
+            json.addProperty("message", message);
+            String content = json.toString();
+            outputStream.write(content.getBytes());
+            outputStream.close();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }

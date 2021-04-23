@@ -208,7 +208,7 @@ public class StoreUtil {
         return true;
     }
 
-    public boolean storeTempFile(String name, InputStream inputStream) {
+    public void storeTempFile(String name, InputStream inputStream) {
         //TODO 应该通过配置文件设置临时存储位置
         //临时存储路径
         String path = "./CacheFolder/";
@@ -220,7 +220,7 @@ public class StoreUtil {
         // }
         File file = new File(path + name);
         if (file.exists()) {
-            return false;
+            return;
         }
         try {
             OutputStream outputStream = new FileOutputStream(file);
@@ -234,10 +234,8 @@ public class StoreUtil {
             }
             inputStream.close();
             outputStream.close();
-            return true;
         } catch (IOException e) {
             e.printStackTrace();
-            return false;
         }
     }
 
@@ -245,6 +243,8 @@ public class StoreUtil {
         String path = "./CacheFolder/";
         File file = new File(path + name);
         if (file.exists()) {
+            //刷新文件修改时间
+            file.getAbsoluteFile().setLastModified(System.currentTimeMillis());
             return file;
         }
         return null;
