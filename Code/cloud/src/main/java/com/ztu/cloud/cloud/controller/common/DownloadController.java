@@ -1,12 +1,15 @@
 package com.ztu.cloud.cloud.controller.common;
 
+import com.google.gson.JsonObject;
 import com.ztu.cloud.cloud.common.dto.user.download.Download;
 import com.ztu.cloud.cloud.common.dto.user.download.DownloadId;
 import com.ztu.cloud.cloud.common.log.SysLog;
 import com.ztu.cloud.cloud.common.validation.Token;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.service.common.DownloadService;
+import com.ztu.cloud.cloud.util.CommonUtil;
 import com.ztu.cloud.cloud.util.TokenUtil;
+import org.apache.commons.io.IOUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
@@ -75,39 +78,21 @@ public class DownloadController {
                          @PathVariable @NotBlank(message = "下载ID不能为空") String downloadId) {
         Download download = this.downloadService.download(downloadId);
         if (download == null) {
-            response.setCharacterEncoding("UTF-8");
-            response.setContentType("application/json");
-            try {
-                ServletOutputStream outputStream = response.getOutputStream();
-                // TODO 改为JSON字符串
-                String content = "下载失效！";
-                outputStream.write(content.getBytes());
-                outputStream.close();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+            CommonUtil.returnError(0, "下载错误", response);
             return;
         }
-        response.setCharacterEncoding("UTF-8");
-        response.setContentType("application/force-download");
         try {
+            response.setCharacterEncoding("UTF-8");
+            response.setContentType("application/force-download");
             response.setHeader("Content-Disposition",
                     "attachment; fileName=" + URLEncoder.encode(download.getFileName(), "UTF-8") + ";filename*=utf-8''"
                             + URLEncoder.encode(download.getFileName(), "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
-        byte[] buffer = new byte[1024];
-        try {
-            OutputStream os = response.getOutputStream();
-            int i = download.getInputStream().read(buffer);
-            while (i != -1) {
-                os.write(buffer, 0, i);
-                i = download.getInputStream().read(buffer);
-            }
-            os.close();
+            OutputStream outputStream = response.getOutputStream();
+            IOUtils.copy(download.getInputStream(), outputStream);
+            download.getInputStream().close();
+            outputStream.close();
         } catch (Exception e) {
-            e.printStackTrace();
+            CommonUtil.returnError(0, "下载错误", response);
         }
     }
 }

@@ -8,6 +8,7 @@ import com.ztu.cloud.cloud.common.log.SysLog;
 import com.ztu.cloud.cloud.common.validation.Token;
 import com.ztu.cloud.cloud.service.common.NonStaticResourceHttpRequestHandler;
 import com.ztu.cloud.cloud.service.user.PreviewService;
+import com.ztu.cloud.cloud.util.CommonUtil;
 import com.ztu.cloud.cloud.util.TokenUtil;
 import org.apache.commons.io.IOUtils;
 import org.jodconverter.DocumentConverter;
@@ -59,7 +60,7 @@ public class PreviewController {
                                  @PathVariable("fileId") @NotBlank(message = "文件ID不能为空") String fileId) {
         PreviewPhoto previewPhoto = this.previewService.previewUserPhoto(token, repositoryId, fileId);
         if (previewPhoto.getInputStream() == null) {
-            returnError(previewPhoto.getCode(), previewPhoto.getMessage(), response);
+            CommonUtil.returnError(previewPhoto.getCode(), previewPhoto.getMessage(), response);
             return;
         }
         try {
@@ -70,7 +71,7 @@ public class PreviewController {
             previewPhoto.getInputStream().close();
             outputStream.close();
         } catch (Exception e) {
-            returnError(0, "预览失败", response);
+            CommonUtil.returnError(0, "预览失败", response);
         }
     }
 
@@ -85,7 +86,7 @@ public class PreviewController {
         //TODO 鉴权
         PreviewVideo previewVideo = this.previewService.previewUserVideo(repositoryId, fileId);
         if (previewVideo.getFile() == null) {
-            returnError(previewVideo.getCode(), previewVideo.getMessage(), response);
+            CommonUtil.returnError(previewVideo.getCode(), previewVideo.getMessage(), response);
             return;
         }
         Path filePath = Paths.get(previewVideo.getFile().getAbsolutePath());
@@ -97,7 +98,7 @@ public class PreviewController {
             request.setAttribute(NonStaticResourceHttpRequestHandler.ATTR_FILE, filePath);
             nonStaticResourceHttpRequestHandler.handleRequest(request, response);
         } catch (Exception e) {
-            returnError(0, "预览失败", response);
+            CommonUtil.returnError(0, "预览失败", response);
         }
     }
 
@@ -116,7 +117,7 @@ public class PreviewController {
                                     @PathVariable("fileId") @NotBlank(message = "文件ID不能为空") String fileId) {
         PreviewDocument previewDocument = this.previewService.previewUserDocument(token, repositoryId, fileId);
         if (previewDocument.getInputStream() == null) {
-            returnError(previewDocument.getCode(), previewDocument.getMessage(), response);
+            CommonUtil.returnError(previewDocument.getCode(), previewDocument.getMessage(), response);
             return;
         }
         try {
@@ -137,22 +138,7 @@ public class PreviewController {
                     .to(outputStream)
                     .as(DefaultDocumentFormatRegistry.PDF).execute();
         } catch (Exception e) {
-            returnError(0, "预览失败", response);
-        }
-    }
-
-    private void returnError(int code, String message, HttpServletResponse response) {
-        try {
-            response.setCharacterEncoding("UTF-8");
-            response.setContentType("application/json");
-            ServletOutputStream outputStream = response.getOutputStream();
-            JsonObject json = new JsonObject();
-            json.addProperty("code", code);
-            json.addProperty("message", message);
-            String content = json.toString();
-            outputStream.write(content.getBytes());
-            outputStream.close();
-        } catch (IOException ignored) {
+            CommonUtil.returnError(0, "预览失败", response);
         }
     }
 }

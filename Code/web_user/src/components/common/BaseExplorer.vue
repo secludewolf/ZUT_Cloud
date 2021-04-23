@@ -1443,7 +1443,6 @@ export default {
     previewClose() {
       this.previewVisible = false;
       this.previewLoading = false;
-      this.previewPageButtonVisible = false;
       this.previewPhotoVisible = false;
       this.previewVideoVisible = false;
       this.previewVideoUrl = "";
