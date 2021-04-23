@@ -152,8 +152,7 @@ public class PreviewController {
             String content = json.toString();
             outputStream.write(content.getBytes());
             outputStream.close();
-        } catch (IOException e) {
-            e.printStackTrace();
+        } catch (IOException ignored) {
         }
     }
 }
