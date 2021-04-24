@@ -128,7 +128,6 @@
               registerByEmail(data, handler, catcher);
             } else if (this.loginMethod === "phone") {
               this.$message.warn("暂不支持手机注册!");
-              //TODO 手机注册
             }
           }
         });

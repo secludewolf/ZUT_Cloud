@@ -79,23 +79,6 @@ public class Folder implements Cloneable {
         return size;
     }
 
-    public List<File> getAllFiles() {
-        return getAllFiles(this);
-    }
-
-    private List<File> getAllFiles(Folder parent) {
-        LinkedList<File> files = new LinkedList<>();
-        if (parent.getFiles() != null) {
-            files.addAll(parent.getFiles().values());
-        }
-        if (parent.getFolders() != null) {
-            for (Folder folder : parent.getFolders().values()) {
-                files.addAll(getAllFiles(folder));
-            }
-        }
-        return files;
-    }
-
     @Override
     public Folder clone() {
         try {

@@ -141,7 +141,6 @@
             } else if (this.loginMethod === "phone") {
               data.phone = values.phone;
               this.$message.warn("暂时不支持手机登录");
-              //TODO 手机登录
             }
           }
         });

@@ -18,14 +18,6 @@ public class ShareReport {
     public ShareReport() {
     }
 
-    public ShareReport(int id, int userId, String shareId, String type, String content) {
-        this.id = id;
-        this.userId = userId;
-        this.shareId = shareId;
-        this.type = type;
-        this.content = content;
-    }
-
     public ShareReport(com.ztu.cloud.cloud.common.dto.user.share.ShareReport shareReport, int userId) {
         this.userId = userId;
         this.shareId = shareReport.getShareId();

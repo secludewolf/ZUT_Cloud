@@ -15,9 +15,4 @@ public class UserShare {
 
     public UserShare() {
     }
-
-    public UserShare(int userId, String shareId) {
-        this.userId = userId;
-        this.shareId = shareId;
-    }
 }

@@ -24,7 +24,7 @@ public class MongodbConfig {
     }
 
     @Bean
-    public MappingMongoConverter mongoConverter() throws Exception {
+    public MappingMongoConverter mongoConverter() {
         DbRefResolver dbRefResolver = new DefaultDbRefResolver(mongoFactory);
         MappingMongoConverter mongoConverter = new MappingMongoConverter(dbRefResolver, mongoMappingContext);
         //配置.替换符

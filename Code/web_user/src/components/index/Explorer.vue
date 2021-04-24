@@ -188,7 +188,6 @@
           this.$router.push({query: merge(this.$route.query, {'menu': 'all'})})
           return;
         } else if (e.key === "document") {
-          //TODO 搜说结果之间切换没有办法初始化排序
           this.$router.push({query: merge(this.$route.query, {'menu': 'document'})})
           this.changeIsSearch(true);
           types = FileType.document;
