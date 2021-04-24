@@ -7,16 +7,20 @@
             parameterType="com.ztu.cloud.cloud.common.bean.mysql.UserFile"
             useGeneratedKeys="true"
             keyProperty="id">
-            insert into userFile (userId,fileId,path)
-            values (#{userId},#{fileId},#{path})
-        </insert>
+        insert into userFile (userId, fileId, path)
+        values (#{userId}, #{fileId}, #{path})
+    </insert>
     <select id="getUserFile"
             resultType="com.ztu.cloud.cloud.common.bean.mysql.UserFile">
-            select * from userFile where id = #{id}
-        </select>
+        select *
+        from userFile
+        where id = #{id}
+    </select>
     <delete id="deleteUserFile">
-            delete from userFile where id = #{id}
-        </delete>
+        delete
+        from userFile
+        where id = #{id}
+    </delete>
     <update id="updateUserFilePath">
         update userFile
         set

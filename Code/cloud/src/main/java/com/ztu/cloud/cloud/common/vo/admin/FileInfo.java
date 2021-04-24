@@ -10,12 +10,12 @@ import lombok.Data;
  **/
 @Data
 public class FileInfo {
-	private File file;
+    private File file;
 
-	public FileInfo() {
-	}
+    public FileInfo() {
+    }
 
-	public FileInfo(File file) {
-		this.file = file;
-	}
+    public FileInfo(File file) {
+        this.file = file;
+    }
 }

@@ -18,9 +18,9 @@ import java.lang.annotation.*;
 public @interface Name {
     String type();
 
-	String message() default "名称包含非法字符";
+    String message() default "名称包含非法字符";
 
-	Class<?>[] groups() default {};
+    Class<?>[] groups() default {};
 
-	Class<? extends Payload>[] payload() default {};
+    Class<? extends Payload>[] payload() default {};
 }

@@ -1,6 +1,5 @@
 package com.ztu.cloud.cloud.common.dao.mysql;
 
-import com.ztu.cloud.cloud.common.bean.mysql.File;
 import com.ztu.cloud.cloud.common.bean.mysql.Share;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;

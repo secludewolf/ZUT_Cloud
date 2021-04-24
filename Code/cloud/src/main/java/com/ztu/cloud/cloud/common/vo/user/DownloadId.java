@@ -9,9 +9,9 @@ import lombok.Data;
  **/
 @Data
 public class DownloadId {
-	private String id;
+    private String id;
 
-	public DownloadId(String id) {
-		this.id = id;
-	}
+    public DownloadId(String id) {
+        this.id = id;
+    }
 }

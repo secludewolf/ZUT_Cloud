@@ -3,7 +3,6 @@ package com.ztu.cloud.cloud.common.dto.user.preview;
 import lombok.Data;
 import org.jodconverter.document.DocumentFormat;
 
-import java.io.File;
 import java.io.InputStream;
 
 /**
@@ -13,8 +12,8 @@ import java.io.InputStream;
  **/
 @Data
 public class PreviewDocument {
+    DocumentFormat type;
     private int code;
     private String message;
     private InputStream inputStream;
-    DocumentFormat type;
 }

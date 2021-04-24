@@ -73,13 +73,13 @@ class InformManageServiceImplTest {
 
     @Test
     void createUserInform() throws Exception {
-        // TODO 需要手动删除生成的数据
+        //需要手动删除生成的数据
         String url = "/admin/inform/user";
         String request = new JSONObject().put("header", "测试标题").put("content", "测试内容")
-            .put("validTime", System.currentTimeMillis()).toString();
+                .put("validTime", System.currentTimeMillis()).toString();
         MvcResult mvcResult =
-            mockMvc.perform(MockMvcRequestBuilders.put(url).content(request).contentType(MediaType.APPLICATION_JSON)
-                .header(TokenUtil.TOKEN_HEADER, this.token).accept(MediaType.APPLICATION_JSON)).andReturn();
+                mockMvc.perform(MockMvcRequestBuilders.put(url).content(request).contentType(MediaType.APPLICATION_JSON)
+                        .header(TokenUtil.TOKEN_HEADER, this.token).accept(MediaType.APPLICATION_JSON)).andReturn();
         int status = mvcResult.getResponse().getStatus();
         String content = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
         System.out.println("url:" + url);
@@ -91,13 +91,13 @@ class InformManageServiceImplTest {
 
     @Test
     void createAdminInform() throws Exception {
-        // TODO 需要手动删除生成的数据
+        //需要手动删除生成的数据
         String url = "/admin/inform/admin";
         String request = new JSONObject().put("header", "测试标题").put("content", "测试内容")
-            .put("validTime", System.currentTimeMillis()).toString();
+                .put("validTime", System.currentTimeMillis()).toString();
         MvcResult mvcResult =
-            mockMvc.perform(MockMvcRequestBuilders.put(url).content(request).contentType(MediaType.APPLICATION_JSON)
-                .header(TokenUtil.TOKEN_HEADER, this.token).accept(MediaType.APPLICATION_JSON)).andReturn();
+                mockMvc.perform(MockMvcRequestBuilders.put(url).content(request).contentType(MediaType.APPLICATION_JSON)
+                        .header(TokenUtil.TOKEN_HEADER, this.token).accept(MediaType.APPLICATION_JSON)).andReturn();
         int status = mvcResult.getResponse().getStatus();
         String content = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
         System.out.println("url:" + url);
@@ -111,7 +111,7 @@ class InformManageServiceImplTest {
     void getInformList() throws Exception {
         String url = "/admin/inform";
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get(url).header(TokenUtil.TOKEN_HEADER, this.token)
-            .accept(MediaType.APPLICATION_JSON)).andReturn();
+                .accept(MediaType.APPLICATION_JSON)).andReturn();
         int status = mvcResult.getResponse().getStatus();
         String content = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
         System.out.println("url:" + url);
@@ -124,7 +124,7 @@ class InformManageServiceImplTest {
     void getInform() throws Exception {
         String url = "/admin/inform/" + this.commonAdminInform.getId();
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get(url).header(TokenUtil.TOKEN_HEADER, this.token)
-            .accept(MediaType.APPLICATION_JSON)).andReturn();
+                .accept(MediaType.APPLICATION_JSON)).andReturn();
         int status = mvcResult.getResponse().getStatus();
         String content = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
         System.out.println("url:" + url);
@@ -137,7 +137,7 @@ class InformManageServiceImplTest {
     void changeInformStatus() throws Exception {
         String url = "/admin/inform/" + this.commonAdminInform.getId() + "/" + "1";
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.patch(url)
-            .header(TokenUtil.TOKEN_HEADER, this.token).accept(MediaType.APPLICATION_JSON)).andReturn();
+                .header(TokenUtil.TOKEN_HEADER, this.token).accept(MediaType.APPLICATION_JSON)).andReturn();
         int status = mvcResult.getResponse().getStatus();
         String content = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
         System.out.println("url:" + url);
@@ -150,7 +150,7 @@ class InformManageServiceImplTest {
     void getAdminInformList() throws Exception {
         String url = "/admin/inform/admin/1";
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get(url).header(TokenUtil.TOKEN_HEADER, this.token)
-            .accept(MediaType.APPLICATION_JSON)).andReturn();
+                .accept(MediaType.APPLICATION_JSON)).andReturn();
         int status = mvcResult.getResponse().getStatus();
         String content = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
         System.out.println("url:" + url);
@@ -163,7 +163,7 @@ class InformManageServiceImplTest {
     void getUserInformList() throws Exception {
         String url = "/admin/inform/user/1";
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get(url).header(TokenUtil.TOKEN_HEADER, this.token)
-            .accept(MediaType.APPLICATION_JSON)).andReturn();
+                .accept(MediaType.APPLICATION_JSON)).andReturn();
         int status = mvcResult.getResponse().getStatus();
         String content = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
         System.out.println("url:" + url);
@@ -176,7 +176,7 @@ class InformManageServiceImplTest {
     void deleteInform() throws Exception {
         String url = "/admin/inform/user/" + this.commonUserInform.getId();
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.delete(url).contentType(MediaType.APPLICATION_JSON)
-            .header(TokenUtil.TOKEN_HEADER, this.token).accept(MediaType.APPLICATION_JSON)).andReturn();
+                .header(TokenUtil.TOKEN_HEADER, this.token).accept(MediaType.APPLICATION_JSON)).andReturn();
         int status = mvcResult.getResponse().getStatus();
         String content = mvcResult.getResponse().getContentAsString(StandardCharsets.UTF_8);
         System.out.println("url:" + url);

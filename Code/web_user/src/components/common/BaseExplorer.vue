@@ -650,7 +650,7 @@ export default {
         this.$message.success('回收站已清空');
       };
       const catcher = (code, content) => {
-        message(content, "warning");
+        this.$message.error(content);
       };
       cleanRecycleBin(data, handler, catcher);
     },

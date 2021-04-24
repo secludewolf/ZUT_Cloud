@@ -12,9 +12,9 @@ import java.util.List;
  **/
 @Data
 public class AdminInformList {
-	List<CommonAdminInform> informList;
+    List<CommonAdminInform> informList;
 
-	public AdminInformList(List<CommonAdminInform> informList) {
-		this.informList = informList;
-	}
+    public AdminInformList(List<CommonAdminInform> informList) {
+        this.informList = informList;
+    }
 }

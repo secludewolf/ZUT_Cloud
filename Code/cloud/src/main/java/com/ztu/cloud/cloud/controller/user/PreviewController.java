@@ -1,6 +1,5 @@
 package com.ztu.cloud.cloud.controller.user;
 
-import com.google.gson.JsonObject;
 import com.ztu.cloud.cloud.common.dto.user.preview.PreviewDocument;
 import com.ztu.cloud.cloud.common.dto.user.preview.PreviewPhoto;
 import com.ztu.cloud.cloud.common.dto.user.preview.PreviewVideo;
@@ -21,7 +20,7 @@ import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.constraints.NotBlank;
-import java.io.*;
+import java.io.OutputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;

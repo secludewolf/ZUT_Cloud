@@ -27,7 +27,7 @@ public class NameValidator implements ConstraintValidator<Name, Object> {
                 String adminTypeName = "admin";
                 String userTypeName = "user";
                 String fileTypeName = "file";
-                String name = (String)value;
+                String name = (String) value;
                 if (userTypeName.equals(type) || adminTypeName.equals(type)) {
                     return name.replaceAll("[\u4e00-\u9fa5]*[a-z]*[A-Z]*\\d*-*_*\\s*", "").length() == 0;
                 } else if (fileTypeName.equals(type)) {

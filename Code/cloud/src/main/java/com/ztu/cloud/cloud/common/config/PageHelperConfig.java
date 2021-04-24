@@ -13,16 +13,16 @@ import java.util.Properties;
  **/
 @Configuration
 public class PageHelperConfig {
-	@Bean
-	public PageHelper pageHelper() {
-		PageHelper pageHelper = new PageHelper();
-		Properties properties = new Properties();
-		properties.setProperty("offsetAsPageNum", "true");
-		properties.setProperty("rowBoundsWithCount", "true");
-		properties.setProperty("reasonable", "true");
-		properties.setProperty("dialect", "mysql");
-		pageHelper.setProperties(properties);
-		return pageHelper;
-	}
+    @Bean
+    public PageHelper pageHelper() {
+        PageHelper pageHelper = new PageHelper();
+        Properties properties = new Properties();
+        properties.setProperty("offsetAsPageNum", "true");
+        properties.setProperty("rowBoundsWithCount", "true");
+        properties.setProperty("reasonable", "true");
+        properties.setProperty("dialect", "mysql");
+        pageHelper.setProperties(properties);
+        return pageHelper;
+    }
 }
 

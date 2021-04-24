@@ -15,7 +15,8 @@ public class UserList {
     List<User> userList;
     long userCount;
 
-    public UserList() {}
+    public UserList() {
+    }
 
     public UserList(long userCount, List<com.ztu.cloud.cloud.common.bean.mysql.User> userList, List<Long> useSizeList) {
         this.userCount = userCount;

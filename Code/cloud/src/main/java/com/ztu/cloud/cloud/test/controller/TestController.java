@@ -1,16 +1,11 @@
 package com.ztu.cloud.cloud.test.controller;
 
-import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
-import com.ztu.cloud.cloud.common.bean.mysql.User;
 import com.ztu.cloud.cloud.common.dao.mysql.UserMapper;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
 import com.ztu.cloud.cloud.util.ResultUtil;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
-
-import java.util.List;
 
 /**
  * @author Jager

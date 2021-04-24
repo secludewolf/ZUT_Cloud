@@ -4,7 +4,6 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.ztu.cloud.cloud.common.bean.mongodb.ShareRepository;
 import com.ztu.cloud.cloud.common.bean.mysql.Admin;
-import com.ztu.cloud.cloud.common.bean.mysql.File;
 import com.ztu.cloud.cloud.common.bean.mysql.Share;
 import com.ztu.cloud.cloud.common.constant.ResultConstant;
 import com.ztu.cloud.cloud.common.dao.mongodb.ShareRepositoryDao;

@@ -61,8 +61,6 @@ public interface FileMapper {
      */
     Long getFileCount();
 
-    //TODO 只更新了FileInfo
-
     /**
      * 引用数增加
      *
@@ -71,8 +69,6 @@ public interface FileMapper {
      * @return 更新结果
      */
     int fileQuoteNumberAdd(String id, int num);
-
-    //TODO 只更新了FileInfo
 
     /**
      * 引用数减少

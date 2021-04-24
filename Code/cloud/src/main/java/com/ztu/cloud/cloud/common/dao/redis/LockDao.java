@@ -12,23 +12,23 @@ import java.util.concurrent.TimeUnit;
  **/
 @Component
 public class LockDao {
-	RedisTemplate<String, String> redisTemplate;
+    RedisTemplate<String, String> redisTemplate;
 
-	private String prefix = "lock_";
+    private String prefix = "lock_";
 
-	public LockDao(RedisTemplate<String, String> redisTemplate) {
-		this.redisTemplate = redisTemplate;
-	}
+    public LockDao(RedisTemplate<String, String> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
 
-	public Boolean insert(String id) {
-		return insert(id, 10, TimeUnit.SECONDS);
-	}
+    public Boolean insert(String id) {
+        return insert(id, 10, TimeUnit.SECONDS);
+    }
 
-	public Boolean insert(String id, long timeout, TimeUnit unit) {
-		return this.redisTemplate.opsForValue().setIfAbsent(this.prefix + id, id, timeout, unit);
-	}
+    public Boolean insert(String id, long timeout, TimeUnit unit) {
+        return this.redisTemplate.opsForValue().setIfAbsent(this.prefix + id, id, timeout, unit);
+    }
 
-	public Boolean delete(String id) {
-		return this.redisTemplate.delete(this.prefix + id);
-	}
+    public Boolean delete(String id) {
+        return this.redisTemplate.delete(this.prefix + id);
+    }
 }

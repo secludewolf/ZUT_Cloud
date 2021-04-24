@@ -10,12 +10,12 @@ import lombok.Data;
  **/
 @Data
 public class UserInfo {
-	User user;
+    User user;
 
-	public UserInfo() {
-	}
+    public UserInfo() {
+    }
 
-	public UserInfo(com.ztu.cloud.cloud.common.bean.mysql.User user) {
-		this.user = new User(user);
-	}
+    public UserInfo(com.ztu.cloud.cloud.common.bean.mysql.User user) {
+        this.user = new User(user);
+    }
 }

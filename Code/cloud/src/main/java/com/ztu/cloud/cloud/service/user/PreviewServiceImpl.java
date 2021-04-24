@@ -22,15 +22,15 @@ import java.util.List;
  **/
 @Component
 public class PreviewServiceImpl implements PreviewService {
+    final int normalFileMaxSize = 1024 * 1024 * 3;
+    final int textFileMaxSize = 1024 * 1024;
+    final String textType = "txt";
     UserMapper userMapper;
     FileMapper fileMapper;
     StoreUtil storeUtil;
     List<String> photoTypeList;
     List<String> videoTypeList;
     List<String> documentTypeList;
-    final int normalFileMaxSize = 1024 * 1024 * 3;
-    final int textFileMaxSize = 1024 * 1024;
-    final String textType = "txt";
 
     public PreviewServiceImpl(UserMapper userMapper, FileMapper fileMapper, StoreUtil storeUtil) {
         this.userMapper = userMapper;

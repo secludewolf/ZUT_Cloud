@@ -14,7 +14,9 @@ import com.ztu.cloud.cloud.common.dto.common.ChangePassword;
 import com.ztu.cloud.cloud.common.dto.common.ForgetEmail;
 import com.ztu.cloud.cloud.common.dto.common.LoginAccount;
 import com.ztu.cloud.cloud.common.vo.ResultResponseEntity;
-import com.ztu.cloud.cloud.common.vo.admin.*;
+import com.ztu.cloud.cloud.common.vo.admin.AdminInfo;
+import com.ztu.cloud.cloud.common.vo.admin.AdminLogin;
+import com.ztu.cloud.cloud.common.vo.admin.UserInfo;
 import com.ztu.cloud.cloud.common.vo.common.PageVo;
 import com.ztu.cloud.cloud.util.EmailUtil;
 import com.ztu.cloud.cloud.util.ResultUtil;
@@ -306,11 +308,11 @@ public class AdminServiceImpl implements AdminService {
         if (admin.getLevel() <= 0) {
             return ResultConstant.NO_ACCESS;
         }
-        // TODO 授权码验证接口
+        // 授权码验证接口
         if (false) {
             return ResultConstant.INVALID_KEY;
         }
-        // TODO 通过授权码获取对应权限等级
+        // 通过授权码获取对应权限等级
         int level = 1;
         if (this.adminDao.getAdminByAccount(parameter.getAccount()) != null) {
             return ResultConstant.ACCOUNT_EXISTED;

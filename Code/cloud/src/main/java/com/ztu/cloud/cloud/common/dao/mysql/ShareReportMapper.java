@@ -1,8 +1,6 @@
 package com.ztu.cloud.cloud.common.dao.mysql;
 
-import com.ztu.cloud.cloud.common.bean.mysql.FileReport;
 import com.ztu.cloud.cloud.common.bean.mysql.ShareReport;
-import com.ztu.cloud.cloud.common.bean.mysql.SysLog;
 import org.apache.ibatis.annotations.Mapper;
 import org.springframework.stereotype.Component;
 

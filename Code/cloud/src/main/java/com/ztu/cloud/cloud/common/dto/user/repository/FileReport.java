@@ -11,9 +11,9 @@ import javax.validation.constraints.NotBlank;
  **/
 @Data
 public class FileReport {
-	@NotBlank(message = "文件ID不能为空")
-	private String fileId;
-	@NotBlank(message = "举报类型不能为空")
-	private String type;
-	private String content;
+    @NotBlank(message = "文件ID不能为空")
+    private String fileId;
+    @NotBlank(message = "举报类型不能为空")
+    private String type;
+    private String content;
 }

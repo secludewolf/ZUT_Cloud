@@ -9,13 +9,13 @@ import lombok.Data;
  **/
 @Data
 public class ResultBody {
-	private int code;
-	private String message;
-	private Object data;
+    private int code;
+    private String message;
+    private Object data;
 
-	public ResultBody(int code, String message, Object data) {
-		this.code = code;
-		this.message = message;
-		this.data = data;
-	}
+    public ResultBody(int code, String message, Object data) {
+        this.code = code;
+        this.message = message;
+        this.data = data;
+    }
 }

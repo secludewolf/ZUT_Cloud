@@ -12,12 +12,12 @@ import javax.validation.constraints.NotNull;
  **/
 @Data
 public class DeleteFileToRecyclebin {
-	@NotBlank(message = "仓库ID不能为空")
-	private String repositoryId;
-	@NotNull(message = "文件类型标记不能为空")
-	private Boolean isFile;
-	@NotBlank(message = "名称不能为空")
-	private String name;
-	@NotBlank(message = "路径不能为空")
-	private String path;
+    @NotBlank(message = "仓库ID不能为空")
+    private String repositoryId;
+    @NotNull(message = "文件类型标记不能为空")
+    private Boolean isFile;
+    @NotBlank(message = "名称不能为空")
+    private String name;
+    @NotBlank(message = "路径不能为空")
+    private String path;
 }

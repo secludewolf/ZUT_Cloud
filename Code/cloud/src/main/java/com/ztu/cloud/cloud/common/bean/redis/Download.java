@@ -9,8 +9,8 @@ import lombok.Data;
  **/
 @Data
 public class Download {
-	private String id;
-	private String fileId;
-	private String shareId;
-	private String name;
+    private String id;
+    private String fileId;
+    private String shareId;
+    private String name;
 }

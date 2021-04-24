@@ -17,70 +17,69 @@ import java.util.concurrent.TimeUnit;
  **/
 @Component
 public class TempFileDao {
-	//TODO 同步锁
-	RedisTemplate<String, String> redisTemplate;
+    RedisTemplate<String, String> redisTemplate;
 
-	public TempFileDao(RedisTemplate<String, String> redisTemplate) {
-		this.redisTemplate = redisTemplate;
-	}
+    public TempFileDao(RedisTemplate<String, String> redisTemplate) {
+        this.redisTemplate = redisTemplate;
+    }
 
-	public TempFile get(String fileMd5) {
-		BoundHashOperations<String, Object, Object> operations = this.redisTemplate.boundHashOps(fileMd5);
-		TempFile tempFile = new TempFile((String) operations.get("fileId"), (String) operations.get("name"), (String) operations.get("type"));
-		operations.expire(1, TimeUnit.DAYS);
-		String saves = (String) operations.get("saves");
-		if (saves == null) {
-			return null;
-		}
-		String[] split = saves.split(",");
-		Set<Integer> indexs = new HashSet<>();
-		if (saves.length() != 0) {
-			for (String index : split) {
-				indexs.add(Integer.parseInt(index));
-			}
-		}
-		tempFile.setSaves(indexs);
-		tempFile.setLength(Integer.parseInt((String) Objects.requireNonNull(operations.get("length"))));
-		return tempFile;
-	}
+    public TempFile get(String fileMd5) {
+        BoundHashOperations<String, Object, Object> operations = this.redisTemplate.boundHashOps(fileMd5);
+        TempFile tempFile = new TempFile((String) operations.get("fileId"), (String) operations.get("name"), (String) operations.get("type"));
+        operations.expire(1, TimeUnit.DAYS);
+        String saves = (String) operations.get("saves");
+        if (saves == null) {
+            return null;
+        }
+        String[] split = saves.split(",");
+        Set<Integer> indexs = new HashSet<>();
+        if (saves.length() != 0) {
+            for (String index : split) {
+                indexs.add(Integer.parseInt(index));
+            }
+        }
+        tempFile.setSaves(indexs);
+        tempFile.setLength(Integer.parseInt((String) Objects.requireNonNull(operations.get("length"))));
+        return tempFile;
+    }
 
-	public boolean insert(TempFile tempFile) {
-		BoundHashOperations<String, Object, Object> operations = this.redisTemplate.boundHashOps(tempFile.getFileId());
-		operations.put("fileId", tempFile.getFileId());
-		operations.put("name", tempFile.getName());
-		operations.put("type", tempFile.getType());
-		operations.put("length", tempFile.getLength() + "");
-		operations.expire(1, TimeUnit.DAYS);
-		StringBuilder saves = new StringBuilder();
-		if (tempFile.getSaves().size() > 0) {
-			for (Integer index : tempFile.getSaves()) {
-				saves.append(",").append(index);
-			}
-			saves = new StringBuilder(saves.substring(1, saves.length()));
-		}
-		operations.put("saves", saves.toString());
-		return true;
-	}
+    public boolean insert(TempFile tempFile) {
+        BoundHashOperations<String, Object, Object> operations = this.redisTemplate.boundHashOps(tempFile.getFileId());
+        operations.put("fileId", tempFile.getFileId());
+        operations.put("name", tempFile.getName());
+        operations.put("type", tempFile.getType());
+        operations.put("length", tempFile.getLength() + "");
+        operations.expire(1, TimeUnit.DAYS);
+        StringBuilder saves = new StringBuilder();
+        if (tempFile.getSaves().size() > 0) {
+            for (Integer index : tempFile.getSaves()) {
+                saves.append(",").append(index);
+            }
+            saves = new StringBuilder(saves.substring(1, saves.length()));
+        }
+        operations.put("saves", saves.toString());
+        return true;
+    }
 
-	public boolean update(TempFile tempFile) {
-		BoundHashOperations<String, Object, Object> operations = this.redisTemplate.boundHashOps(tempFile.getFileId());
-		operations.put("fileId", tempFile.getFileId());
-		operations.put("name", tempFile.getName());
-		operations.put("type", tempFile.getType());
-		operations.put("length", tempFile.getLength() + "");
-		operations.expire(1, TimeUnit.DAYS);
-		StringBuilder saves = new StringBuilder();
-		if (tempFile.getSaves().size() > 0) {
-			for (Integer index : tempFile.getSaves()) {
-				saves.append(",").append(index);
-			}
-			saves = new StringBuilder(saves.substring(1, saves.length()));
-		}
-		operations.put("saves", saves.toString());
-		return true;
-	}
+    public boolean update(TempFile tempFile) {
+        BoundHashOperations<String, Object, Object> operations = this.redisTemplate.boundHashOps(tempFile.getFileId());
+        operations.put("fileId", tempFile.getFileId());
+        operations.put("name", tempFile.getName());
+        operations.put("type", tempFile.getType());
+        operations.put("length", tempFile.getLength() + "");
+        operations.expire(1, TimeUnit.DAYS);
+        StringBuilder saves = new StringBuilder();
+        if (tempFile.getSaves().size() > 0) {
+            for (Integer index : tempFile.getSaves()) {
+                saves.append(",").append(index);
+            }
+            saves = new StringBuilder(saves.substring(1, saves.length()));
+        }
+        operations.put("saves", saves.toString());
+        return true;
+    }
 
-	public boolean delete(String fileId) {
-		return this.redisTemplate.delete(fileId);
-	}
+    public boolean delete(String fileId) {
+        return this.redisTemplate.delete(fileId);
+    }
 }

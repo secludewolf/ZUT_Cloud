@@ -20,10 +20,8 @@ public class RepositoryUtil {
     /**
      * 判断文件是否存在
      *
-     * @param name
-     *            文件名
-     * @param parent
-     *            父文件夹
+     * @param name   文件名
+     * @param parent 父文件夹
      * @return 是否存在
      */
     public static boolean nameIsExist(String name, Folder parent) {

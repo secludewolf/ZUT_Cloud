@@ -3,9 +3,6 @@ package com.ztu.cloud.cloud.common.dto.user.preview;
 import lombok.Data;
 
 import java.io.File;
-import java.io.InputStream;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 /**
  * @author Jager

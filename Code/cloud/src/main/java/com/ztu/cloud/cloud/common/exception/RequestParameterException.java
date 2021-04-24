@@ -6,11 +6,11 @@ package com.ztu.cloud.cloud.common.exception;
  * @date 2019/12/26-19:35
  **/
 public class RequestParameterException extends Exception {
-	public RequestParameterException(String message) {
-		super(message);
-	}
+    public RequestParameterException(String message) {
+        super(message);
+    }
 
-	public RequestParameterException() {
-		super("请求参数错误");
-	}
+    public RequestParameterException() {
+        super("请求参数错误");
+    }
 }

@@ -12,6 +12,15 @@ import java.util.List;
  **/
 @Data
 public class MouthData {
+    List<String> legend;
+    List<String> name;
+    List<Data> list;
+    public MouthData(List<String> legend, List<String> name, List<Data> list) {
+        this.legend = legend;
+        this.name = name;
+        this.list = list;
+    }
+
     public class Data {
         String name;
         String type = "line";
@@ -32,43 +41,32 @@ public class MouthData {
             return name;
         }
 
-        public String getType() {
-            return type;
-        }
-
-        public String getStack() {
-            return stack;
-        }
-
-        public List<Long> getData() {
-            return data;
-        }
-
         public void setName(String name) {
             this.name = name;
+        }
+
+        public String getType() {
+            return type;
         }
 
         public void setType(String type) {
             this.type = type;
         }
 
+        public String getStack() {
+            return stack;
+        }
+
         public void setStack(String stack) {
             this.stack = stack;
+        }
+
+        public List<Long> getData() {
+            return data;
         }
 
         public void setData(List<Long> data) {
             this.data = data;
         }
-    }
-
-    List<String> legend;
-    List<String> name;
-    List<Data> list;
-
-
-    public MouthData(List<String> legend, List<String> name, List<Data> list) {
-        this.legend = legend;
-        this.name = name;
-        this.list = list;
     }
 }

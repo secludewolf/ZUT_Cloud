@@ -11,7 +11,7 @@ import javax.validation.constraints.NotBlank;
  **/
 @Data
 public class GetShare {
-	@NotBlank(message = "分享ID不能为空")
-	private String shareId;
-	private String password;
+    @NotBlank(message = "分享ID不能为空")
+    private String shareId;
+    private String password;
 }

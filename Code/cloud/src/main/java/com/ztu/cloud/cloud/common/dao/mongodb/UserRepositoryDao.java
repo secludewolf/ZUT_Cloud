@@ -1,17 +1,15 @@
 package com.ztu.cloud.cloud.common.dao.mongodb;
 
+import com.ztu.cloud.cloud.common.bean.mongodb.UserRepository;
+import com.ztu.cloud.cloud.common.bean.mongodb.inside.Folder;
+import com.ztu.cloud.cloud.common.bean.mongodb.inside.RecycleBin;
+import lombok.ToString;
 import org.bson.types.ObjectId;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
 import org.springframework.data.mongodb.core.query.Query;
 import org.springframework.data.mongodb.core.query.Update;
 import org.springframework.stereotype.Component;
-
-import com.ztu.cloud.cloud.common.bean.mongodb.UserRepository;
-import com.ztu.cloud.cloud.common.bean.mongodb.inside.Folder;
-import com.ztu.cloud.cloud.common.bean.mongodb.inside.RecycleBin;
-
-import lombok.ToString;
 
 /**
  * @author Jager
@@ -51,35 +49,35 @@ public class UserRepositoryDao {
         Query query = new Query(Criteria.where("id").is(new ObjectId(id)));
         Update update = new Update();
         update.set("repoSize", repoSize);
-        return (int)this.mongoTemplate.updateFirst(query, update, UserRepository.class).getMatchedCount();
+        return (int) this.mongoTemplate.updateFirst(query, update, UserRepository.class).getMatchedCount();
     }
 
     public int updateUseSizeById(String id, long useSize) {
         Query query = new Query(Criteria.where("id").is(new ObjectId(id)));
         Update update = new Update();
         update.set("useSize", useSize);
-        return (int)this.mongoTemplate.updateFirst(query, update, UserRepository.class).getMatchedCount();
+        return (int) this.mongoTemplate.updateFirst(query, update, UserRepository.class).getMatchedCount();
     }
 
     public int updateFolderById(String id, Folder folder) {
         Query query = new Query(Criteria.where("id").is(new ObjectId(id)));
         Update update = new Update();
         update.set("folder", folder);
-        return (int)this.mongoTemplate.updateFirst(query, update, UserRepository.class).getMatchedCount();
+        return (int) this.mongoTemplate.updateFirst(query, update, UserRepository.class).getMatchedCount();
     }
 
     public int updateRecycleBinById(String id, RecycleBin recycleBin) {
         Query query = new Query(Criteria.where("id").is(new ObjectId(id)));
         Update update = new Update();
         update.set("recycleBin", recycleBin);
-        return (int)this.mongoTemplate.updateFirst(query, update, UserRepository.class).getMatchedCount();
+        return (int) this.mongoTemplate.updateFirst(query, update, UserRepository.class).getMatchedCount();
     }
 
     public int updateStatusById(String id, int status) {
         Query query = new Query(Criteria.where("id").is(new ObjectId(id)));
         Update update = new Update();
         update.set("status", status);
-        return (int)this.mongoTemplate.updateFirst(query, update, UserRepository.class).getMatchedCount();
+        return (int) this.mongoTemplate.updateFirst(query, update, UserRepository.class).getMatchedCount();
     }
 
     public int insert(UserRepository userRepository) {
@@ -94,11 +92,11 @@ public class UserRepositoryDao {
 
     public int deleteById(String id) {
         Query query = new Query(Criteria.where("id").is(new ObjectId(id)));
-        return (int)this.mongoTemplate.remove(query, UserRepository.class).getDeletedCount();
+        return (int) this.mongoTemplate.remove(query, UserRepository.class).getDeletedCount();
     }
 
     public int deleteByUserId(int userId) {
         Query query = new Query(Criteria.where("userId").is(userId));
-        return (int)this.mongoTemplate.remove(query, UserRepository.class).getDeletedCount();
+        return (int) this.mongoTemplate.remove(query, UserRepository.class).getDeletedCount();
     }
 }

@@ -44,6 +44,12 @@ public class DownLoadServiceImpl implements DownloadService {
         this.downloadDao = downloadDao;
     }
 
+    private static String getUUID() {
+        UUID uuid = UUID.randomUUID();
+        String str = uuid.toString();
+        return str.replace("-", "");
+    }
+
     /**
      * 获取下载ID
      *
@@ -53,11 +59,6 @@ public class DownLoadServiceImpl implements DownloadService {
      */
     @Override
     public ResultResponseEntity getDownloadId(String token, DownloadId parameter) {
-        // TODO 创建缓存文件并使用缓存文件下载
-        // TODO 判断文件状态,敏感文件下载重定向
-        // TODO 防止重复创建链接
-        // TODO 更新下载次数
-
         int id = TokenUtil.getId(token);
         User user = this.userDao.getUserById(id);
         if (user == null) {
@@ -67,7 +68,6 @@ public class DownLoadServiceImpl implements DownloadService {
             return ResultConstant.USER_STATUS_ABNORMAL;
         }
         if (parameter.getFolder() != null) {
-            // TODO 带结构多文件下载
             return ResultConstant.SERVER_ERROR;
         }
         // 仓库下载
@@ -94,8 +94,6 @@ public class DownLoadServiceImpl implements DownloadService {
             }
         }
         // 分享下载
-        // TODO 密码验证
-        // TODO 漏洞:shareId不存在也能成功获取下载链接
         if (parameter.getShareId() != null && parameter.getUserFileId() != null) {
             Share share = this.shareDao.getShareById(parameter.getShareId());
             if (share == null) {
@@ -148,9 +146,6 @@ public class DownLoadServiceImpl implements DownloadService {
      */
     @Override
     public ResultResponseEntity getAdminDownloadId(String token, String fileId) {
-        // TODO 创建缓存文件并使用缓存文件下载
-        // TODO 防止重复创建链接
-        // TODO 更新下载次数
         int id = TokenUtil.getId(token);
         Admin admin = this.adminMapper.getAdminById(id);
         if (admin == null) {
@@ -186,20 +181,11 @@ public class DownLoadServiceImpl implements DownloadService {
         if (download == null) {
             return null;
         }
-        // TODO 缓存下载
-        // TODO 检测文件状态重定向下载位置
         File fileInfo = this.fileDao.getFileById(download.getFileId());
         if (fileInfo == null) {
             return null;
         }
         InputStream file = this.storeUtil.getFileInputStream(fileInfo.getPath());
-        //TODO inputStream可能为空
         return new com.ztu.cloud.cloud.common.dto.user.download.Download(download.getName(), file);
-    }
-
-    private static String getUUID() {
-        UUID uuid = UUID.randomUUID();
-        String str = uuid.toString();
-        return str.replace("-", "");
     }
 }

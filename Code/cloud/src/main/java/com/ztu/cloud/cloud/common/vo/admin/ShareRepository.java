@@ -10,11 +10,11 @@ import lombok.Data;
  **/
 @Data
 public class ShareRepository {
-	private Share share;
-	private com.ztu.cloud.cloud.common.bean.mongodb.ShareRepository shareRepository;
+    private Share share;
+    private com.ztu.cloud.cloud.common.bean.mongodb.ShareRepository shareRepository;
 
-	public ShareRepository(Share share, com.ztu.cloud.cloud.common.bean.mongodb.ShareRepository shareRepository) {
-		this.share = share;
-		this.shareRepository = shareRepository;
-	}
+    public ShareRepository(Share share, com.ztu.cloud.cloud.common.bean.mongodb.ShareRepository shareRepository) {
+        this.share = share;
+        this.shareRepository = shareRepository;
+    }
 }

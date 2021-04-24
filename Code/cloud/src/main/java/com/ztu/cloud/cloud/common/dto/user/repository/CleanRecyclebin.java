@@ -11,6 +11,6 @@ import javax.validation.constraints.NotBlank;
  **/
 @Data
 public class CleanRecyclebin {
-	@NotBlank(message = "仓库ID不能为空")
-	private String repositoryId;
+    @NotBlank(message = "仓库ID不能为空")
+    private String repositoryId;
 }

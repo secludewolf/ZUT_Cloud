@@ -12,14 +12,14 @@ import java.util.List;
  **/
 @Data
 public class FileList {
-	List<File> fileList;
-	long fileCount;
+    List<File> fileList;
+    long fileCount;
 
-	public FileList() {
-	}
+    public FileList() {
+    }
 
-	public FileList(long fileCount, List<File> fileList) {
-		this.fileCount = fileCount;
-		this.fileList = fileList;
-	}
+    public FileList(long fileCount, List<File> fileList) {
+        this.fileCount = fileCount;
+        this.fileList = fileList;
+    }
 }

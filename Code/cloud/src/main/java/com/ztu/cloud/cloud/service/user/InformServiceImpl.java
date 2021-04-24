@@ -37,8 +37,7 @@ public class InformServiceImpl implements InformService {
     /**
      * 获取通知列表
      *
-     * @param token
-     *            用户Token
+     * @param token 用户Token
      * @return 通知列表
      */
     @Override
@@ -72,10 +71,8 @@ public class InformServiceImpl implements InformService {
     /**
      * 获取通知信息
      *
-     * @param token
-     *            用户Token
-     * @param informId
-     *            通知ID
+     * @param token    用户Token
+     * @param informId 通知ID
      * @return 通知信息
      */
     @Override
@@ -106,12 +103,9 @@ public class InformServiceImpl implements InformService {
     /**
      * 修改通知状态
      *
-     * @param token
-     *            用户Token
-     * @param informId
-     *            通知ID
-     * @param status
-     *            通知状态
+     * @param token    用户Token
+     * @param informId 通知ID
+     * @param status   通知状态
      * @return 是否成功
      */
     @Override

@@ -20,5 +20,4 @@ public class DownloadId {
     @NotBlank(message = "文件名称不能为空")
     private String fileName;
     private Folder folder;
-    //TODO 暂时未检测
 }

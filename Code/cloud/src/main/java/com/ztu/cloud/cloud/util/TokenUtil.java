@@ -47,28 +47,23 @@ public class TokenUtil {
     /**
      * 创建Token
      *
-     * @param role
-     *            角色
-     * @param id
-     *            ID
-     * @param isRememberMe
-     *            是否选择记住我
+     * @param role         角色
+     * @param id           ID
+     * @param isRememberMe 是否选择记住我
      * @return Token
      */
     public static String createToken(String role, int id, boolean isRememberMe) {
         long expiration = isRememberMe ? EXPIRATION_REMEMBER : EXPIRATION;
         return Jwts.builder().setSubject(role + "@" + id + "@" + (isRememberMe ? "1" : "0")).setIssuer(ISSUER)
-            .setIssuedAt(new Date()).setExpiration(new Date(System.currentTimeMillis() + expiration * 1000))
-            .signWith(SIGNATURE_ALGORITHM, SECRET.getBytes()).compact();
+                .setIssuedAt(new Date()).setExpiration(new Date(System.currentTimeMillis() + expiration * 1000))
+                .signWith(SIGNATURE_ALGORITHM, SECRET.getBytes()).compact();
     }
 
     /**
      * 创建用户Token
      *
-     * @param id
-     *            ID
-     * @param isRememberMe
-     *            是否选择记住我
+     * @param id           ID
+     * @param isRememberMe 是否选择记住我
      * @return Token
      */
     public static String createUserToken(int id, boolean isRememberMe) {
@@ -78,10 +73,8 @@ public class TokenUtil {
     /**
      * 创建管理员Token
      *
-     * @param id
-     *            ID
-     * @param isRememberMe
-     *            是否选择记住我
+     * @param id           ID
+     * @param isRememberMe 是否选择记住我
      * @return Token
      */
     public static String createAdminToken(int id, boolean isRememberMe) {
@@ -91,8 +84,7 @@ public class TokenUtil {
     /**
      * 刷新Token 如果Token有效期过半则刷新,否则正常返回
      *
-     * @param token
-     *            Token
+     * @param token Token
      * @return Token
      */
     public static String refreshToken(String token) {
@@ -108,8 +100,7 @@ public class TokenUtil {
     /**
      * 判断是否是长期有效
      *
-     * @param token
-     *            Token
+     * @param token Token
      * @return 结果
      */
     public static boolean getIsRememberMe(String token) {
@@ -121,33 +112,30 @@ public class TokenUtil {
     /**
      * 获取ID
      *
-     * @param token
-     *            用户Token
+     * @param token 用户Token
      * @return ID
      */
     public static int getId(String token) {
         String subject = getSubject(token);
         String sid = subject.split("@")[1];
-	    return Integer.parseInt(sid);
+        return Integer.parseInt(sid);
     }
 
     /**
      * 获取角色
      *
-     * @param token
-     *            用户Token
+     * @param token 用户Token
      * @return 角色
      */
     public static String getRole(String token) {
         String subject = getSubject(token);
-	    return subject.split("@")[0];
+        return subject.split("@")[0];
     }
 
     /**
      * 获取有效期
      *
-     * @param token
-     *            用户Token
+     * @param token 用户Token
      * @return 角色
      */
     public static long getExpiration(String token) {
@@ -158,8 +146,7 @@ public class TokenUtil {
     /**
      * 判断Token有效期是否过半
      *
-     * @param token
-     *            Token
+     * @param token Token
      * @return 判断结果
      */
     public static boolean isExpiring(String token) {

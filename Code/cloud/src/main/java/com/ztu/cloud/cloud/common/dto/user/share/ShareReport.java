@@ -11,9 +11,9 @@ import javax.validation.constraints.NotBlank;
  **/
 @Data
 public class ShareReport {
-	@NotBlank(message = "分享ID不能为空")
-	private String shareId;
-	@NotBlank(message = "举报类型不能为空")
-	private String type;
-	private String content;
+    @NotBlank(message = "分享ID不能为空")
+    private String shareId;
+    @NotBlank(message = "举报类型不能为空")
+    private String type;
+    private String content;
 }

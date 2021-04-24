@@ -12,7 +12,7 @@ import javax.validation.constraints.NotBlank;
  **/
 @Data
 public class ForgetEmail {
-	@NotBlank(message = "邮箱不能为空")
-	@Email(message = "邮箱格式错误")
-	private String email;
+    @NotBlank(message = "邮箱不能为空")
+    @Email(message = "邮箱格式错误")
+    private String email;
 }

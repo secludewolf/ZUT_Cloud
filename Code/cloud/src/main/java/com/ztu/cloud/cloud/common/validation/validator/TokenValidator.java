@@ -27,7 +27,7 @@ public class TokenValidator implements ConstraintValidator<Token, Object> {
         }
         if (value instanceof String) {
             try {
-                return this.role.equals(TokenUtil.getRole((String)value));
+                return this.role.equals(TokenUtil.getRole((String) value));
             } catch (Exception e) {
                 return false;
             }

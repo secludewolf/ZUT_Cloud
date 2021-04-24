@@ -1,6 +1,5 @@
 package com.ztu.cloud.cloud.controller.common;
 
-import com.google.gson.JsonObject;
 import com.ztu.cloud.cloud.common.dto.user.download.Download;
 import com.ztu.cloud.cloud.common.dto.user.download.DownloadId;
 import com.ztu.cloud.cloud.common.log.SysLog;
@@ -13,13 +12,10 @@ import org.apache.commons.io.IOUtils;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import javax.validation.constraints.NotBlank;
-import java.io.IOException;
 import java.io.OutputStream;
-import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
 /**

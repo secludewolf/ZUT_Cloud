@@ -11,12 +11,12 @@ import javax.validation.constraints.NotBlank;
  **/
 @Data
 public class CopyFolder {
-	@NotBlank(message = "仓库ID不能为空")
-	private String repositoryId;
-	@NotBlank(message = "名称不能为空")
-	private String name;
-	@NotBlank(message = "原始路径不能为空")
-	private String oldPath;
-	@NotBlank(message = "新路径不能为空")
-	private String newPath;
+    @NotBlank(message = "仓库ID不能为空")
+    private String repositoryId;
+    @NotBlank(message = "名称不能为空")
+    private String name;
+    @NotBlank(message = "原始路径不能为空")
+    private String oldPath;
+    @NotBlank(message = "新路径不能为空")
+    private String newPath;
 }

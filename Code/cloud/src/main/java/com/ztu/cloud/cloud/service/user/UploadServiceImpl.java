@@ -98,7 +98,6 @@ public class UploadServiceImpl implements UploadService {
                 if (!Md5Util.getMd5(block.getBytes()).equals(blockMd5)) {
                     return ResultConstant.FILE_DAMAGE;
                 }
-                // TODO 操作成功检测
                 // 加锁
                 Boolean lock;
                 int retryNumber = 0;

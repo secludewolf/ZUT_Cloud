@@ -12,13 +12,13 @@ import java.util.Set;
  **/
 @Data
 public class Upload {
-	private Set<Integer> index;
+    private Set<Integer> index;
 
-	public Upload() {
-		this.index = new HashSet<>();
-	}
+    public Upload() {
+        this.index = new HashSet<>();
+    }
 
-	public Upload(Set<Integer> index) {
-		this.index = index;
-	}
+    public Upload(Set<Integer> index) {
+        this.index = index;
+    }
 }

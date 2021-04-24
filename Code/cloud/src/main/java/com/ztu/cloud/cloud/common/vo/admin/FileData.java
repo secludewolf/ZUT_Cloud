@@ -11,6 +11,9 @@ import java.util.List;
  **/
 @Data
 public class FileData {
+    List<FileData.Data> list;
+    long total = 0;
+
     public class Data {
         int value;
         String name;
@@ -24,19 +27,16 @@ public class FileData {
             return value;
         }
 
-        public String getName() {
-            return name;
-        }
-
         public void setValue(int value) {
             this.value = value;
+        }
+
+        public String getName() {
+            return name;
         }
 
         public void setName(String name) {
             this.name = name;
         }
     }
-
-    List<FileData.Data> list;
-    long total = 0;
 }

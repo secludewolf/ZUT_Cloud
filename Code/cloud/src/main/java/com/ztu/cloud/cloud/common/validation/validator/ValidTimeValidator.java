@@ -25,7 +25,7 @@ public class ValidTimeValidator implements ConstraintValidator<ValidTime, Object
             return false;
         }
         if (value instanceof Long) {
-            return ((Long)value) > System.currentTimeMillis() + min;
+            return ((Long) value) > System.currentTimeMillis() + min;
         } else {
             return false;
         }

@@ -9,12 +9,12 @@ import lombok.Data;
  **/
 @Data
 public class AdminLogin {
-	Admin admin;
+    Admin admin;
 
-	public AdminLogin() {
-	}
+    public AdminLogin() {
+    }
 
-	public AdminLogin(com.ztu.cloud.cloud.common.bean.mysql.Admin admin) {
-		this.admin = new Admin(admin);
-	}
+    public AdminLogin(com.ztu.cloud.cloud.common.bean.mysql.Admin admin) {
+        this.admin = new Admin(admin);
+    }
 }

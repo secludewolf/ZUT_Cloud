@@ -12,10 +12,10 @@ import javax.validation.constraints.NotNull;
  **/
 @Data
 public class RestoreFile {
-	@NotBlank(message = "仓库ID不能为空")
-	private String repositoryId;
-	@NotNull(message = "文件类型不能为空")
-	private Boolean isFile;
-	@NotBlank(message = "回收ID不能为空")
-	private String recycleId;
+    @NotBlank(message = "仓库ID不能为空")
+    private String repositoryId;
+    @NotNull(message = "文件类型不能为空")
+    private Boolean isFile;
+    @NotBlank(message = "回收ID不能为空")
+    private String recycleId;
 }

@@ -1,5 +1,6 @@
 package com.ztu.cloud.cloud.util;
 
+import org.apache.commons.io.IOUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileSystem;
 import org.springframework.beans.factory.annotation.Value;
@@ -91,11 +92,8 @@ public class StoreUtil {
         f2 = f2 % 3 + 1;
         folder = new File("./SaveFolder/" + f1 + "/" + f2);
         folder.mkdirs();
-        //TODO mkdir
         return new File("./SaveFolder/" + f1 + "/" + f2).getAbsolutePath() + "/";
     }
-
-    //TODO 检测文件是否存在
 
     /**
      * 保存文件
@@ -141,7 +139,6 @@ public class StoreUtil {
         // 	return false;
         // }
     }
-    //TODO 检测文件是否存在 防止冲突
 
     /**
      * 获得文件流
@@ -209,15 +206,8 @@ public class StoreUtil {
     }
 
     public void storeTempFile(String name, InputStream inputStream) {
-        //TODO 应该通过配置文件设置临时存储位置
         //临时存储路径
         String path = "./CacheFolder/";
-        //TODO 应该用过配置文件设置临时存储空间大小
-        // 1GB
-        // int maxSize = 1024 * 1024 * 1024;
-        // if (getTempFolderSize() > maxSize) {
-        // 	return false;
-        // }
         File file = new File(path + name);
         if (file.exists()) {
             return;
@@ -292,21 +282,13 @@ public class StoreUtil {
         String path = "./CacheFolder/";
         //TODO MD5 验证
         File file = new File(path + md5);
-        OutputStream outputStream = null;
         try {
-            outputStream = new FileOutputStream(file);
+            OutputStream outputStream = new FileOutputStream(file);
             for (String name : names) {
                 File temp = new File(path + name);
                 if (temp.exists()) {
                     InputStream inputStream = new FileInputStream(temp);
-                    byte[] buffer = new byte[1024];
-                    while (true) {
-                        int bytesRead = inputStream.read(buffer);
-                        if (bytesRead <= 0) {
-                            break;
-                        }
-                        outputStream.write(buffer, 0, bytesRead);
-                    }
+                    IOUtils.copy(inputStream, outputStream);
                     inputStream.close();
                 } else {
                     outputStream.close();
@@ -338,7 +320,6 @@ public class StoreUtil {
     }
 
     public long getTempFolderSize() {
-        //TODO 应该通过配置文件设置临时存储空间
         String path = "./CacheFolder/";
         long size = 0;
         File folder = new File(path);

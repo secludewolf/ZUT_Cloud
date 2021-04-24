@@ -12,25 +12,25 @@ import java.util.Set;
  **/
 @Data
 public class TempFile {
-	private String fileId;
-	private String name;
-	private String type;
-	private Integer length;
-	private Set<Integer> saves;
+    private String fileId;
+    private String name;
+    private String type;
+    private Integer length;
+    private Set<Integer> saves;
 
-	public TempFile(String fileId, String name, String type) {
-		this.fileId = fileId;
-		this.name = name;
-		this.type = type;
-		this.length = 0;
-		this.saves = new HashSet<>();
-	}
+    public TempFile(String fileId, String name, String type) {
+        this.fileId = fileId;
+        this.name = name;
+        this.type = type;
+        this.length = 0;
+        this.saves = new HashSet<>();
+    }
 
-	public TempFile(String fileId, String name, String type, Integer length) {
-		this.fileId = fileId;
-		this.name = name;
-		this.type = type;
-		this.length = length;
-		this.saves = new HashSet<>();
-	}
+    public TempFile(String fileId, String name, String type, Integer length) {
+        this.fileId = fileId;
+        this.name = name;
+        this.type = type;
+        this.length = length;
+        this.saves = new HashSet<>();
+    }
 }

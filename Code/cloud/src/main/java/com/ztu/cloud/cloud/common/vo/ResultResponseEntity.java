@@ -10,11 +10,11 @@ import org.springframework.util.MultiValueMap;
  * @date 2019/12/27-7:51
  **/
 public class ResultResponseEntity extends ResponseEntity<Object> {
-	public ResultResponseEntity(Object body, HttpStatus status) {
-		super(body, status);
-	}
+    public ResultResponseEntity(Object body, HttpStatus status) {
+        super(body, status);
+    }
 
-	public ResultResponseEntity(Object body, MultiValueMap<String, String> headers, HttpStatus status) {
-		super(body, headers, status);
-	}
+    public ResultResponseEntity(Object body, MultiValueMap<String, String> headers, HttpStatus status) {
+        super(body, headers, status);
+    }
 }

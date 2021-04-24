@@ -15,21 +15,21 @@ import org.springframework.data.mongodb.core.mapping.MongoMappingContext;
  **/
 @Configuration
 public class MongodbConfig {
-	public MongoDbFactory mongoFactory;
-	public MongoMappingContext mongoMappingContext;
+    public MongoDbFactory mongoFactory;
+    public MongoMappingContext mongoMappingContext;
 
-	public MongodbConfig(MongoDbFactory mongoFactory, MongoMappingContext mongoMappingContext) {
-		this.mongoFactory = mongoFactory;
-		this.mongoMappingContext = mongoMappingContext;
-	}
+    public MongodbConfig(MongoDbFactory mongoFactory, MongoMappingContext mongoMappingContext) {
+        this.mongoFactory = mongoFactory;
+        this.mongoMappingContext = mongoMappingContext;
+    }
 
-	@Bean
-	public MappingMongoConverter mongoConverter() throws Exception {
-		DbRefResolver dbRefResolver = new DefaultDbRefResolver(mongoFactory);
-		MappingMongoConverter mongoConverter = new MappingMongoConverter(dbRefResolver, mongoMappingContext);
-		//配置.替换符
-		mongoConverter.setMapKeyDotReplacement(":");
-		mongoConverter.afterPropertiesSet();
-		return mongoConverter;
-	}
+    @Bean
+    public MappingMongoConverter mongoConverter() throws Exception {
+        DbRefResolver dbRefResolver = new DefaultDbRefResolver(mongoFactory);
+        MappingMongoConverter mongoConverter = new MappingMongoConverter(dbRefResolver, mongoMappingContext);
+        //配置.替换符
+        mongoConverter.setMapKeyDotReplacement(":");
+        mongoConverter.afterPropertiesSet();
+        return mongoConverter;
+    }
 }
