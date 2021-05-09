@@ -2,6 +2,7 @@ package com.ztu.cloud.cloud.util;
 
 import org.apache.commons.io.IOUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import java.io.*;
@@ -11,6 +12,7 @@ import java.io.*;
  * @description 存储工具
  * @date 2020/06/27-10:28
  **/
+@Primary
 @Component("local")
 @ConditionalOnProperty(name = {"store.position"}, havingValue = "local", matchIfMissing = true)
 public class StoreLocalUtil extends StoreUtil {
