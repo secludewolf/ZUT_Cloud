@@ -1,40 +1,29 @@
 package com.ztu.cloud.cloud.util;
 
 import org.apache.commons.io.IOUtils;
-import org.apache.hadoop.conf.Configuration;
-import org.apache.hadoop.fs.FileSystem;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.scheduling.annotation.Async;
-import org.springframework.stereotype.Component;
 
 import java.io.*;
-import java.net.URISyntaxException;
 import java.util.Objects;
 
 /**
  * @author Jager
- * @description 存储工具
- * @date 2020/06/27-10:28
+ * @description 存储工具接口
+ * @date 2021/05/09-14:55
  **/
-@Component
-public class StoreUtil {
-    private String url;
-    private String port;
-    private String head;
-    private String hdfsUrl;
-    private String user;
-    private Configuration configuration;
-    private FileSystem fileSystem;
+public abstract class StoreUtil {
+    String tempFolderPath;
 
-    public StoreUtil(@Value("${hadoop.url}") String url, @Value("${hadoop.hdfs.head}") String head, @Value("${hadoop.hdfs.port}") String port, @Value("${hadoop.hdfs.user}") String user) throws URISyntaxException, IOException, InterruptedException {
-        this.url = url;
-        this.head = head;
-        this.port = port;
-        this.hdfsUrl = head + "://" + url + ":" + port;
-        this.user = user;
-        // this.configuration = new Configuration();
-        // this.configuration.set("fs.defaultFS", hdfsUrl);
-        // this.fileSystem = FileSystem.get(new URI(hdfsUrl), this.configuration, this.user);
+    public StoreUtil() {
+        this.tempFolderPath = "./CacheFolder/";
+        File file = new File(this.tempFolderPath);
+        if (file.exists()) {
+            if (!file.isDirectory()) {
+                System.out.println("存储重名文件阻碍项目初始化!");
+            }
+        } else {
+            file.mkdirs();
+        }
     }
 
     /**
@@ -43,57 +32,14 @@ public class StoreUtil {
      * @param path 文件路径
      * @return 是否存在
      */
-    public boolean checkExist(String path) {
-        File file = new File(path);
-        return file.exists();
-        // try {
-        // 	return this.fileSystem.exists(new Path(path));
-        // } catch (IOException e) {
-        // 	e.printStackTrace();
-        // 	return false;
-        // }
-    }
+    public abstract boolean checkExist(String path);
 
     /**
      * 获取一个可用路径
      *
      * @return 可用路径
      */
-    public String getUsablePath() {
-        File folder = new File("./SaveFolder");
-        int f1 = 1;
-        int f2 = 0;
-        if (folder.isDirectory()) {
-            File[] folders = folder.listFiles();
-            for (File tempFolder : folders) {
-                if (tempFolder.isDirectory()) {
-                    File[] folders2 = tempFolder.listFiles();
-                    for (File tempFile2 : folders2) {
-                        if (tempFile2.isDirectory()) {
-                            f2++;
-                            String[] names = tempFile2.list();
-                            int num = 0;
-                            for (String name : names) {
-                                num++;
-                            }
-                            if (num < 3) {
-                                try {
-                                    return tempFile2.getCanonicalPath() + "\\";
-                                } catch (IOException e) {
-                                    e.printStackTrace();
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-        f1 = f2 / 3 + 1;
-        f2 = f2 % 3 + 1;
-        folder = new File("./SaveFolder/" + f1 + "/" + f2);
-        folder.mkdirs();
-        return new File("./SaveFolder/" + f1 + "/" + f2).getAbsolutePath() + "/";
-    }
+    public abstract String getUsablePath();
 
     /**
      * 保存文件
@@ -102,43 +48,7 @@ public class StoreUtil {
      * @param inputStream 数据输入流
      * @return 保存结果
      */
-    public boolean storeFile(String path, InputStream inputStream) {
-        File file = new File(path);
-        try {
-            OutputStream outputStream = new FileOutputStream(file);
-            byte[] buffer = new byte[1024];
-            while (true) {
-                int bytesRead = inputStream.read(buffer);
-                if (bytesRead <= 0) {
-                    break;
-                }
-                outputStream.write(buffer, 0, bytesRead);
-            }
-            inputStream.close();
-            outputStream.close();
-            return true;
-        } catch (IOException e) {
-            e.printStackTrace();
-            return false;
-        }
-        // try {
-        // 	FSDataOutputStream fsDataOutputStream = this.fileSystem.create(new Path(path));
-        // 	byte[] buffer = new byte[1024];
-        // 	while (true) {
-        // 		int bytesRead = inputStream.read(buffer);
-        // 		if (bytesRead <= 0) {
-        // 			break;
-        // 		}
-        // 		fsDataOutputStream.write(buffer, 0, bytesRead);
-        // 	}
-        // 	inputStream.close();
-        // 	fsDataOutputStream.close();
-        // 	return true;
-        // } catch (IOException e) {
-        // 	e.printStackTrace();
-        // 	return false;
-        // }
-    }
+    public abstract boolean storeFile(String path, InputStream inputStream);
 
     /**
      * 获得文件流
@@ -146,17 +56,7 @@ public class StoreUtil {
      * @param path 文件路径
      * @return 文件输出流
      */
-    public InputStream getFileInputStream(String path) {
-        File file = new File(path);
-        InputStream inputStream = null;
-        try {
-            inputStream = new FileInputStream(file);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
-        return inputStream;
-        // return this.fileSystem.open(new Path(path));
-    }
+    public abstract InputStream getFileInputStream(String path);
 
     /**
      * 创建文件夹
@@ -164,15 +64,7 @@ public class StoreUtil {
      * @param path 文件夹路径
      * @return 创建结果
      */
-    public boolean mkdir(String path) {
-        File file = new File(path);
-        return file.mkdirs();
-        // try {
-        // 	return this.fileSystem.mkdirs(new Path(path));
-        // } catch (IOException e) {
-        // 	e.printStackTrace();
-        // }
-    }
+    public abstract boolean mkdir(String path);
 
     /**
      * 删除文件
@@ -180,22 +72,25 @@ public class StoreUtil {
      * @param path 文件路径
      * @return 删除结果
      */
-    public boolean delete(String path) {
-        File file = new File(path);
-        return file.delete();
-        // try {
-        // 	return this.fileSystem.delete(new Path(path), true);
-        // } catch (IOException e) {
-        // 	e.printStackTrace();
-        // }
-    }
+    public abstract boolean delete(String path);
 
+    /**
+     * 判断临时文件是否存在
+     *
+     * @param name 文件名称
+     * @return 是否存在
+     */
     public boolean checkTempFile(String name) {
-        String path = "./CacheFolder/";
-        File file = new File(path + name);
+        File file = new File(this.tempFolderPath + name);
         return file.exists();
     }
 
+    /**
+     * 判断临时文件是否存在
+     *
+     * @param names 文件名称数组
+     * @return 文件是否存在
+     */
     public boolean checkTempFile(String[] names) {
         for (String name : names) {
             if (!checkTempFile(name)) {
@@ -205,10 +100,15 @@ public class StoreUtil {
         return true;
     }
 
+    /**
+     * 存储临时文件
+     *
+     * @param name        文件名称
+     * @param inputStream 文件流
+     */
     public void storeTempFile(String name, InputStream inputStream) {
         //临时存储路径
-        String path = "./CacheFolder/";
-        File file = new File(path + name);
+        File file = new File(this.tempFolderPath + name);
         if (file.exists()) {
             return;
         }
@@ -229,9 +129,14 @@ public class StoreUtil {
         }
     }
 
+    /**
+     * 获取临时文件
+     *
+     * @param name 文件名称
+     * @return 文件
+     */
     public File getTempFile(String name) {
-        String path = "./CacheFolder/";
-        File file = new File(path + name);
+        File file = new File(this.tempFolderPath + name);
         if (file.exists()) {
             //刷新文件修改时间
             file.getAbsoluteFile().setLastModified(System.currentTimeMillis());
@@ -240,33 +145,53 @@ public class StoreUtil {
         return null;
     }
 
+    /**
+     * 获得临时文件上次访问时间
+     *
+     * @param name 文件名称
+     * @return 访问时间
+     */
     public long getTempFileLastModifiedTime(String name) {
-        String path = "./CacheFolder/";
-        File file = new File(path + name);
+        File file = new File(this.tempFolderPath + name);
         if (file.exists()) {
             return file.getAbsoluteFile().lastModified();
         }
         return -1;
     }
 
+    /**
+     * 刷新临时文件访问时间
+     *
+     * @param name 文件名称
+     * @return 是否刷新成功
+     */
     public boolean flashTempFileLastModifiedTime(String name) {
-        String path = "./CacheFolder/";
-        File file = new File(path + name);
+        File file = new File(this.tempFolderPath + name);
         if (file.exists()) {
             return file.getAbsoluteFile().setLastModified(System.currentTimeMillis());
         }
         return false;
     }
 
+    /**
+     * 获取所有临时文件名称
+     *
+     * @return 临时文件名称数组
+     */
     public String[] getTempFileNames() {
-        String path = "./CacheFolder/";
-        File folder = new File(path);
+        File folder = new File(this.tempFolderPath);
         return folder.list();
     }
 
+    /**
+     * 上传临时文件为永久文件
+     *
+     * @param path 文件存储位置
+     * @param name 文件名称
+     * @return 是否存储成功
+     */
     public boolean uploadTempFile(String path, String name) {
-        String tempPath = "./CacheFolder/";
-        File file = new File(tempPath + name);
+        File file = new File(this.tempFolderPath + name);
         if (file.exists()) {
             try {
                 return storeFile(path, new FileInputStream(file));
@@ -278,14 +203,20 @@ public class StoreUtil {
         return false;
     }
 
+    /**
+     * 合并临时文件
+     *
+     * @param names 临时文件名称数组
+     * @param md5   文件MD5
+     * @return 文件大小
+     */
     public long mergeTempFile(String[] names, String md5) {
-        String path = "./CacheFolder/";
         //TODO MD5 验证
-        File file = new File(path + md5);
+        File file = new File(this.tempFolderPath + md5);
         try {
             OutputStream outputStream = new FileOutputStream(file);
             for (String name : names) {
-                File temp = new File(path + name);
+                File temp = new File(this.tempFolderPath + name);
                 if (temp.exists()) {
                     InputStream inputStream = new FileInputStream(temp);
                     IOUtils.copy(inputStream, outputStream);
@@ -304,25 +235,38 @@ public class StoreUtil {
         return file.length();
     }
 
+    /**
+     * 删除临时文件
+     *
+     * @param names 文件名称数组
+     */
     public void deleteTempFiles(String[] names) {
         for (String name : names) {
             deleteTempFile(name);
         }
     }
 
+    /**
+     * 删除临时文件
+     *
+     * @param name 文件名
+     */
     @Async
     public void deleteTempFile(String name) {
-        String path = "./CacheFolder/";
-        File file = new File(path + name);
+        File file = new File(this.tempFolderPath + name);
         if (file.exists()) {
             file.delete();
         }
     }
 
+    /**
+     * 获取临时文件夹大小
+     *
+     * @return 文件大小
+     */
     public long getTempFolderSize() {
-        String path = "./CacheFolder/";
         long size = 0;
-        File folder = new File(path);
+        File folder = new File(this.tempFolderPath);
         if (folder.isDirectory()) {
             for (File file : Objects.requireNonNull(folder.listFiles())) {
                 size += file.length();
