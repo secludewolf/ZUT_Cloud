@@ -17,9 +17,6 @@ module.exports = {
       '/api': {
         target: 'http://localhost:8088',
         changeOrigin: true,
-        pathRewrite: {
-          '^/api': ''
-        }
       }
     },
     cssSourceMap: false
@@ -62,7 +59,7 @@ module.exports = {
     // Paths
     assetsRoot: path.resolve(__dirname, '../dist'),
     assetsSubDirectory: 'static',
-    assetsPublicPath: '/',
+    assetsPublicPath: './',
 
     /**
      * Source Maps

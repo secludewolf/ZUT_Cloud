@@ -4,7 +4,7 @@
     <modelVersion>4.0.0</modelVersion>
     <groupId>com.ztu.cloud</groupId>
     <artifactId>cloud</artifactId>
-    <version>demo_1.0</version>
+    <version>1.0</version>
     <name>cloud</name>
     <description>云盘项目</description>
 
@@ -13,6 +13,7 @@
         <maven.compiler.target>1.8</maven.compiler.target>
         <java.version>1.8</java.version>
         <hadoop.version>2.7.7</hadoop.version>
+        <skipTests>true</skipTests>
     </properties>
 
     <parent>
