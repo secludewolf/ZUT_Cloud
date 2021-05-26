@@ -1,5 +1,5 @@
 <template>
-  <div style="width: 100%;padding: 24px;min-width: 1600px;">
+  <div style="width: 100%;padding: 0;min-width: 1200px;">
     <div style="margin-bottom:16px;">
       <a-row type="flex" justify="space-between" :gutter="16">
         <a-col :span="6">
@@ -96,7 +96,7 @@
           </div>
         </a-col>
         <a-col :span="6">
-          <div id="fileChart" style="padding-top:20px;height: 300px;background: #fff;">
+          <div id="fileChart" style="padding-top:20px;height: 280px;background: #fff;">
             文件类型占比与总文件量
           </div>
           <div id="downloadChart" style="padding-top:20px;height: 300px;background: #fff;">

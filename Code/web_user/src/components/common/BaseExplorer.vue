@@ -1034,14 +1034,12 @@ export default {
       this.menuVisible = false;
       this.optionTarget = this.target;
       this.optionTargetIndex = this.targetIndex;
-      this.$message.info("选中" + this.target.name + "进行复制操作");
     },
     move() {
       this.lastOption = "move";
       this.menuVisible = false;
       this.optionTarget = this.target;
       this.optionTargetIndex = this.targetIndex;
-      this.$message.info("选中" + this.target.name + "进行移动操作");
     },
     paste() {
       const path = this.getCurrentPath();
@@ -1078,7 +1076,6 @@ export default {
         }
       }
       this.menuVisible = false;
-      this.$message.info("将位置" + this.optionTarget.path + "的" + this.optionTarget.name + (this.lastOption === "copy" ? "复制" : "移动") + "到" + path)
     },
     rename() {
       if (this.renameName === "") {
@@ -1159,7 +1156,6 @@ export default {
     },
     download(index) {
       if (typeof index != "object") this.tableOptionInit(index);
-      this.$message.info("下载位于" + this.target.path + "的" + this.target.name);
       this.menuVisible = false;
       const parent = this;
       const data = {
@@ -1187,7 +1183,6 @@ export default {
     },
     restore(index) {
       if (typeof index != "object") this.tableOptionInit(index);
-      this.$message.info("恢复" + this.target.name + "到" + this.target.path);
       const parent = this;
       const data = {
         repositoryId: parent.$store.getters.getRepositoryId,

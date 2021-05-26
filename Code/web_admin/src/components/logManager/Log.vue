@@ -48,64 +48,32 @@
              :rowKey="record => record.id"
              @change="handleTableChange">
       <div slot="startTime" slot-scope="text, record,col">
-        <a-input
-          v-if="record.editable"
-          style="margin: -5px 0"
-          :value="text"
-          @change="e => handleChange(e.target.value, record.key, 'status')"
-        />
-        <template v-else>
           {{ getFormatDate(text) }}
-        </template>
       </div>
       <template
-        v-for="col in ['actionUrl', 'optionType','optionDesc','requestMethod']"
+        v-for="col in ['optionType','optionDesc','requestMethod']"
         :slot="col"
         slot-scope="text, record, index">
         <div :key="col">
-          <a-input
-            v-if="record.editable"
-            style="margin: -5px 0"
-            :value="text"
-            @change="e => handleChange(e.target.value, record.key, col)"
-          />
-          <template v-else>
             {{ text }}
-          </template>
         </div>
       </template>
+      <div slot="actionUrl" slot-scope="text, record,col">
+        <a-tooltip>
+          <template slot="title">
+            {{ text.split("/api")[1] }}
+          </template>
+          {{ text.split("/api")[1].length > 25 ? text.split("/api")[1].slice(0, 22)+"..." : text.split("/api")[1] }}
+        </a-tooltip>
+      </div>
       <div slot="consumingTime" slot-scope="text, record,col">
-        <a-input
-          v-if="record.editable"
-          style="margin: -5px 0"
-          :value="text"
-          @change="e => handleChange(e.target.value, record.key, 'status')"
-        />
-        <template v-else>
           {{ text == 0 ? '<1ms' : text + 'ms' }}
-        </template>
       </div>
       <div slot="message" slot-scope="text, record,col">
-        <a-input
-          v-if="record.editable"
-          style="margin: -5px 0"
-          :value="text"
-          @change="e => handleChange(e.target.value, record.key, 'status')"
-        />
-        <template v-else>
           <span :title=text>{{ text == null ? '无' : (text.length > 50 ? text.slice(0, 50) : text) }}</span>
-        </template>
       </div>
       <div slot="status" slot-scope="text, record,col">
-        <a-input
-          v-if="record.editable"
-          style="margin: -5px 0"
-          :value="text"
-          @change="e => handleChange(e.target.value, record.key, 'status')"
-        />
-        <template v-else>
           {{ text === 1 ? '正常' : '异常' }}
-        </template>
       </div>
       <div slot="expandedRowRender" slot-scope="record" style="margin: 0">
         <a-descriptions size="small">
@@ -119,7 +87,12 @@
             {{ record.status == 1 ? "正常" : "异常" }}
           </a-descriptions-item>
           <a-descriptions-item label="请求URL">
-            {{ record.actionUrl }}
+            <a-tooltip>
+              <template slot="title">
+                {{ record.actionUrl .split("/api")[1] }}
+              </template>
+              {{ record.actionUrl .split("/api")[1].length > 40 ? record.actionUrl .split("/api")[1].slice(0, 40)+"..." : record.actionUrl .split("/api")[1] }}
+            </a-tooltip>
           </a-descriptions-item>
           <a-descriptions-item label="请求类型">
             {{ record.actionMethod }}
