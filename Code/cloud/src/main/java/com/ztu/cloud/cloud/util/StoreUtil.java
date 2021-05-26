@@ -13,16 +13,26 @@ import java.util.Objects;
  **/
 public abstract class StoreUtil {
     String tempFolderPath;
+    String saveFolderPath;
 
     public StoreUtil() {
         this.tempFolderPath = "./CacheFolder/";
-        File file = new File(this.tempFolderPath);
-        if (file.exists()) {
-            if (!file.isDirectory()) {
-                System.out.println("存储重名文件阻碍项目初始化!");
+        this.saveFolderPath = "./SaveFolder/";
+        File tempFolder = new File(this.tempFolderPath);
+        File saveFolder = new File(this.saveFolderPath);
+        if (tempFolder.exists()) {
+            if (!tempFolder.isDirectory()) {
+                System.out.println("存在重名文件阻碍项目初始化!");
             }
         } else {
-            file.mkdirs();
+            tempFolder.mkdirs();
+        }
+        if (saveFolder.exists()) {
+            if (!saveFolder.isDirectory()) {
+                System.out.println("存在重名文件阻碍项目初始化!");
+            }
+        } else {
+            saveFolder.mkdirs();
         }
     }
 

@@ -55,7 +55,7 @@ class DownLoadServiceImplTest {
         this.userRepositoryDao.insert(userRepository);
         this.user.setRepoId(userRepository.getId());
         this.userMapper.updateUser(user);
-        this.userFile = new UserFile(user.getId(), "a2f83d96f9f0cfda99af9567f3a5c4e0", "");
+        this.userFile = new UserFile(user.getId(), "a6056127704d4c545da0ccafc136531b", "");
         this.userFileMapper.insertUserFile(userFile);
         this.token = TokenUtil.createUserToken(this.user.getId(), false);
     }
@@ -97,7 +97,7 @@ class DownLoadServiceImplTest {
         /*
          * 需要上面生成的下载ID
          */
-        String url = "/download/" + "fdd26cec1b864f758550a5647674653b";
+        String url = "/download/" + "1a52da8aac4e461e9a699b72e7fa045d";
         MvcResult mvcResult = mockMvc.perform(MockMvcRequestBuilders.get(url)
                 .header(TokenUtil.TOKEN_HEADER, this.token)
                 .accept(MediaType.APPLICATION_JSON))

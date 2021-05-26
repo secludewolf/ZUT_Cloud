@@ -41,7 +41,7 @@ public class RepositoryUtil {
     }
 
     public static boolean pathIsNested(String source, String target) {
-        return target.length() >= source.length() && source.equals(source.substring(0, target.length()));
+        return target.length() >= source.length() && source.equals(target.substring(0, source.length()));
     }
 
     public static Folder getFolder(UserRepository repository, String path) {
