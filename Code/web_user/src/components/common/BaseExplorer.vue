@@ -151,14 +151,22 @@
                 :pagination="false"
                 :rowKey="record => record.name"
                 :customRow="rowEvent">
-                <div slot="name" slot-scope="text, record">
+                <div slot="name" slot-scope="text, record" style="position: relative;">
                   <img
                     slot="cover"
                     alt="file"
                     :src="getImg(record.depth == null ? record.type : 'folder')"
                     style="width: 30px;height:30px;margin-right:10px;"
                   />
-                  <span>{{ text }}</span>
+                  <a-tooltip>
+                    <!--                    <template slot="title">-->
+                    <!--                      {{ text }}-->
+                    <!--                    </template>-->
+                    <span
+                      style="position:absolute;top:6px;white-space: nowrap;display: inline-block; width: 80%;overflow: hidden;text-overflow: ellipsis;">{{
+                        text
+                      }}</span>
+                  </a-tooltip>
                 </div>
                 <span slot="size" slot-scope="text, record">{{ getFormatSize(record.size) }}</span>
                 <span slot="type"
@@ -686,8 +694,8 @@ export default {
     rowEvent(record, index) {
       return {
         on: {
-          dblclick: () => {
-            this.openFile(record.type == null ? "folder" : record.type, record.name);
+          dblclick: (event) => {
+            this.openFile(record.type == null ? "folder" : record.type, record.name, event);
           },
           mouseenter: (event) => {
             if (record.depth != null) {
