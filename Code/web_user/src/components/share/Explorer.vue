@@ -58,10 +58,7 @@ import {getShare} from "../../api/share";
 export default {
   name: "Explorer",
   created() {
-    if (sessionStorage.getItem(this.$route.query["id"]) != null)
-      this.autoLoadData();
-    else
-      this.passwordVisible = true;
+    this.autoLoadData();
   },
   mounted() {
   },
@@ -90,6 +87,7 @@ export default {
   },
   methods: {
     autoLoadData() {
+      console.log(1);
       const parent = this;
       const data = {
         shareId: this.$route.query["id"],
@@ -104,7 +102,16 @@ export default {
         parent.repositoryVisible = true;
         parent.loading = false;
       };
-      const catcher = function () {};
+      const catcher = function (code, content) {
+        parent.loading = false;
+        if (code === -6 || code === -7) {
+          parent.resultVisible = false;
+          parent.passwordVisible = true;
+        } else {
+          parent.resultTitle = content;
+          parent.resultVisible = true;
+        }
+      };
       getShare(data, handler, catcher);
     },
     loadData() {

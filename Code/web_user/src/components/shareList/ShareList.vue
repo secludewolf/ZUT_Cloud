@@ -105,7 +105,6 @@
         getShareList(handler, catcher);
       },
       disableShare(index) {
-        this.$message.info("禁用分享:" + this.data[index].id);
         const parent = this;
         const data = this.data[index].id;
         const handler = () => {
